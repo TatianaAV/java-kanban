@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         TaskManager manager = new TaskManager();
         Scanner scanner = new Scanner(System.in);
-Scanner in = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         Task task1 = new Task("Выучить Java", "Заниматься каждый день", "NEW");
 
         Integer taskId1 = manager.addTask(task1);
@@ -22,7 +22,7 @@ Scanner in = new Scanner(System.in);
         Integer subTaskId3 = manager.addSubTask(subTask3);//добавляем в таблицу подзадач и получаем номер
         Integer subTaskId4 = manager.addSubTask(subTask4);
 
-       ArrayList<Integer> subTaskIds2 = new ArrayList<>();//создаем список подзадач для эпика
+        ArrayList<Integer> subTaskIds2 = new ArrayList<>();//создаем список подзадач для эпика
         subTaskIds2.add(subTaskId3);//заполняем
         subTaskIds2.add(subTaskId4);
         epic2.setSubTaskIds(subTaskIds2);
@@ -46,58 +46,84 @@ Scanner in = new Scanner(System.in);
         //SubTask changeSubTask = manager.getSubTaskById(subTaskId);
 
 
-        //manager.addTaskManager("Не сойти с ума", "Не забывать отдыхать и  не лениться ходить в спортзал");
-       /* manager.addEpicManager("Не сойти с ума", "Не забывать отдыхать и  не лениться ходить в спортзал");
-        manager.addSubTaskManager("подзадача 1", "Не забывать отдыхать и  не лениться ходить в спортзал");*/
+
         exit:
         while (true) {
 
             printMenu();
 
-            String command = scanner.nextLine();
+            String command = scanner.next();
 
             switch (command) {
                 case "1"://получить список всех задач
-                    manager.getTasks();
-                    manager.getEpics();
-                    manager.getSubTasks();
+                    System.out.println(manager.getTasks());
+                    System.out.println(manager.getEpics());
+                    System.out.println(manager.getSubTasks());
                     break;
                 case "2"://удалить все Tasks, Epics и subTasks
-                    manager.deleteAllTask();
-                    manager.deleteAllSubTasks();
-                    manager.deleteAllEpic();
+                    System.out.println("1 - удалить задачи.  2 - удалить подзадачи. 3 - удалить эпики.");
+                    int choice1 = Integer.parseInt(scanner.nextLine());
+                    switch (choice1) {
+                        case 1:
+                            manager.deleteAllTask();
+                            break;
+                        case 2:
+                            manager.deleteAllSubTasks();
+                            break;
+                        case 3:
+                            manager.deleteAllEpic();
+                            break;
+                        default:
+                            System.out.println(" не верный выбор");
+                    }
                     break;
                 case "3"://удалить задачу по номеру
-                   /* System.out.println("введите номер задачи для удаления");
-                    int taskIdВуDelete = scanner.nextInt();
-                    manager.deleteTask(taskIdВуDelete);
+                    System.out.println("1 - удалить задачу.  2 - удалить подзадачу. 3 - удалить эпик.");
+                    int choice2 = Integer.parseInt(scanner.nextLine());
+                    switch (choice2) {
+                        case 1:
+                            System.out.println("введите номер задачи для удаления");
+                            int taskIdByDelete = scanner.nextInt();
+                            manager.deleteTask(taskIdByDelete);
 
-                    System.out.println("введите номер подзадачи для удаления");
-                    int subTaskIdВуDelete = scanner.nextInt();
-                    manager.deleteSubTask(subTaskIdВуDelete);
-*/
-                    System.out.println("введите номер эпика для удаления");
-                    int epicIdВуDelete = scanner.nextInt();
+                            break;
+                        case 2:
+                            System.out.println("введите номер подзадачи для удаления");
+                            int subTaskIdByDelete = scanner.nextInt();
+                            manager.deleteSubTask(subTaskIdByDelete);
 
-                   // manager.deleteEpic(epicIdВуDelete);
+
+                            break;
+                        case 3:
+                            System.out.println("введите номер эпика для удаления");
+                            int epicIdByDelete = scanner.nextInt();
+
+
+                            manager.deleteEpic(epicIdByDelete);
+
+                            break;
+                        default:
+
+                            System.out.println(" не верный выбор");
+                    }
                     break;
                 case "4"://создать задачу
 
                     System.out.println("Введите название задачи:");
-                    String name = scanner.nextLine();
+                    String name = scanner.next();
 
                     System.out.println("Введите описание задачи:");
-                    String description = scanner.nextLine();
+                    String description = scanner.next();
                     Task newTask = new Task(name, description, "NEW");
                     manager.addTask(newTask);
 
                     break;
                 case "5"://создать epic
                     System.out.println("Введите название эпика:");
-                    String nameEpic = scanner.nextLine();
+                    String nameEpic = scanner.next();
 
                     System.out.println("Введите описание эпика:");
-                    String descriptionEpic = scanner.nextLine();
+                    String descriptionEpic = scanner.next();
                     ArrayList<Integer> newSubTaskIds = new ArrayList<>();
                     Epic newEpic = new Epic(nameEpic, descriptionEpic, "NEW", newSubTaskIds);
                     Integer newEpicId = manager.addEpicId(newEpic);//получаем номер эпика для подзадачи
@@ -106,25 +132,23 @@ Scanner in = new Scanner(System.in);
                     String input;
                     do {
                         System.out.println("Введите название подзадачи:");
-                        String title = scanner.nextLine();
+                        String title = scanner.next();
 
                         System.out.println("Введите описание подзадачи:");
-                        String descriptionSubTask = scanner.nextLine();
+                        String descriptionSubTask = scanner.next();
                         SubTask newSubTask = new SubTask(title, descriptionSubTask, "NEW", newEpicId);//создаем подзадачу
 
                         Integer newSubTaskId = manager.addSubTask(newSubTask);//записываем в мапу получаем номер подзадачи
                         newSubTaskIds.add(newSubTaskId);//добавляем в список
 
 
-
                         System.out.println("Создать ещё подзадачу? Y - да/ N - нет");
                         input = in.next();
                     }
                     while (input.equals("Y"));
-                    newEpic.setSubTaskIds(newSubTaskIds);
+                    newEpic.setSubTaskIds(newSubTaskIds);//записываем список подзадач в эпик
                     manager.addEpic(newEpic);
 
-                  //записываем список подзадач в эпик
 
                     break;
 
@@ -158,7 +182,7 @@ Scanner in = new Scanner(System.in);
         System.out.println("3 – Удалить задачу по идентификатору.");
         System.out.println("4 – Создать задачу.");
         System.out.println("5 – Создать эпик.");
-        System.out.println("0 – Break .");
+        System.out.println("0 – Выход.");
 
     }
 }
