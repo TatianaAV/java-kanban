@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -7,45 +6,23 @@ public class Main {
         TaskManager manager = new TaskManager();
         Scanner scanner = new Scanner(System.in);
         Scanner in = new Scanner(System.in);
-        Task task1 = new Task("Выучить Java", "Заниматься каждый день", "NEW");
-
-        Integer taskId1 = manager.addTask(task1);
-        Task changeTask = manager.getTaskById(taskId1);
-        changeTask.setStatus("IN_PROGRESS");
-        manager.updateTask(changeTask);
+        Task task1 = new Task("Выучить Java", "Заниматься каждый день");
+        manager.addTask(task1);
 
         Epic epic2 = new Epic("Эпик с ID2", "Описание ", "NEW", null);//создаем эпик
-        Integer epicId2 = manager.addEpicId(epic2);//получаем номер эпика
+        int epicId2 = manager.addEpic(epic2);//получаем номер эпика
 
         SubTask subTask3 = new SubTask("Подзадача 3", " Описание", "NEW", epicId2);//создаем подзадачу для эпика 2
         SubTask subTask4 = new SubTask("Подзадача 4", " Описание", "NEW", epicId2);
-        Integer subTaskId3 = manager.addSubTask(subTask3);//добавляем в таблицу подзадач и получаем номер
-        Integer subTaskId4 = manager.addSubTask(subTask4);
+        manager.addSubTask(subTask3);//добавляем в таблицу подзадач и получаем номер
+        manager.addSubTask(subTask4);
 
-        ArrayList<Integer> subTaskIds2 = new ArrayList<>();//создаем список подзадач для эпика
-        subTaskIds2.add(subTaskId3);//заполняем
-        subTaskIds2.add(subTaskId4);
-        epic2.setSubTaskIds(subTaskIds2);
-
-        manager.addEpic(epic2);
-       /* Epic  changeEpic2 = manager.getEpicById(epicId2);
-        changeEpic2.setSubTaskIds(subTaskIds2);//добавляем в эпик 2*/
 
         Epic epic5 = new Epic("Название 5", "Описание ", "NEW", null);//создаем эпик 5
-        Integer epicId5 = manager.addEpicId(epic5);//получаем номер для подзадачи
+        int epicId5 = manager.addEpic(epic5);//получаем номер для подзадачи
 
         SubTask subTask6 = new SubTask("Подзадача 6", " Описание1", "NEW", epicId5);//создаем подзадачу
-        Integer subTaskId6 = manager.addSubTask(subTask6);// записываем в таблицу
-        ArrayList<Integer> subTaskIds5 = new ArrayList<>();//создаем список подзадач
-        subTaskIds5.add(subTaskId6);//заполняем список
-        epic5.setSubTaskIds(subTaskIds5);//добавляем список в эпик
-        manager.addEpic(epic5);
-       /* Epic  changeEpic5 = manager.getEpicById(epicId5);
-        changeEpic5.setSubTaskIds(subTaskIds5);*/
-
-        //SubTask changeSubTask = manager.getSubTaskById(subTaskId);
-
-
+        manager.addSubTask(subTask6);// записываем в таблицу
 
         exit:
         while (true) {
@@ -60,26 +37,33 @@ public class Main {
                     System.out.println(manager.getEpics());
                     System.out.println(manager.getSubTasks());
                     break;
+
                 case "2"://удалить все Tasks, Epics и subTasks
                     System.out.println("1 - удалить задачи.  2 - удалить подзадачи. 3 - удалить эпики.");
-                    int choice1 = Integer.parseInt(scanner.nextLine());
+                    int choice1 = Integer.parseInt(scanner.next());
+
                     switch (choice1) {
                         case 1:
                             manager.deleteAllTask();
                             break;
+
                         case 2:
                             manager.deleteAllSubTasks();
                             break;
+
                         case 3:
                             manager.deleteAllEpic();
                             break;
+
                         default:
-                            System.out.println(" не верный выбор");
+                            System.out.println("не верный выбор");
                     }
                     break;
+
                 case "3"://удалить задачу по номеру
                     System.out.println("1 - удалить задачу.  2 - удалить подзадачу. 3 - удалить эпик.");
-                    int choice2 = Integer.parseInt(scanner.nextLine());
+                    int choice2 = Integer.parseInt(scanner.next());
+
                     switch (choice2) {
                         case 1:
                             System.out.println("введите номер задачи для удаления");
@@ -87,6 +71,7 @@ public class Main {
                             manager.deleteTask(taskIdByDelete);
 
                             break;
+
                         case 2:
                             System.out.println("введите номер подзадачи для удаления");
                             int subTaskIdByDelete = scanner.nextInt();
@@ -94,6 +79,7 @@ public class Main {
 
 
                             break;
+
                         case 3:
                             System.out.println("введите номер эпика для удаления");
                             int epicIdByDelete = scanner.nextInt();
@@ -107,56 +93,94 @@ public class Main {
                             System.out.println(" не верный выбор");
                     }
                     break;
-                case "4"://создать задачу
 
+                case "4"://создать задачу
                     System.out.println("Введите название задачи:");
                     String name = scanner.next();
 
                     System.out.println("Введите описание задачи:");
                     String description = scanner.next();
-                    Task newTask = new Task(name, description, "NEW");
+                    Task newTask = new Task(name, description);
                     manager.addTask(newTask);
-
                     break;
+
                 case "5"://создать epic
                     System.out.println("Введите название эпика:");
                     String nameEpic = scanner.next();
 
                     System.out.println("Введите описание эпика:");
                     String descriptionEpic = scanner.next();
-                    ArrayList<Integer> newSubTaskIds = new ArrayList<>();
-                    Epic newEpic = new Epic(nameEpic, descriptionEpic, "NEW", newSubTaskIds);
-                    Integer newEpicId = manager.addEpicId(newEpic);//получаем номер эпика для подзадачи
-
-
+                    Epic newEpic = new Epic(nameEpic, descriptionEpic, "", null);
+                    int newEpicId = manager.addEpic(newEpic);//получаем номер эпика для подзадачи
                     String input;
+
                     do {
                         System.out.println("Введите название подзадачи:");
                         String title = scanner.next();
-
                         System.out.println("Введите описание подзадачи:");
                         String descriptionSubTask = scanner.next();
                         SubTask newSubTask = new SubTask(title, descriptionSubTask, "NEW", newEpicId);//создаем подзадачу
-
-                        Integer newSubTaskId = manager.addSubTask(newSubTask);//записываем в мапу получаем номер подзадачи
-                        newSubTaskIds.add(newSubTaskId);//добавляем в список
-
-
+                        manager.addSubTask(newSubTask);//записываем
                         System.out.println("Создать ещё подзадачу? Y - да/ N - нет");
                         input = in.next();
                     }
                     while (input.equals("Y"));
-                    newEpic.setSubTaskIds(newSubTaskIds);//записываем список подзадач в эпик
-                    manager.addEpic(newEpic);
-
-
                     break;
 
-
-                case "6": //изменить статус задачи и распечатать
-
+                case "6": //Вывести список подзадач эпика.
+                    System.out.println("Введите номер эпика:");
+                    int epicId = Integer.parseInt(scanner.next());
+                    System.out.println(manager.getSubTasksByEpic(epicId));
                     break;
-                case "7"://изменить статус подзадачи и распечатать
+                case "7"://изменить статус задачи и подзадачи и распечатать
+                    System.out.println("1 - обновить задачу.  2 - обновить подзадачу.");
+                    int choice3 = Integer.parseInt(scanner.next());
+                    switch (choice3) {
+                        case 1:
+                            System.out.println("введите номер задачи для обновления");
+                            int taskIdByUpgrade = scanner.nextInt();
+                            Task changeTask = manager.getTaskById(taskIdByUpgrade);
+                            System.out.println("Выберете статус для задачи. 1 - IN_PROGRESS. 2 - DONE");
+                            int status1 = scanner.nextInt();
+
+                            if (status1 == 1) {
+                                changeTask.setStatus("IN_PROGRESS");
+                            } else if (status1 == 2) {
+                                changeTask.setStatus("DONE");
+                            } else {
+                                System.out.println("не верный выбор");
+                            }
+
+                            manager.updateTask(changeTask);
+                            System.out.println(changeTask);
+                            break;
+                        case 2:
+                            System.out.println("введите номер подзадачи для обновления");
+                            int subTaskIdByUpgrade = scanner.nextInt();
+                            SubTask changeSubTask = manager.getSubTaskById(subTaskIdByUpgrade);
+                            System.out.println("Выберете статус для задачи. 1 - IN_PROGRESS. 2 - DONE");
+                            int status2 = scanner.nextInt();
+
+                            if (status2 == 1) {
+                                changeSubTask.setStatus("IN_PROGRESS");
+
+                            } else if (status2 == 2) {
+                                changeSubTask.setStatus("DONE");
+                            } else {
+                                System.out.println("не верный выбор");
+                            }
+                            String newStatusEpic = manager.updateSubTask(changeSubTask);
+                            System.out.println(changeSubTask);
+                            System.out.println("Подзадача " + subTaskIdByUpgrade + " статус эпика " + (newStatusEpic));
+
+
+                            break;
+
+                        default:
+
+                            System.out.println("не верный выбор");
+                    }
+
 
                     break;
                 case "0":
@@ -176,12 +200,14 @@ public class Main {
 
     private static void printMenu() {
 
-        System.out.println("Какое действие вы хотите выполнить?\n");
+        System.out.println("\nКакое действие вы хотите выполнить?\n");
         System.out.println("1 – Получить список всех задач.");
         System.out.println("2 – Удалить все задачи.");
         System.out.println("3 – Удалить задачу по идентификатору.");
         System.out.println("4 – Создать задачу.");
         System.out.println("5 – Создать эпик.");
+        System.out.println("6 – Вывести список подзадач эпика.");
+        System.out.println("7 – Обновить задачи.");
         System.out.println("0 – Выход.");
 
     }
