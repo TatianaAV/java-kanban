@@ -155,24 +155,27 @@ public class Main {
                             System.out.println(changeTask);
                             break;
                         case 2:
+                            String statusNew = "";
                             System.out.println("введите номер подзадачи для обновления");
                             int subTaskIdByUpgrade = scanner.nextInt();
                             SubTask changeSubTask = manager.getSubTaskById(subTaskIdByUpgrade);
-                            System.out.println("Выберете статус для задачи. 1 - IN_PROGRESS. 2 - DONE");
-                            int status2 = scanner.nextInt();
 
-                            if (status2 == 1) {
-                                changeSubTask.setStatus("IN_PROGRESS");
+                           // if (changeSubTask != null) {
+                                System.out.println("Выберете статус для задачи. 1 - NEW. 2 - IN_PROGRESS. 3 - DONE.");
+                                int status2 = scanner.nextInt();
 
-                            } else if (status2 == 2) {
-                                changeSubTask.setStatus("DONE");
-                            } else {
-                                System.out.println("не верный выбор");
-                            }
-                            String newStatusEpic = manager.updateSubTask(changeSubTask);
-                            System.out.println(changeSubTask);
-                            System.out.println("Подзадача " + subTaskIdByUpgrade + " статус эпика " + (newStatusEpic));
-
+                                if (status2 == 1) {
+                                    statusNew = "NEW";
+                                } else if (status2 == 2) {
+                                    statusNew = "IN_PROGRESS";
+                                } else if (status2 == 3) {
+                                    statusNew = "DONE";
+                                } else {
+                                    System.out.println("не верный выбор");
+                                }
+                                //отправить для изменения подзадачу и статус
+                                String newStatusEpic1 = manager.updateSubTask(changeSubTask, statusNew);
+                                System.out.println("Подзадача " + manager.getSubTaskById(subTaskIdByUpgrade) + " статус эпика " + (newStatusEpic1));
 
                             break;
 
