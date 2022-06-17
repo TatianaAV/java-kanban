@@ -2,14 +2,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
-   private  ArrayList<Integer> subTaskIds;
+    private ArrayList<Integer> subTaskIds;
 
     public Epic(String title, String description, String status, ArrayList<Integer> subTaskIds) {
         super(title, description, status);
         this.subTaskIds = subTaskIds;
     }
 
-    public  ArrayList<Integer> getSubTaskIds() {
+    public ArrayList<Integer> getSubTaskIds() {
         return subTaskIds;
     }
 
@@ -34,8 +34,6 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         Epic epic = (Epic) o;
         return Objects.equals(subTaskIds, epic.subTaskIds)
-                && id == epic.id && Objects.equals(title, epic.title)
-                && Objects.equals(description, epic.description)
                 && Objects.equals(status, epic.status);
     }
 

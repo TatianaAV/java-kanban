@@ -6,13 +6,13 @@ public class Task {
     protected String description;
     protected String status;
 
-    public Task( String title, String description, String status) {
+    public Task(String title, String description, String status) {
         this.title = title;
         this.description = description;
         this.status = status;
     }
 
-    public Task( String title, String description) {
+    public Task(String title, String description) {
         this.title = title;
         this.description = description;
     }
@@ -49,8 +49,6 @@ public class Task {
         if (!(o instanceof Task)) return false;
         Task task = (Task) o;
         return id == task.id
-                && Objects.equals(title, task.title)
-                && Objects.equals(description, task.description)
                 && Objects.equals(status, task.status);
     }
 

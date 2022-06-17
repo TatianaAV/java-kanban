@@ -2,6 +2,7 @@ import java.util.Objects;
 
 public class SubTask extends Task {
     private int epicId;
+
     public SubTask(String title, String description, String status, int epicId) {
         super(title, description, status);
         this.epicId = epicId;
@@ -28,13 +29,12 @@ public class SubTask extends Task {
         if (!(o instanceof SubTask)) return false;
         if (!super.equals(o)) return false;
         SubTask subTask = (SubTask) o;
-        return  epicId == subTask.epicId && Objects.equals(title, subTask.title)
-                && Objects.equals(description, subTask.description)
+        return epicId == subTask.epicId
                 && Objects.equals(status, subTask.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), epicId );
+        return Objects.hash(super.hashCode(), epicId);
     }
 }
