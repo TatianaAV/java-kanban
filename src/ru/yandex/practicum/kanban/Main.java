@@ -1,3 +1,10 @@
+package ru.yandex.practicum.kanban;
+
+import ru.yandex.practicum.kanban.manager.TaskManager;
+import ru.yandex.practicum.kanban.tasks.Epic;
+import ru.yandex.practicum.kanban.tasks.SubTask;
+import ru.yandex.practicum.kanban.tasks.Task;
+
 import java.util.Scanner;
 
 public class Main {

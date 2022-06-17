@@ -1,3 +1,9 @@
+package ru.yandex.practicum.kanban.manager;
+
+import ru.yandex.practicum.kanban.tasks.Epic;
+import ru.yandex.practicum.kanban.tasks.SubTask;
+import ru.yandex.practicum.kanban.tasks.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -57,7 +63,7 @@ public class TaskManager {
 
     }
 
-    void addSubTask(SubTask subTask) {// добавить подзадачу в таблицу
+    public void addSubTask(SubTask subTask) {// добавить подзадачу в таблицу
         int subTaskId = generatedId();
         subTask.setId(subTaskId);
         subTask.setStatus("NEW");

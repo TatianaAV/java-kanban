@@ -1,3 +1,5 @@
+package ru.yandex.practicum.kanban.tasks;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -19,7 +21,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "ru.yandex.practicum.kanban.tasks.Epic{" +
                 "subTaskIds=" + subTaskIds +
                 ", id=" + id +
                 ", title='" + title + '\'' +

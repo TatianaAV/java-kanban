@@ -1,3 +1,4 @@
+package ru.yandex.practicum.kanban.tasks;
 import java.util.Objects;
 
 public class SubTask extends Task {
@@ -14,7 +15,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{" +
+        return "ru.yandex.practicum.kanban.tasks.SubTask{" +
                 "epicId=" + epicId +
                 ", id=" + id +
                 ", title='" + title + '\'' +

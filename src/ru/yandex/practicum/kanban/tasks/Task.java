@@ -1,3 +1,4 @@
+package ru.yandex.practicum.kanban.tasks;
 import java.util.Objects;
 
 public class Task {
@@ -31,7 +32,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "ru.yandex.practicum.kanban.tasks.Task{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
