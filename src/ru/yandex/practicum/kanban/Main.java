@@ -1,5 +1,6 @@
 package ru.yandex.practicum.kanban;
 
+import ru.yandex.practicum.kanban.manager.StatusTask;
 import ru.yandex.practicum.kanban.manager.TaskManager;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
@@ -16,19 +17,19 @@ public class Main {
         Task task1 = new Task("Выучить Java", "Заниматься каждый день");
         manager.addTask(task1);
 
-        Epic epic2 = new Epic("Эпик с ID2", "Описание ", "NEW", null);//создаем эпик
+        Epic epic2 = new Epic("Эпик с ID2", "Описание ", StatusTask.NEW, null);//создаем эпик
         int epicId2 = manager.addEpic(epic2);//получаем номер эпика
 
-        SubTask subTask3 = new SubTask("Подзадача 3", " Описание", "NEW", epicId2);//создаем подзадачу для эпика 2
-        SubTask subTask4 = new SubTask("Подзадача 4", " Описание", "NEW", epicId2);
+        SubTask subTask3 = new SubTask("Подзадача 3", " Описание", StatusTask.NEW, epicId2);//создаем подзадачу для эпика 2
+        SubTask subTask4 = new SubTask("Подзадача 4", " Описание", StatusTask.NEW, epicId2);
         manager.addSubTask(subTask3);//добавляем в таблицу подзадач и получаем номер
         manager.addSubTask(subTask4);
 
 
-        Epic epic5 = new Epic("Название 5", "Описание ", "NEW", null);//создаем эпик 5
+        Epic epic5 = new Epic("Название 5", "Описание ", StatusTask.NEW, null);//создаем эпик 5
         int epicId5 = manager.addEpic(epic5);//получаем номер для подзадачи
 
-        SubTask subTask6 = new SubTask("Подзадача 6", " Описание1", "NEW", epicId5);//создаем подзадачу
+        SubTask subTask6 = new SubTask("Подзадача 6", " Описание1", StatusTask.NEW, epicId5);//создаем подзадачу
         manager.addSubTask(subTask6);// записываем в таблицу
 
         exit:
@@ -117,7 +118,7 @@ public class Main {
 
                     System.out.println("Введите описание эпика:");
                     String descriptionEpic = scanner.next();
-                    Epic newEpic = new Epic(nameEpic, descriptionEpic, "", null);
+                    Epic newEpic = new Epic(nameEpic, descriptionEpic, StatusTask.NEW, null);
                     int newEpicId = manager.addEpic(newEpic);//получаем номер эпика для подзадачи
                     String input;
 
@@ -126,7 +127,7 @@ public class Main {
                         String title = scanner.next();
                         System.out.println("Введите описание подзадачи:");
                         String descriptionSubTask = scanner.next();
-                        SubTask newSubTask = new SubTask(title, descriptionSubTask, "NEW", newEpicId);//создаем подзадачу
+                        SubTask newSubTask = new SubTask(title, descriptionSubTask, StatusTask.NEW, newEpicId);//создаем подзадачу
                         manager.addSubTask(newSubTask);//записываем
                         System.out.println("Создать ещё подзадачу? Y - да/ N - нет");
                         input = in.next();
@@ -151,9 +152,9 @@ public class Main {
                             int status1 = scanner.nextInt();
 
                             if (status1 == 1) {
-                                changeTask.setStatus("IN_PROGRESS");
+                                changeTask.setStatus(StatusTask.IN_PROGRESS);
                             } else if (status1 == 2) {
-                                changeTask.setStatus("DONE");
+                                changeTask.setStatus(StatusTask.DONE);
                             } else {
                                 System.out.println("не верный выбор");
                             }
@@ -171,19 +172,19 @@ public class Main {
                                 int status2 = scanner.nextInt();
 
                                 if (status2 == 1) {
-                                    changeSubTask.setStatus("NEW");
+                                    changeSubTask.setStatus(StatusTask.NEW);
 
                                 } else if (status2 == 2) {
-                                    changeSubTask.setStatus("IN_PROGRESS");
+                                    changeSubTask.setStatus(StatusTask.IN_PROGRESS);
 
                                 } else if (status2 == 3) {
-                                    changeSubTask.setStatus("DONE");
+                                    changeSubTask.setStatus(StatusTask.DONE);
 
                                 } else {
                                     System.out.println("не верный выбор");
                                 }
                                 //отправить для изменения подзадачу
-                                String newStatusEpic1 = manager.updateSubTask(changeSubTask);
+                                StatusTask newStatusEpic1 = manager.updateSubTask(changeSubTask);
                                 System.out.println("Подзадача " + manager.getSubTaskById(subTaskIdByUpgrade) + " статус эпика " + (newStatusEpic1));
                             } else {
                                 System.out.println("Подзадачи c таким номером нет");

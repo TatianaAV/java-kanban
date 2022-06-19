@@ -1,13 +1,15 @@
 package ru.yandex.practicum.kanban.tasks;
+import ru.yandex.practicum.kanban.manager.StatusTask;
+
 import java.util.Objects;
 
 public class Task {
     protected int id;
     protected String title;
     protected String description;
-    protected String status;
+    protected StatusTask status;
 
-    public Task(String title, String description, String status) {
+    public Task(String title, String description, StatusTask status) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -19,14 +21,17 @@ public class Task {
     }
 
     public void setId(int id) {
+
         this.id = id;
     }
 
-    public String getStatus() {
+    public StatusTask getStatus() {
+
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(StatusTask status) {
+
         this.status = status;
     }
 

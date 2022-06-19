@@ -23,7 +23,6 @@ public class TaskManager {
     public void addTask(Task task) {//добавление задачи в таблицу
         int id = generatedId();
         task.setId(id);
-        task.setStatus("NEW");
         tasksMap.put(id, task);
 
     }
@@ -57,7 +56,6 @@ public class TaskManager {
         int epicId = generatedId();
         epic.setId(epicId);
         epicsMap.put(epicId, epic);
-        epic.setStatus("NEW");
         epic.setSubTaskIds(new ArrayList<>());
         return epicId;
 
@@ -66,7 +64,6 @@ public class TaskManager {
     public void addSubTask(SubTask subTask) {// добавить подзадачу в таблицу
         int subTaskId = generatedId();
         subTask.setId(subTaskId);
-        subTask.setStatus("NEW");
         Epic epic = getEpicById(subTask.getEpicId());
         getSubTaskIds(epic).add(subTaskId);
         subTasksMap.put(subTaskId, subTask);
@@ -85,19 +82,20 @@ public class TaskManager {
             int countDone = 0;
 
             for (Integer subTaskId : changeEpic) {
-                String statusSubTask = getSubTaskById(subTaskId).getStatus();//СТАТУС ПОДЗАДАЧИ
+
+               StatusTask statusSubTask = getSubTaskById(subTaskId).getStatus();//СТАТУС ПОДЗАДАЧИ
                 switch (statusSubTask) {
 
-                    case "NEW":
+                    case NEW:
                         ++countNew;
                         break;
 
-                    case "DONE":
+                    case DONE:
                         ++countDone;
                         break;
 
-                    case "IN_PROGRESS":
-                        epic.setStatus("IN_PROGRESS");
+                    case IN_PROGRESS:
+                        epic.setStatus(StatusTask.IN_PROGRESS);
                         break;
 
                     default:
@@ -106,19 +104,19 @@ public class TaskManager {
             }
 
             if (countNew == changeEpic.size()) {
-                epic.setStatus("NEW");
+                epic.setStatus(StatusTask.NEW);
             } else if (countDone == changeEpic.size()) {
-                epic.setStatus("DONE");
+                epic.setStatus(StatusTask.DONE);
             } else {
-                epic.setStatus("IN_PROGRESS");
+                epic.setStatus(StatusTask.IN_PROGRESS);
             }
         }else {
-            epic.setStatus("NEW");
+            epic.setStatus(StatusTask.NEW);
     }
         epicsMap.put(epic.getId(), epic);
     }
 
-    public String updateSubTask(SubTask subTask) {
+    public StatusTask updateSubTask(SubTask subTask) {
         subTasksMap.put(subTask.getId(), subTask);//обновляем подзадачу
         Epic epic = getEpicById(subTask.getEpicId());
         updateEpic(epic);

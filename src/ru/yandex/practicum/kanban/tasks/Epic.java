@@ -1,12 +1,14 @@
 package ru.yandex.practicum.kanban.tasks;
 
+import ru.yandex.practicum.kanban.manager.StatusTask;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
     private ArrayList<Integer> subTaskIds;
 
-    public Epic(String title, String description, String status, ArrayList<Integer> subTaskIds) {
+    public Epic(String title, String description, StatusTask status, ArrayList<Integer> subTaskIds) {
         super(title, description, status);
         this.subTaskIds = subTaskIds;
     }
