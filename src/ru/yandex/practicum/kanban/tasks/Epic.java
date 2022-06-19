@@ -23,7 +23,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "ru.yandex.practicum.kanban.tasks.Epic{" +
+        return "Epic{" +
                 "subTaskIds=" + subTaskIds +
                 ", id=" + id +
                 ", title='" + title + '\'' +
@@ -33,16 +33,16 @@ public class Epic extends Task {
     }
 
     @Override
+
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Epic epic = (Epic) o;
-        return Objects.equals(subTaskIds, epic.subTaskIds)
-                && Objects.equals(status, epic.status);
-    }
+        if(this==o)return true;
+        if(o ==null|| getClass() !=o.getClass())return false;
+    Epic epic = (Epic) o;
+        return Objects.equals(subTaskIds,epic.subTaskIds)
+            && super.equals(epic);
+}
 
-
-    @Override
+        @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), subTaskIds);
     }

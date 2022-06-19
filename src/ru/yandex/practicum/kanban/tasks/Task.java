@@ -1,4 +1,5 @@
 package ru.yandex.practicum.kanban.tasks;
+
 import ru.yandex.practicum.kanban.manager.StatusTask;
 
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "ru.yandex.practicum.kanban.tasks.Task{" +
+        return "Task{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
@@ -46,16 +47,19 @@ public class Task {
     }
 
     public int getId() {
+
         return id;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Task)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return id == task.id
-                && Objects.equals(status, task.status);
+                && title.equals(task.title)
+                && description.equals(task.description)
+                && status == task.status;
     }
 
     @Override

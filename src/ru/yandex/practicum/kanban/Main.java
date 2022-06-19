@@ -1,17 +1,22 @@
 package ru.yandex.practicum.kanban;
 
+import ru.yandex.practicum.kanban.manager.InMemoryTaskManager;
 import ru.yandex.practicum.kanban.manager.StatusTask;
+import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.manager.TaskManager;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
+
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager manager = new TaskManager();
+        InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefaultHistory();
+       // InMemoryTaskManager manager = new InMemoryTaskManager();
         Scanner scanner = new Scanner(System.in);
         Scanner in = new Scanner(System.in);
         Task task1 = new Task("Выучить Java", "Заниматься каждый день");
@@ -41,9 +46,9 @@ public class Main {
 
             switch (command) {
                 case "1"://получить список всех задач
-                    System.out.println(manager.getTasks());
-                    System.out.println(manager.getEpics());
-                    System.out.println(manager.getSubTasks());
+                    System.out.println(manager.getTasks()+ "\n");
+                    System.out.println(manager.getEpics()+ "\n");
+                    System.out.println(manager.getSubTasks()+ "\n");
                     break;
 
                 case "2"://удалить все Tasks, Epics и subTasks
@@ -196,7 +201,15 @@ public class Main {
                     }
                     break;
 
-                case "0":
+                case "8":
+                    List<Task> history = manager.getHistory();
+                    for (int i=0; i<= history.size()-1;i++) { System.out.println((i+1) + " " + history.get(i));
+
+                    }
+
+                    break;
+
+                    case "0":
                     break exit;
 
                 default:
@@ -218,6 +231,7 @@ public class Main {
         System.out.println("5 – Создать эпик.");
         System.out.println("6 – Вывести список подзадач эпика.");
         System.out.println("7 – Обновить задачи.");
+        System.out.println("8 – История просмотра.");
         System.out.println("0 – Выход.");
 
     }
