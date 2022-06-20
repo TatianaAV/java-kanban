@@ -16,7 +16,6 @@ public class Main {
     public static void main(String[] args) {
         InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefault();
         HistoryManager historyManager = Managers.getDefaultHistory();
-        // InMemoryTaskManager manager = new InMemoryTaskManager();
         Scanner scanner = new Scanner(System.in);
         Scanner in = new Scanner(System.in);
         Task task1 = new Task("Выучить Java", "Заниматься каждый день");
