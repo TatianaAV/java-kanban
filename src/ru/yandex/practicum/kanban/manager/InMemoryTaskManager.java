@@ -19,15 +19,42 @@ public class InMemoryTaskManager implements TaskManager {
         ++generatedId;
         return generatedId;
     }
+@Override
+    public int addTask(Task task) {
+        int id = generatedId();
+        task.setId(id);
+        if (task instanceof Epic) {
 
-    @Override
+            epicsMap.put(id, (Epic) task);
+            Epic epic = getEpicById(id);
+            epic.setId(id);
+            epic.setSubTaskIds(new ArrayList<>());
+        } else if (task instanceof SubTask) {
+
+            subTasksMap.put(id, (SubTask) task);
+            SubTask subTask = getSubTaskById(id);
+            subTask.setId(id);
+            Epic epic = getEpicById(subTask.getEpicId());
+            getSubTaskIds(epic).add(id);
+            updateEpic(epic);
+
+        } else {
+
+            task.setStatus(StatusTask.NEW);
+            task.setId(id);
+            tasksMap.put(id, task);
+        }
+        return id;
+    }
+
+   /* @Override
     public void addTask(Task task) {//добавление задачи в таблицу
         int id = generatedId();
         task.setStatus(StatusTask.NEW);
         task.setId(id);
         tasksMap.put(id, task);
 
-    }
+    }*/
 
     @Override
     public Task getTaskById(int id) {//задача из таблицы по идентификатору
@@ -58,7 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
         return subTasksMap.get(subTaskId);
     }
 
-    @Override
+  /*  @Override
     public int addEpic(Epic epic) {//добавление эпика в таблицу
         int epicId = generatedId();
         epic.setId(epicId);
@@ -76,7 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasksMap.put(subTaskId, subTask);
         updateEpic(epic);
     }
-
+*/
     @Override
     public void updateTask(Task task) {
         tasksMap.put(task.getId(), task);

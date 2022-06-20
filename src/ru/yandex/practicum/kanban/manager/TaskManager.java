@@ -4,11 +4,8 @@ import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public interface TaskManager {
-    void addTask(Task task);
+    int addTask(Task task);
 
     Task getTaskById(int id);
 
@@ -16,8 +13,8 @@ public interface TaskManager {
 
     SubTask getSubTaskById(int subTaskId);
 
-    int addEpic(Epic epic);
-    void addSubTask(SubTask subTask);
+//    int addEpic(Epic epic);
+ //   void addSubTask(SubTask subTask);
     void updateTask(Task task);
     StatusTask updateSubTask(SubTask subTask);
     void updateEpic(Epic epic);
