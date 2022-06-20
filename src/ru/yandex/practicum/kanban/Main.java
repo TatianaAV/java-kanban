@@ -1,13 +1,12 @@
 package ru.yandex.practicum.kanban;
 
+import ru.yandex.practicum.kanban.manager.HistoryManager;
 import ru.yandex.practicum.kanban.manager.InMemoryTaskManager;
-import ru.yandex.practicum.kanban.manager.StatusTask;
 import ru.yandex.practicum.kanban.manager.Managers;
-import ru.yandex.practicum.kanban.manager.TaskManager;
+import ru.yandex.practicum.kanban.manager.StatusTask;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
-
 
 import java.util.List;
 import java.util.Scanner;
@@ -15,8 +14,9 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefaultHistory();
-       // InMemoryTaskManager manager = new InMemoryTaskManager();
+        InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefault();
+        HistoryManager historyManager = Managers.getDefaultHistory();
+        // InMemoryTaskManager manager = new InMemoryTaskManager();
         Scanner scanner = new Scanner(System.in);
         Scanner in = new Scanner(System.in);
         Task task1 = new Task("Выучить Java", "Заниматься каждый день");
@@ -46,9 +46,29 @@ public class Main {
 
             switch (command) {
                 case "1"://получить список всех задач
-                    System.out.println(manager.getTasks()+ "\n");
-                    System.out.println(manager.getEpics()+ "\n");
-                    System.out.println(manager.getSubTasks()+ "\n");
+                    List<Task> allTask = manager.getTasks();
+                    if (allTask != null) {
+                        for (int i = 0; i <= allTask.size() - 1; i++) {
+                            System.out.println((allTask.get(i).getId()) + " " + allTask.get(i));
+                        }
+                    }
+                    System.out.println("\n");
+
+                    List<Epic> allEpics = manager.getEpics();
+                    if (allEpics != null) {
+                        for (int i = 0; i <= allEpics.size() - 1; i++) {
+                            System.out.println((allEpics.get(i).getId()) + " " + allEpics.get(i));
+                        }
+                    }
+                    System.out.println("\n");
+
+                    List<SubTask> allSubTask = manager.getSubTasks();
+                    if (allSubTask != null) {
+                        for (int i = 0; i <= allSubTask.size() - 1; i++) {
+                            System.out.println((allSubTask.get(i).getId()) + " " + allSubTask.get(i));
+                        }
+                    }
+
                     break;
 
                 case "2"://удалить все Tasks, Epics и subTasks
@@ -152,13 +172,19 @@ public class Main {
                         case 1:
                             System.out.println("введите номер задачи для обновления");
                             int taskIdByUpgrade = scanner.nextInt();
+
                             Task changeTask = manager.getTaskById(taskIdByUpgrade);
-                            System.out.println("Выберете статус для задачи. 1 - IN_PROGRESS. 2 - DONE");
+                            historyManager.add(changeTask);
+                            System.out.println(changeTask);
+
+                            System.out.println("Выберете статус для задачи. 1 - NEW.  2 - IN_PROGRESS. 3 - DONE.");
                             int status1 = scanner.nextInt();
 
                             if (status1 == 1) {
-                                changeTask.setStatus(StatusTask.IN_PROGRESS);
+                                changeTask.setStatus(StatusTask.NEW);
                             } else if (status1 == 2) {
+                                changeTask.setStatus(StatusTask.IN_PROGRESS);
+                            } else if (status1 == 3) {
                                 changeTask.setStatus(StatusTask.DONE);
                             } else {
                                 System.out.println("не верный выбор");
@@ -171,6 +197,8 @@ public class Main {
                             System.out.println("введите номер подзадачи для обновления");
                             int subTaskIdByUpgrade = scanner.nextInt();
                             SubTask changeSubTask = manager.getSubTaskById(subTaskIdByUpgrade);
+                            historyManager.add(changeSubTask);
+                            System.out.println(changeSubTask);
 
                             if (changeSubTask != null) {
                                 System.out.println("Выберете статус для задачи. 1 - NEW. 2 - IN_PROGRESS. 3 - DONE.");
@@ -202,14 +230,50 @@ public class Main {
                     break;
 
                 case "8":
-                    List<Task> history = manager.getHistory();
-                    for (int i=0; i<= history.size()-1;i++) { System.out.println((i+1) + " " + history.get(i));
+                    List<Task> history = historyManager.getHistory();
+                    for (int i = 0; i <= history.size() - 1; i++) {
+                        System.out.println((i + 1) + " " + history.get(i));
 
                     }
 
                     break;
 
-                    case "0":
+                case "9":
+                    System.out.println("1 - Получить задачу.  2 - Получить эпик. 3 - Получить подзадачу.");
+                    int choice4 = Integer.parseInt(scanner.next());
+                    switch (choice4) {
+                        case 1:
+                            System.out.println("введите номер задачи");
+                            int taskIdByUpgrade = scanner.nextInt();
+
+                            Task task = manager.getTaskById(taskIdByUpgrade);
+                            historyManager.add(task);
+                            System.out.println(task);
+                            break;
+                        case 2:
+                            System.out.println("введите номер эпика");
+                            int epic = scanner.nextInt();
+
+                            Epic printEpic = manager.getEpicById(epic);
+                            historyManager.add(printEpic);
+                            System.out.println(printEpic);
+
+                            break;
+                        case 3:
+
+                            System.out.println("введите номер подзадачи");
+                            int subTask = scanner.nextInt();
+
+                            SubTask printSubTask = manager.getSubTaskById(subTask);
+                            historyManager.add(printSubTask);
+                            System.out.println(printSubTask);
+                            break;
+                        default:
+                            System.out.println("не верный выбор");
+                    }
+                    break;
+
+                case "0":
                     break exit;
 
                 default:
@@ -232,6 +296,7 @@ public class Main {
         System.out.println("6 – Вывести список подзадач эпика.");
         System.out.println("7 – Обновить задачи.");
         System.out.println("8 – История просмотра.");
+        System.out.println("9 – Получить задачу по номеру.");
         System.out.println("0 – Выход.");
 
     }

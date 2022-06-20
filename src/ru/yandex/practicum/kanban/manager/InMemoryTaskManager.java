@@ -6,13 +6,11 @@ import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasksMap = new HashMap<>();
     private final HashMap<Integer, Epic> epicsMap = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasksMap = new HashMap<>();
-    private ArrayList<Task> listHistory= new ArrayList<>();
 
 
     private int generatedId = 0;
@@ -22,9 +20,10 @@ public class InMemoryTaskManager implements TaskManager {
         return generatedId;
     }
 
-@Override
+    @Override
     public void addTask(Task task) {//добавление задачи в таблицу
         int id = generatedId();
+        task.setStatus(StatusTask.NEW);
         task.setId(id);
         tasksMap.put(id, task);
 
@@ -33,69 +32,42 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {//задача из таблицы по идентификатору
         if (!tasksMap.containsKey(id)) {
-            return null;//такую реализацию предложил использовать куратор для дальнейшего изменения со строкой вывода
-        }else{
-            Task task = tasksMap.get(id);
-            if(listHistory.size() == 10){
-                listHistory.remove(0);
-            }
-
-            listHistory.add(task);
+            return null;
         }
         return tasksMap.get(id);
     }
 
     public ArrayList<Integer> getSubTaskIds(Epic epic) {//список подзадач из эпика
-
         return epic.getSubTaskIds();
     }
 
     @Override
     public Epic getEpicById(int id) {//эпик из таблицы по номеру
-
         if (!epicsMap.containsKey(id)) {
             return null;
-        }else{
-            Epic task = epicsMap.get(id);
-               addHistory(task);
         }
         return epicsMap.get(id);
     }
 
-    private void addHistory(Task task) {
-        if(listHistory.size() == 10){
-            listHistory.remove(0);
-        }
-
-        listHistory.add(task);
-    }
 
     @Override
     public SubTask getSubTaskById(int subTaskId) {//подзадача из таблицы
         if (!subTasksMap.containsKey(subTaskId)) {
             return null;
-        }else{
-            SubTask task = subTasksMap.get(subTaskId);
-            if(listHistory.size() == 10){
-                listHistory.remove(0);
-            }
-
-            listHistory.add(task);
         }
         return subTasksMap.get(subTaskId);
     }
 
-@Override
+    @Override
     public int addEpic(Epic epic) {//добавление эпика в таблицу
         int epicId = generatedId();
         epic.setId(epicId);
         epicsMap.put(epicId, epic);
         epic.setSubTaskIds(new ArrayList<>());
         return epicId;
-
     }
 
-@Override
+    @Override
     public void addSubTask(SubTask subTask) {// добавить подзадачу в таблицу
         int subTaskId = generatedId();
         subTask.setId(subTaskId);
@@ -105,22 +77,21 @@ public class InMemoryTaskManager implements TaskManager {
         updateEpic(epic);
     }
 
-@Override
+    @Override
     public void updateTask(Task task) {
         tasksMap.put(task.getId(), task);
     }
 
-@Override
+    @Override
     public void updateEpic(Epic epic) {
         ArrayList<Integer> changeEpic = getSubTaskIds(epic);
-
         if (!changeEpic.isEmpty()) {
             int countNew = 0;
             int countDone = 0;
 
             for (Integer subTaskId : changeEpic) {
+                StatusTask statusSubTask = getSubTaskById(subTaskId).getStatus();//СТАТУС ПОДЗАДАЧИ
 
-               StatusTask statusSubTask = getSubTaskById(subTaskId).getStatus();//СТАТУС ПОДЗАДАЧИ
                 switch (statusSubTask) {
 
                     case NEW:
@@ -147,20 +118,19 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 epic.setStatus(StatusTask.IN_PROGRESS);
             }
-        }else {
+        } else {
             epic.setStatus(StatusTask.NEW);
-    }
+        }
         epicsMap.put(epic.getId(), epic);
     }
 
-@Override
+    @Override
     public StatusTask updateSubTask(SubTask subTask) {
         subTasksMap.put(subTask.getId(), subTask);//обновляем подзадачу
         Epic epic = getEpicById(subTask.getEpicId());
         updateEpic(epic);
         return epic.getStatus();
     }
-
 
     public ArrayList<Task> getTasks() {//получение списка задач
         if (tasksMap.isEmpty()) {
@@ -175,7 +145,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicsMap.isEmpty()) {
             System.out.println("Эпиков нет");
             return null;
-
         }
         ArrayList<Epic> allEpics = new ArrayList<>(epicsMap.values());
         return allEpics;
@@ -202,12 +171,11 @@ public class InMemoryTaskManager implements TaskManager {
                 SubTask subTask = getSubTaskById(idSubTask);
                 listSubTask.add(subTask);
             }
-
         }
         return listSubTask;
     }
 
-@Override
+    @Override
     public void deleteAllTask() {
         if (!tasksMap.isEmpty()) {
             tasksMap.clear();
@@ -229,33 +197,27 @@ public class InMemoryTaskManager implements TaskManager {
             }
             subTasksMap.clear();
             System.out.println("Подзадачи удалены.");
-
         } else {
-            System.out.println(epicsMap);
             System.out.println("Подзадач нет.");
         }
     }
 
     @Override
     public void deleteAllEpic() {//SubTasks не может быть без Epics
-
         if (!epicsMap.isEmpty() & !subTasksMap.isEmpty()) {
             subTasksMap.clear();
             epicsMap.clear();
             System.out.println("Эпики и подзадачи удалены.");
-
         } else if (!epicsMap.isEmpty() & subTasksMap.isEmpty()) {
             epicsMap.clear();
             System.out.println("Эпики и подзадачи удалены.");
-
         } else {
             System.out.println("Эпиков нет.");
         }
     }
 
-@Override
+    @Override
     public void deleteTask(Integer taskId) {//удаление задачи по номеру
-
         if (tasksMap.containsKey(taskId)) {
             tasksMap.remove(taskId);
             System.out.println("Задача удалена.");
@@ -277,13 +239,12 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpic(epicDelete);
             System.out.println("Удалена.");
             System.out.println("статус эпика " + epicDelete.getStatus());
-
         } else {
             System.out.println("Такой подзадачи нет.");
         }
     }
 
-@Override
+    @Override
     public void deleteEpic(int epicId) {//удаление эпика и подзадач с ним связанных
         if (!epicsMap.isEmpty() & epicsMap.containsKey(epicId)) {
             Epic epic = getEpicById(epicId);
@@ -292,18 +253,8 @@ public class InMemoryTaskManager implements TaskManager {
                 subTasksMap.remove(idSubTask);
             }
             epicsMap.remove(epicId);
-
         } else {
             System.out.println("Эпика нет.");
         }
     }
-
-    public List<Task> getHistory(){
-
-
-   return  listHistory;
-    }
 }
-
-
-

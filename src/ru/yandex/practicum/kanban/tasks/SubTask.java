@@ -4,7 +4,7 @@ import ru.yandex.practicum.kanban.manager.StatusTask;
 import java.util.Objects;
 
 public class SubTask extends Task {
-    private int epicId;
+    private final int epicId;
 
     public SubTask(String title, String description, StatusTask status, int epicId) {
         super(title, description, status);
@@ -17,7 +17,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "ru.yandex.practicum.kanban.tasks.SubTask{" +
+        return "SubTask{" +
                 "epicId=" + epicId +
                 ", id=" + id +
                 ", title='" + title + '\'' +
@@ -29,11 +29,11 @@ public class SubTask extends Task {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SubTask)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         SubTask subTask = (SubTask) o;
         return epicId == subTask.epicId
-                && Objects.equals(status, subTask.status);
+                && super.equals(subTask);
     }
 
     @Override
