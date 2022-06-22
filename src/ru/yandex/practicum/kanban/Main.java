@@ -234,7 +234,7 @@ public class Main {
                     break;
 
                 case 8:
-                    List<Task> history = manager.getHistoryManager();
+                    List<Task> history = manager.getHistoryManager();// не уверена в правильности
                     for (int i = 0; i <= history.size() - 1; i++) {
                         System.out.println((i + 1) + " " + history.get(i));
 
@@ -249,9 +249,8 @@ public class Main {
                         case 1:
                             System.out.println("введите номер задачи");
                             int taskIdByUpgrade = scanner.nextInt();
-                            Task task = manager.getTaskById(taskIdByUpgrade);
-                            //  historyManager.add(task);
 
+                            Task task = manager.getTaskById(taskIdByUpgrade);
                             System.out.println(task);
                             break;
                         case 2:
@@ -259,8 +258,6 @@ public class Main {
                             int epic = scanner.nextInt();
 
                             Epic printEpic = manager.getEpicById(epic);
-                            //  historyManager.add(printEpic);
-
                             System.out.println(printEpic);
                             break;
                         case 3:
@@ -269,8 +266,6 @@ public class Main {
                             int subTask = scanner.nextInt();
 
                             SubTask printSubTask = manager.getSubTaskById(subTask);
-                            //   historyManager.add(printSubTask);
-
                             System.out.println(printSubTask);
                             break;
                         default:

@@ -17,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public List<Task> getHistoryManager() {
+    public List<Task> getHistoryManager() { //какие-то костыли, как сразу в main вызвать?
         return historyManager.getHistory();
     }
 
