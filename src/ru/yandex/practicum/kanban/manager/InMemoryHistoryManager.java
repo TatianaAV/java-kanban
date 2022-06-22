@@ -4,6 +4,7 @@ import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -16,7 +17,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (task != null) {
+        if (!Objects.isNull(task)) {
             if (listHistory.size() == 10) {
                 listHistory.remove(0);
             }

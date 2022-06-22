@@ -1,9 +1,9 @@
 package ru.yandex.practicum.kanban;
 
 import ru.yandex.practicum.kanban.manager.HistoryManager;
-import ru.yandex.practicum.kanban.manager.InMemoryTaskManager;
 import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.manager.StatusTask;
+import ru.yandex.practicum.kanban.manager.TaskManager;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
@@ -14,8 +14,8 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager manager = (InMemoryTaskManager) Managers.getDefault();
-        HistoryManager historyManager = Managers.getDefaultHistory();
+        TaskManager manager = Managers.getDefault();
+  //      HistoryManager historyManager = Managers.getDefaultHistory();
         Scanner scanner = new Scanner(System.in);
         Scanner in = new Scanner(System.in);
         Task task1 = new Task("Выучить Java", "Заниматься каждый день");
@@ -205,7 +205,7 @@ public class Main {
 
                             SubTask changeSubTask = manager.getSubTaskById(subTaskIdByUpgrade);
                             if (changeSubTask != null) {
-                                System.out.println("Выберете статус для задачи. 1 - NEW.\n 2 - IN_PROGRESS.\n 3 - DONE.");
+                                System.out.println("Выберете статус для задачи.\n 1 - NEW.\n 2 - IN_PROGRESS.\n 3 - DONE.");
                                 int status2 = scanner.nextInt();
 
                                 if (status2 == 1) {
@@ -236,7 +236,7 @@ public class Main {
                     break;
 
                 case 8:
-                    List<Task> history = historyManager.getHistory();
+                    List<Task> history = manager.getHistoryManager();
                     for (int i = 0; i <= history.size() - 1; i++) {
                         System.out.println((i + 1) + " " + history.get(i));
 
@@ -251,9 +251,9 @@ public class Main {
                         case 1:
                             System.out.println("введите номер задачи");
                             int taskIdByUpgrade = scanner.nextInt();
-
                             Task task = manager.getTaskById(taskIdByUpgrade);
-                            historyManager.add(task);
+                          //  historyManager.add(task);
+
                             System.out.println(task);
                             break;
                         case 2:
@@ -261,7 +261,8 @@ public class Main {
                             int epic = scanner.nextInt();
 
                             Epic printEpic = manager.getEpicById(epic);
-                            historyManager.add(printEpic);
+                          //  historyManager.add(printEpic);
+
                             System.out.println(printEpic);
                             break;
                         case 3:
@@ -270,7 +271,8 @@ public class Main {
                             int subTask = scanner.nextInt();
 
                             SubTask printSubTask = manager.getSubTaskById(subTask);
-                            historyManager.add(printSubTask);
+                         //   historyManager.add(printSubTask);
+
                             System.out.println(printSubTask);
                             break;
                         default:

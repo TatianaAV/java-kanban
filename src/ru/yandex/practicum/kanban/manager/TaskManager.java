@@ -4,7 +4,11 @@ import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface TaskManager {
+
     int addTask(Task task);
 
     Task getTaskById(int id);
@@ -19,6 +23,8 @@ public interface TaskManager {
     StatusTask updateSubTask(SubTask subTask);
     void updateEpic(Epic epic);
 
+    ArrayList<SubTask> getSubTasksByEpic(Integer epicId);
+
     void deleteAllTask();
 
     void deleteAllSubTasks();
@@ -31,4 +37,11 @@ public interface TaskManager {
 
     void deleteEpic(int epicId);
 
+    List<Task> getTasks();
+
+    List<Epic> getEpics();
+
+    List<SubTask> getSubTasks();
+
+    List<Task> getHistoryManager();
 }

@@ -6,20 +6,27 @@ import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasksMap = new HashMap<>();
     private final HashMap<Integer, Epic> epicsMap = new HashMap<>();
     private final HashMap<Integer, SubTask> subTasksMap = new HashMap<>();
 
-
     private int generatedId = 0;
+
+    HistoryManager historyManager = Managers.getDefaultHistory();
+
+    public List<Task> getHistoryManager() {
+        return historyManager.getHistory();
+    }
 
     public int generatedId() {
         ++generatedId;
         return generatedId;
     }
-@Override
+
+    @Override
     public int addTask(Task task) {
         int id = generatedId();
         task.setId(id);
@@ -47,21 +54,16 @@ public class InMemoryTaskManager implements TaskManager {
         return id;
     }
 
-   /* @Override
-    public void addTask(Task task) {//добавление задачи в таблицу
-        int id = generatedId();
-        task.setStatus(StatusTask.NEW);
-        task.setId(id);
-        tasksMap.put(id, task);
-
-    }*/
-
     @Override
     public Task getTaskById(int id) {//задача из таблицы по идентификатору
         if (!tasksMap.containsKey(id)) {
             return null;
+        } else {
+            Task task = tasksMap.get(id);
+            historyManager.add(task);// я вообще не понимаю, почему это должно использоваться здесь? должны же считать количество вызовов
+            // из меню, так как этот метод используется не только для просмотра задач, но и в других методах
+            return task;
         }
-        return tasksMap.get(id);
     }
 
     public ArrayList<Integer> getSubTaskIds(Epic epic) {//список подзадач из эпика
@@ -72,38 +74,25 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpicById(int id) {//эпик из таблицы по номеру
         if (!epicsMap.containsKey(id)) {
             return null;
+        } else {
+            Epic task = epicsMap.get(id);//как правильно? так?
+            historyManager.add(task);
+
+            return task;
         }
-        return epicsMap.get(id);
     }
 
 
     @Override
-    public SubTask getSubTaskById(int subTaskId) {//подзадача из таблицы
-        if (!subTasksMap.containsKey(subTaskId)) {
+    public SubTask getSubTaskById(int id) {//подзадача из таблицы
+        if (!subTasksMap.containsKey(id)) {
             return null;
+        } else {
+            historyManager.add(subTasksMap.get(id));// или так?
+            return subTasksMap.get(id);
         }
-        return subTasksMap.get(subTaskId);
     }
 
-  /*  @Override
-    public int addEpic(Epic epic) {//добавление эпика в таблицу
-        int epicId = generatedId();
-        epic.setId(epicId);
-        epicsMap.put(epicId, epic);
-        epic.setSubTaskIds(new ArrayList<>());
-        return epicId;
-    }
-
-    @Override
-    public void addSubTask(SubTask subTask) {// добавить подзадачу в таблицу
-        int subTaskId = generatedId();
-        subTask.setId(subTaskId);
-        Epic epic = getEpicById(subTask.getEpicId());
-        getSubTaskIds(epic).add(subTaskId);
-        subTasksMap.put(subTaskId, subTask);
-        updateEpic(epic);
-    }
-*/
     @Override
     public void updateTask(Task task) {
         tasksMap.put(task.getId(), task);
@@ -159,6 +148,7 @@ public class InMemoryTaskManager implements TaskManager {
         return epic.getStatus();
     }
 
+    @Override
     public ArrayList<Task> getTasks() {//получение списка задач
         if (tasksMap.isEmpty()) {
             System.out.println("Задач нет");
@@ -168,6 +158,7 @@ public class InMemoryTaskManager implements TaskManager {
         return allTasks;
     }
 
+    @Override
     public ArrayList<Epic> getEpics() {//получение списка эпиков
         if (epicsMap.isEmpty()) {
             System.out.println("Эпиков нет");
@@ -177,6 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
         return allEpics;
     }
 
+    @Override
     public ArrayList<SubTask> getSubTasks() {//получение списка всех подзадач
         if (subTasksMap.isEmpty()) {
             System.out.println("Подзадач нет");
@@ -186,6 +178,8 @@ public class InMemoryTaskManager implements TaskManager {
         return allSubTasks;
     }
 
+
+    @Override
     public ArrayList<SubTask> getSubTasksByEpic(Integer epicId) {//получение списка подзадач эпика
         ArrayList<SubTask> listSubTask = new ArrayList<>();
         if (subTasksMap.isEmpty()) {
