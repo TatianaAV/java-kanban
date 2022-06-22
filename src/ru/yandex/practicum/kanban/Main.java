@@ -1,6 +1,5 @@
 package ru.yandex.practicum.kanban;
 
-import ru.yandex.practicum.kanban.manager.HistoryManager;
 import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.manager.StatusTask;
 import ru.yandex.practicum.kanban.manager.TaskManager;
@@ -15,7 +14,6 @@ public class Main {
 
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();
-  //      HistoryManager historyManager = Managers.getDefaultHistory();
         Scanner scanner = new Scanner(System.in);
         Scanner in = new Scanner(System.in);
         Task task1 = new Task("Выучить Java", "Заниматься каждый день");
@@ -252,7 +250,7 @@ public class Main {
                             System.out.println("введите номер задачи");
                             int taskIdByUpgrade = scanner.nextInt();
                             Task task = manager.getTaskById(taskIdByUpgrade);
-                          //  historyManager.add(task);
+                            //  historyManager.add(task);
 
                             System.out.println(task);
                             break;
@@ -261,7 +259,7 @@ public class Main {
                             int epic = scanner.nextInt();
 
                             Epic printEpic = manager.getEpicById(epic);
-                          //  historyManager.add(printEpic);
+                            //  historyManager.add(printEpic);
 
                             System.out.println(printEpic);
                             break;
@@ -271,7 +269,7 @@ public class Main {
                             int subTask = scanner.nextInt();
 
                             SubTask printSubTask = manager.getSubTaskById(subTask);
-                         //   historyManager.add(printSubTask);
+                            //   historyManager.add(printSubTask);
 
                             System.out.println(printSubTask);
                             break;
