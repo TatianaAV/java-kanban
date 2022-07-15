@@ -16,23 +16,6 @@ public class Main {
         TaskManager manager = Managers.getDefault();
         Scanner scanner = new Scanner(System.in);
         Scanner in = new Scanner(System.in);
-        Task task1 = new Task("Выучить Java", "Заниматься каждый день");
-        manager.addTask(task1);
-
-        Epic epic2 = new Epic("Эпик с ID2", "Описание 2", StatusTask.NEW, null);//создаем эпик
-        int epicId2 = manager.addTask(epic2);//получаем номер эпика
-
-        SubTask subTask3 = new SubTask("Подзадача 3", " Описание 3", StatusTask.NEW, epicId2);//создаем подзадачу для эпика 2
-        SubTask subTask4 = new SubTask("Подзадача 4", " Описание 4", StatusTask.NEW, epicId2);
-        manager.addTask(subTask3);//добавляем в таблицу подзадач и получаем номер
-        manager.addTask(subTask4);
-
-
-        Epic epic5 = new Epic("Название 5", "Описание 5", StatusTask.NEW, null);//создаем эпик 5
-        int epicId5 = manager.addTask(epic5);//получаем номер для подзадачи
-
-        SubTask subTask6 = new SubTask("Подзадача 6", " Описание 6", StatusTask.NEW, epicId5);//создаем подзадачу
-        manager.addTask(subTask6);// записываем в таблицу
 
         exit:
         while (true) {
@@ -234,7 +217,7 @@ public class Main {
                     break;
 
                 case 8:
-                    List<Task> history = manager.getHistoryManager();// не уверена в правильности
+                    List<Task> history = manager.getHistoryManager();
                     for (int i = 0; i <= history.size() - 1; i++) {
                         System.out.println((i + 1) + " " + history.get(i));
 
@@ -273,6 +256,86 @@ public class Main {
                     }
                     break;
 
+                case 10:
+                    System.out.println("Создание задач");
+
+                    Task task1 = new Task("Задача 1", "Описание задачи 1");
+                    Task task2 = new Task("Задача 2", "Описание задачи 2");
+                    manager.addTask(task1);
+                    manager.addTask(task2);
+
+                    Epic epic3 = new Epic("Название эпика 3", "Описание 3", StatusTask.NEW, null);//создаем эпик
+                    int epicId3 = manager.addTask(epic3);//получаем номер эпика
+
+                    SubTask subTask4 = new SubTask("Подзадача 4", " Описание подзадачи 4", StatusTask.NEW, epicId3);
+                    SubTask subTask5 = new SubTask("Подзадача 5", " Описание подзадачи 5", StatusTask.NEW, epicId3);
+                    SubTask subTask6 = new SubTask("Подзадача 6", " Описание подзадачи 6", StatusTask.NEW, epicId3);
+                    manager.addTask(subTask4);//добавляем в таблицу подзадач и получаем номер
+                    manager.addTask(subTask5);
+                    manager.addTask(subTask6);
+
+
+                    Epic epic7 = new Epic("Название эпика 7", "Описание 7", StatusTask.NEW, null);//создаем эпик 5
+                    manager.addTask(epic7);
+
+                    System.out.println("Печать всех Задач");
+
+                    System.out.println(manager.getTasks());
+                    System.out.println(manager.getEpics());
+                    System.out.println(manager.getSubTasks());
+
+                    System.out.println("Просмотр задач по номеру 1 - 2 - 1");
+
+                    System.out.println(manager.getTaskById(1));
+                    System.out.println(manager.getTaskById(2));
+                    System.out.println(manager.getTaskById(1));
+
+                    System.out.println("История просмотра");
+                    System.out.println(manager.getHistoryManager());
+
+                    System.out.println("Просмотр задач по номеру 3- 7 -7");
+                    manager.getEpicById(3);
+                    manager.getEpicById(7);
+                    manager.getEpicById(7);
+
+                    System.out.println("История просмотра");
+                    System.out.println(manager.getHistoryManager());
+
+                    System.out.println("Просмотр задач по номеру 4 5 6 4 5");
+                    System.out.println(manager.getSubTaskById(4));
+                    System.out.println(manager.getSubTaskById(5));
+                    System.out.println(manager.getSubTaskById(6));
+                    System.out.println(manager.getSubTaskById(7));//null
+                    System.out.println(manager.getSubTaskById(8));//null
+                    System.out.println(manager.getSubTaskById(4));
+                    System.out.println(manager.getSubTaskById(5));
+
+                    System.out.println("История просмотра");
+                    System.out.println(manager.getHistoryManager());
+
+                    System.out.println("Удаление задач по номеру 1 5 3");
+                    manager.deleteTask(1);
+
+                    System.out.println("История просмотра");
+                    System.out.println(manager.getHistoryManager());
+
+                    manager.deleteSubTask(5);
+
+                    System.out.println("История просмотра");
+                    System.out.println(manager.getHistoryManager());
+
+                    manager.deleteEpic(3);
+
+                    System.out.println("История просмотра");
+                    System.out.println(manager.getHistoryManager());
+
+                    System.out.println("Все задачи");
+                    System.out.println(manager.getTasks());
+                    System.out.println(manager.getEpics());
+                    System.out.println(manager.getSubTasks());
+
+                    break;
+
                 case 0:
                     break exit;
 
@@ -297,6 +360,7 @@ public class Main {
         System.out.println("7 – Обновить задачи.");
         System.out.println("8 – История просмотра.");
         System.out.println("9 – Получить задачу по номеру.");
+        System.out.println("10 – ТЕСТ.");
         System.out.println("0 – Выход.");
 
     }

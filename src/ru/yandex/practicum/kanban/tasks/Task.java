@@ -38,12 +38,12 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "Task {" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
-                '}';
+                '}' + "\n";
     }
 
     public int getId() {

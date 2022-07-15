@@ -23,13 +23,13 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "subTaskIds=" + subTaskIds +
+        return "Epic {" +
                 ", id=" + id +
+                "subTaskIds=" + subTaskIds +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +
-                '}';
+                '}' + "\n";
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         Epic epic = (Epic) o;
         return super.equals(epic)
-                && Objects.equals(subTaskIds, epic.subTaskIds);// первый всегда super?
+                && Objects.equals(subTaskIds, epic.subTaskIds);
     }
 
     @Override
