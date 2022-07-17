@@ -9,6 +9,12 @@ import java.util.List;
 
 public interface TaskManager {
 
+
+
+    int addTask(Epic epic);
+
+    int addTask(SubTask subTask);
+
     int addTask(Task task);
 
     Task getTaskById(int id);

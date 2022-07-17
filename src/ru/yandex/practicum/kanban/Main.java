@@ -314,17 +314,20 @@ public class Main {
                     System.out.println(manager.getHistoryManager());
 
                     System.out.println("Удаление задач по номеру 1 5 3");
-                    manager.deleteTask(1);
+                    //manager.deleteTask(1);
+                    //manager.deleteAllTask();
 
                     System.out.println("История просмотра");
                     System.out.println(manager.getHistoryManager());
 
-                    manager.deleteSubTask(5);
+                    //manager.deleteSubTask(5);
+                    //manager.deleteAllSubTasks();
 
                     System.out.println("История просмотра");
                     System.out.println(manager.getHistoryManager());
 
-                    manager.deleteEpic(3);
+                    //manager.deleteEpic(3);
+                    manager.deleteAllEpic();
 
                     System.out.println("История просмотра");
                     System.out.println(manager.getHistoryManager());
