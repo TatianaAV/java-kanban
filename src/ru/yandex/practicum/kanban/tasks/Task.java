@@ -6,20 +6,39 @@ import java.util.Objects;
 
 public class Task {
     protected int id;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     protected String title;
     protected String description;
     protected StatusTask status;
+    protected TypeTasks type;
+
 
     public Task(String title, String description, StatusTask status) {
         this.title = title;
         this.description = description;
         this.status = status;
     }
+    public Task(int id,TypeTasks type, String title, StatusTask status, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.type = type;
+    }
 
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
     }
+
 
     public void setId(int id) {
 
@@ -36,14 +55,21 @@ public class Task {
         this.status = status;
     }
 
+    public TypeTasks getType() {
+        return type;
+    }
+    public void setType(TypeTasks type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
-        return "Task {" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                '}' + "\n";
+        return   " id " + id +
+                ", " + type +
+                ", " + status +
+                ", " + title +
+                ", " + description +
+                System.lineSeparator();
     }
 
     public int getId() {
@@ -59,11 +85,13 @@ public class Task {
         return id == task.id
                 && title.equals(task.title)
                 && description.equals(task.description)
-                && status == task.status;
+                && status == task.status
+                && type == task.type;
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, status);
+        return Objects.hash(id, title, description, status, type);
     }
 }

@@ -1,0 +1,9 @@
+id,type,name,status,description,epic
+1,TASK,Сентябрь,NEW,Отправить сына в институт
+5,TASK,Декабрь,NEW,Скоро новый год
+2,EPIC,Октябрь,NEW,Съездить в отпуск,sub task,3,4,
+6,EPIC,Ноябрь,NEW,Так далеко,sub task,
+3,SUBTASK,Отпуск,NEW,Привет кукушечка,epic,2
+4,SUBTASK,Школа,NEW,Репетиторы,epic,2
+
+3,4,5,6,1,2

@@ -264,12 +264,12 @@ public class Main {
                     manager.addTask(task1);
                     manager.addTask(task2);
 
-                    Epic epic3 = new Epic("Название эпика 3", "Описание 3", StatusTask.NEW, null);//создаем эпик
+                    Epic epic3 = new Epic("Название эпика 3", "Описание 3");//создаем эпик
                     int epicId3 = manager.addTask(epic3);//получаем номер эпика
 
-                    SubTask subTask4 = new SubTask("Подзадача 4", " Описание подзадачи 4", StatusTask.NEW, epicId3);
-                    SubTask subTask5 = new SubTask("Подзадача 5", " Описание подзадачи 5", StatusTask.NEW, epicId3);
-                    SubTask subTask6 = new SubTask("Подзадача 6", " Описание подзадачи 6", StatusTask.NEW, epicId3);
+                    SubTask subTask4 = new SubTask("Подзадача 4", " Описание подзадачи 4",  epicId3);
+                    SubTask subTask5 = new SubTask("Подзадача 5", " Описание подзадачи 5",  epicId3);
+                    SubTask subTask6 = new SubTask("Подзадача 6", " Описание подзадачи 6",  epicId3);
                     manager.addTask(subTask4);//добавляем в таблицу подзадач и получаем номер
                     manager.addTask(subTask5);
                     manager.addTask(subTask6);

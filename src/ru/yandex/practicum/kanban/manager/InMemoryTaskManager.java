@@ -3,19 +3,20 @@ package ru.yandex.practicum.kanban.manager;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
+import ru.yandex.practicum.kanban.tasks.TypeTasks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasksMap = new HashMap<>();
-    private final HashMap<Integer, Epic> epicsMap = new HashMap<>();
-    private final HashMap<Integer, SubTask> subTasksMap = new HashMap<>();
+    protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
+    protected final HashMap<Integer, Epic> epicsMap = new HashMap<>();
+    protected final HashMap<Integer, SubTask> subTasksMap = new HashMap<>();
 
-    private int generatedId = 0;
+    protected int generatedId = 0;
 
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public List<Task> getHistoryManager() {
         return historyManager.getHistory();
@@ -30,6 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
     public int addTask(Epic epic) {
         int id = generatedId();
         epic.setId(id);
+        epic.setType(TypeTasks.EPIC);
         epic.setStatus(StatusTask.NEW);
         epicsMap.put(id, epic);
         epic.setSubTaskIds(new ArrayList<>());
@@ -40,6 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     public int addTask(SubTask subTask) {
         int id = generatedId();
         subTask.setId(id);
+        subTask.setType(TypeTasks.SUBTASK);
         subTask.setStatus(StatusTask.NEW);
         subTasksMap.put(id, subTask);
         Epic epic = epicsMap.get(subTask.getEpicId());
@@ -52,7 +55,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addTask(Task task) {
         int id = generatedId();
+        task.setId(id);
         task.setStatus(StatusTask.NEW);
+        task.setType(TypeTasks.TASK);
         task.setId(id);
         tasksMap.put(id, task);
         return id;
@@ -292,9 +297,8 @@ public class InMemoryTaskManager implements TaskManager {
 
             }
             epicsMap.remove(epicId);
-            System.out.println("Эпик " + epicId + " удален.");
-
             historyManager.remove(epicId);
+            System.out.println("Эпик " + epicId + " удален.");
 
         } else {
             System.out.println("Эпика " + epicId + " нет.");

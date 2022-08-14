@@ -85,14 +85,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         private Node next;
 
 
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "prev=" + prev +
-                    ", task=" + task +
-                    ", next=" + next +
-                    '}';
-        }
 
         public Node(Node prev, Task task, Node next) {
             this.prev = prev;
