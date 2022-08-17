@@ -32,16 +32,16 @@ public class CSVFormatter {
 
         switch (type) {
             case TASK:
-                return new Task(id, type, title, status, description);
+                return new Task(id, title, status, description);
             case EPIC:
                 ArrayList<Integer> subTasksIds = new ArrayList<>();
                 for (int i = 6; i <= split.length - 1; i++) {
                     subTasksIds.add(Integer.parseInt(split[i]));
                 }
-                return new Epic(id, type, title, status, description, subTasksIds);
+                return new Epic(id, title, status, description, subTasksIds);
             case SUBTASK:
                 int epicId = Integer.parseInt(split[6]);
-                return new SubTask(id, type, title, status, description, epicId);
+                return new SubTask(id, title, status, description, epicId);
 
         }
         return null;

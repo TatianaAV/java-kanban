@@ -26,12 +26,12 @@ public class Task {
         this.description = description;
         this.status = status;
     }
-    public Task(int id,TypeTasks type, String title, StatusTask status, String description) {
+    public Task(int id, String title, StatusTask status, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
-        this.type = type;
+        this.type = type.TASK;
     }
 
     public Task(String title, String description) {

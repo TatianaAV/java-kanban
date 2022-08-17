@@ -111,12 +111,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return id;
     }
 
-    @Override
+    /*@Override
     public List<Task> getHistoryManager() {
         var historyList = super.getHistoryManager();
         save();
         return historyList;
-    }
+    }*/
 
     @Override
     public Task getTaskById(int id) {
@@ -165,33 +165,33 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return subTask;
     }
 
-    @Override
+   /* @Override
     public ArrayList<SubTask> getSubTasks() {
         var subTasks = super.getSubTasks();
         save();
         return subTasks;
     }
-
-    @Override
+*/
+  /*  @Override
     public ArrayList<Task> getTasks() {
         var tasks = super.getTasks();
         save();
         return tasks;
     }
-
-    @Override
-    public ArrayList<Epic> getEpics() {
+*/
+   /* @Override
+   public ArrayList<Epic> getEpics() {
         var epics = super.getEpics();
         save();
         return epics;
-    }
+    }*/
 
-    @Override
+   /* @Override
     public ArrayList<SubTask> getSubTasksByEpic(Integer epicId) {
         var subTasks = super.getSubTasksByEpic(epicId);
         save();
         return subTasks;
-    }
+    }*/
 
     @Override
     public void deleteAllTask() {
