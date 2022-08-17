@@ -36,7 +36,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             fileWriter.write(System.lineSeparator());
             fileWriter.write(CSVFormatter.historyToString(historyManager));
 
-
         } catch (IOException e) {
             System.out.println("Произошла ошибка чтения файла.");
         }
@@ -63,6 +62,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                                 break;
                             case SUBTASK:
                                 tasksManager.subTasksMap.put(id, (SubTask) task);
+                                tasksManager.updateSubTask((SubTask) task);
 
                         }
                     }
@@ -82,13 +82,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     break;
                 }
             }
-
-
         } catch (IOException e) {
             throw new FileNotFoundException("Ошибка чтения файла");
         }
     }
-
 
     @Override
     public int addTask(Task task) {
@@ -110,13 +107,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
         return id;
     }
-
-    /*@Override
-    public List<Task> getHistoryManager() {
-        var historyList = super.getHistoryManager();
-        save();
-        return historyList;
-    }*/
 
     @Override
     public Task getTaskById(int id) {
@@ -164,34 +154,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
         return subTask;
     }
-
-   /* @Override
-    public ArrayList<SubTask> getSubTasks() {
-        var subTasks = super.getSubTasks();
-        save();
-        return subTasks;
-    }
-*/
-  /*  @Override
-    public ArrayList<Task> getTasks() {
-        var tasks = super.getTasks();
-        save();
-        return tasks;
-    }
-*/
-   /* @Override
-   public ArrayList<Epic> getEpics() {
-        var epics = super.getEpics();
-        save();
-        return epics;
-    }*/
-
-   /* @Override
-    public ArrayList<SubTask> getSubTasksByEpic(Integer epicId) {
-        var subTasks = super.getSubTasksByEpic(epicId);
-        save();
-        return subTasks;
-    }*/
 
     @Override
     public void deleteAllTask() {
@@ -273,21 +235,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println("Чтение из файла: 2 " + "\n");
 
         read(file, tasksManager);
-        for (Task task : tasksManager.getTasks()) {
-            System.out.println(CSVFormatter.toString(task));
-        }
-        for (Epic epic : tasksManager.getEpics()) {
-            System.out.println(CSVFormatter.toString(epic));
-        }
-        for (SubTask subTask : tasksManager.getSubTasks()) {
-            System.out.println(CSVFormatter.toString(subTask));
-        }
-        System.out.println();
+        tasksManager.getTasks().forEach(System.out::println);
+        /*for (Task task : tasksManager.getTasks()) {
+            System.out.println(task);
+        }*/
+        tasksManager.getEpics().forEach(System.out::println);
+         /*for (Epic epic : tasksManager.getEpics()) {
+            System.out.println(epic);
+        }*/
+        tasksManager.getSubTasks().forEach(System.out::println);
+        /*for (SubTask subTask : tasksManager.getSubTasks()) {
+            System.out.println(subTask);
+        }*/
         tasksManager.getTaskById(1);
         tasksManager.getEpicById(2);
-        System.out.println("\n" + "История просмотра после просмотра: 1 2 " + "\n" + CSVFormatter.historyToString(tasksManager.historyManager));
+        System.out.println("\n" + "История просмотра после просмотра: 1 2 " + "\n"
+                + CSVFormatter.historyToString(tasksManager.historyManager));
         return tasksManager;
     }
-
-
 }

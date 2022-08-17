@@ -34,18 +34,16 @@ public class CSVFormatter {
             case TASK:
                 return new Task(id, title, status, description);
             case EPIC:
-                ArrayList<Integer> subTasksIds = new ArrayList<>();
+               /* ArrayList<Integer> subTasksIds = new ArrayList<>();
                 for (int i = 6; i <= split.length - 1; i++) {
                     subTasksIds.add(Integer.parseInt(split[i]));
-                }
-                return new Epic(id, title, status, description, subTasksIds);
+                }*/
+                return new Epic(id, title, status, description);
             case SUBTASK:
                 int epicId = Integer.parseInt(split[6]);
                 return new SubTask(id, title, status, description, epicId);
-
         }
         return null;
-
     }
 
     public static List<Integer> historyFromString(String value) {
@@ -77,8 +75,8 @@ public class CSVFormatter {
                 "," + epic.getType() + // split 1
                 "," + epic.getTitle() +// split 2
                 "," + epic.getStatus() + //split 3
-                "," + epic.getDescription() + //split 4
-                ",sub task," + subTasksIds;//split 6++
+                "," + epic.getDescription(); //split 4
+
     }
 
     public static String toString(SubTask subtask) {// сохранение задачи в строку

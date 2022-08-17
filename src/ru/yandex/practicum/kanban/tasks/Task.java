@@ -31,7 +31,7 @@ public class Task {
         this.title = title;
         this.description = description;
         this.status = status;
-        this.type = type.TASK;
+        this.type = TypeTasks.TASK;
     }
 
     public Task(String title, String description) {
@@ -68,8 +68,7 @@ public class Task {
                 ", " + type +
                 ", " + status +
                 ", " + title +
-                ", " + description +
-                System.lineSeparator();
+                ", " + description ;
     }
 
     public int getId() {
