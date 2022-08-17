@@ -25,13 +25,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try (FileWriter fileWriter = new FileWriter("resources/tasks.csv")) {
             fileWriter.write("id,type,name,status,description,epic" + System.lineSeparator());
             for (Task task : tasksMap.values()) {
-                fileWriter.write(CSVFormatter.toString(task) + System.lineSeparator());
+                fileWriter.write(task.toCSVDescription() + System.lineSeparator());
             }
             for (Epic epic : epicsMap.values()) {
-                fileWriter.write(CSVFormatter.toString(epic) + System.lineSeparator());
+                fileWriter.write(epic.toCSVDescription() + System.lineSeparator());
             }
             for (SubTask subTask : subTasksMap.values()) {
-                fileWriter.write(CSVFormatter.toString(subTask) + System.lineSeparator());
+                fileWriter.write(subTask.toCSVDescription() + System.lineSeparator());
             }
             fileWriter.write(System.lineSeparator());
             fileWriter.write(CSVFormatter.historyToString(historyManager));

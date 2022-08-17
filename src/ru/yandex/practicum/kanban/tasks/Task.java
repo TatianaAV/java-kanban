@@ -75,6 +75,13 @@ public class Task {
 
         return id;
     }
+    public String toCSVDescription(){
+        return id +
+                "," + type +
+                "," + title +
+                "," + status +
+                "," + description ;
+    }
 
     @Override
     public boolean equals(Object o) {
