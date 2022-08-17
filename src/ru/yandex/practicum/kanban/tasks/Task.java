@@ -86,7 +86,6 @@ public class Task {
                 && description.equals(task.description)
                 && status == task.status
                 && type == task.type;
-
     }
 
     @Override
