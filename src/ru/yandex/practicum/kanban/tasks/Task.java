@@ -25,6 +25,7 @@ public class Task {
         this.title = title;
         this.description = description;
         this.status = status;
+        this.type = TypeTasks.TASK;
     }
     public Task(int id, String title, StatusTask status, String description) {
         this.id = id;
@@ -37,6 +38,7 @@ public class Task {
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
+        this.type = TypeTasks.TASK;
     }
 
 
@@ -57,9 +59,6 @@ public class Task {
 
     public TypeTasks getType() {
         return type;
-    }
-    public void setType(TypeTasks type) {
-        this.type = type;
     }
 
     @Override

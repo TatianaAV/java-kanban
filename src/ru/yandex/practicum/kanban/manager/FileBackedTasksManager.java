@@ -41,56 +41,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    protected static void read(File file, FileBackedTasksManager tasksManager) throws FileNotFoundException {
-        try {
-            String csv = Files.readString(file.toPath()); //читает файл
-            if (!csv.isBlank()) {
-                String[] lines = csv.split(System.lineSeparator());
-                for (int i = 1; i < lines.length; i++) {
-                    if (!lines[i].isEmpty()) {
-                        Task task = CSVFormatter.fromString(lines[i]);
-                        int id = 0;
-                        if (task != null) {
-                            id = task.getId();
-                            tasksManager.generatedId = id;
-                            TypeTasks type = task.getType();
-                            switch (type) {
-                                case TASK:
-                                    tasksManager.tasksMap.put(id, task);
-                                    break;
-                                case EPIC:
-                                    tasksManager.epicsMap.put(id, (Epic) task);
-                                    break;
-                                case SUBTASK:
-                                    tasksManager.subTasksMap.put(id, (SubTask) task);
-                                    int epicId = tasksManager.getSubTaskById(id).getEpicId();
-                                    ArrayList<Integer> listIdSubTask = tasksManager.getSubTaskIds(tasksManager.getEpicById(epicId));
-                                    listIdSubTask.add(id);
-                            }
-                        }
-                    } else {
-                        List<Task> historyList = tasksManager.getHistoryManager();
-                        List<Integer> history = CSVFormatter.historyFromString(lines[i + 1]);
-                        for (Integer taskId : history) {
-                            if (tasksManager.tasksMap.containsKey(taskId)) {
-                                historyList.add(tasksManager.getTaskById(taskId));
-                            } else if (tasksManager.epicsMap.containsKey(taskId)) {
-                                historyList.add(tasksManager.getEpicById(taskId));
 
-                            } else if (tasksManager.subTasksMap.containsKey(taskId)) {
-                                historyList.add(tasksManager.getSubTaskById(taskId));
-                            }
-                        }
-                        break;
-                    }
-                }
-            } else {
-                System.out.println("Файл пуст");
-            }
-        } catch(IOException e){
-                throw new ManagerSaveException("Не могу прочитать файл: " + file.getName(), e);
-        }
-    }
 
         @Override
         public int addTask (Task task){
@@ -118,13 +69,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             var task = super.getTaskById(id);
             save();
             return task;
-        }
-
-        @Override
-        public ArrayList<Integer> getSubTaskIds (Epic epic){
-            var subTasks = super.getSubTaskIds(epic);
-            save();
-            return subTasks;
         }
 
         @Override
@@ -196,7 +140,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             save();
         }
 
-        public static FileBackedTasksManager loadFromFile (File file) throws FileNotFoundException {
+        public static void loadFromFile (File file) throws FileNotFoundException {
             System.out.println("Проверка загрузки из файла " + file);
             FileBackedTasksManager tasksManager = new FileBackedTasksManager();
             try {
@@ -214,11 +158,58 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         tasksManager.getSubTaskById(3);
         tasksManager.getSubTaskById(3);
         tasksManager.getSubTaskById(4);
-
         System.out.println("История просмотра после просмотра: 1 3 3 4 " + "\n" + CSVFormatter.historyToString(tasksManager.historyManager));
         System.out.println("Чтение из файла: 1 " + "\n");
 
-                read(file, tasksManager);
+                try {
+                    String csv = Files.readString(file.toPath()); //читает файл
+                    if (!csv.isBlank()) {
+                        String[] lines = csv.split(System.lineSeparator());
+                        for (int i = 1; i < lines.length; i++) {
+                            if (!lines[i].isEmpty()) {
+                                Task task = CSVFormatter.fromString(lines[i]);
+                                int id = 0;
+                                if (task != null) {
+                                    id = task.getId();
+                                    tasksManager.generatedId = id;
+                                    TypeTasks type = task.getType();
+                                    switch (type) {
+                                        case TASK:
+                                            tasksManager.tasksMap.put(id, task);
+                                            break;
+                                        case EPIC:
+                                            tasksManager.epicsMap.put(id, (Epic) task);
+                                            break;
+                                        case SUBTASK:
+                                            tasksManager.subTasksMap.put(id, (SubTask) task);
+                                            int epicId = tasksManager.getSubTaskById(id).getEpicId();
+                                            ArrayList<Integer> listIdSubTask = tasksManager.getSubTaskIds(tasksManager.getEpicById(epicId));
+                                            listIdSubTask.add(id);
+                                    }
+                                }
+                            } else {
+                                List<Task> historyList = tasksManager.getHistoryManager();
+                                List<Integer> history = CSVFormatter.historyFromString(lines[i + 1]);
+                                for (Integer taskId : history) {
+                                    if (tasksManager.tasksMap.containsKey(taskId)) {
+                                        historyList.add(tasksManager.getTaskById(taskId));
+                                    } else if (tasksManager.epicsMap.containsKey(taskId)) {
+                                        historyList.add(tasksManager.getEpicById(taskId));
+
+                                    } else if (tasksManager.subTasksMap.containsKey(taskId)) {
+                                        historyList.add(tasksManager.getSubTaskById(taskId));
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        System.out.println("Файл пуст");
+                    }
+                } catch(IOException e){
+                    throw new ManagerSaveException("Не могу прочитать файл: " + file.getName(), e);
+                }
+
 
         tasksManager.getTasks().forEach(System.out::println);
         tasksManager.getEpics().forEach(System.out::println);
@@ -235,22 +226,69 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         System.out.println("Чтение из файла: 2 " + "\n");
 
-        read(file, tasksManager);
+                FileBackedTasksManager tasksManager2 = new FileBackedTasksManager();
 
-        tasksManager.getTasks().forEach(System.out::println);
-        tasksManager.getEpics().forEach(System.out::println);
-        tasksManager.getSubTasks().forEach(System.out::println);
-        Task task1 = tasksManager.getTaskById(1);
+                try {
+                    String csv = Files.readString(file.toPath()); //читает файл
+                    if (!csv.isBlank()) {
+                        String[] lines = csv.split(System.lineSeparator());
+                        for (int i = 1; i < lines.length; i++) {
+                            if (!lines[i].isEmpty()) {
+                                Task task = CSVFormatter.fromString(lines[i]);
+                                int id = 0;
+                                if (task != null) {
+                                    id = task.getId();
+                                    tasksManager2.generatedId = id;
+                                    TypeTasks type = task.getType();
+                                    switch (type) {
+                                        case TASK:
+                                            tasksManager2.tasksMap.put(id, task);
+                                            break;
+                                        case EPIC:
+                                            tasksManager2.epicsMap.put(id, (Epic) task);
+                                            break;
+                                        case SUBTASK:
+                                            tasksManager2.subTasksMap.put(id, (SubTask) task);
+                                            int epicId = tasksManager.getSubTaskById(id).getEpicId();
+                                            ArrayList<Integer> listIdSubTask = tasksManager.getSubTaskIds(tasksManager.getEpicById(epicId));
+                                            listIdSubTask.add(id);
+                                    }
+                                }
+                            } else {
+                                List<Task> historyList = tasksManager2.getHistoryManager();
+                                List<Integer> history = CSVFormatter.historyFromString(lines[i + 1]);
+                                for (Integer taskId : history) {
+                                    if (tasksManager2.tasksMap.containsKey(taskId)) {
+                                        historyList.add(tasksManager2.getTaskById(taskId));
+                                    } else if (tasksManager2.epicsMap.containsKey(taskId)) {
+                                        historyList.add(tasksManager2.getEpicById(taskId));
+
+                                    } else if (tasksManager2.subTasksMap.containsKey(taskId)) {
+                                        historyList.add(tasksManager2.getSubTaskById(taskId));
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        System.out.println("Файл пуст");
+                    }
+                } catch(IOException e){
+                    throw new ManagerSaveException("Не могу прочитать файл: " + file.getName(), e);
+                }
+        tasksManager2.getTasks().forEach(System.out::println);
+        tasksManager2.getEpics().forEach(System.out::println);
+        tasksManager2.getSubTasks().forEach(System.out::println);
+        Task task1 = tasksManager2.getTaskById(1);
         task1.setStatus(StatusTask.IN_PROGRESS);
         tasksManager.getEpicById(2);
         System.out.println("\n" + "История просмотра после просмотра: 1 2 " + "\n"
                 + CSVFormatter.historyToString(tasksManager.historyManager));
-                tasksManager.getTasks().forEach(System.out::println);
-                tasksManager.getEpics().forEach(System.out::println);
-                tasksManager.getSubTasks().forEach(System.out::println);
+                tasksManager2.getTasks().forEach(System.out::println);
+                tasksManager2.getEpics().forEach(System.out::println);
+                tasksManager2.getSubTasks().forEach(System.out::println);
             } catch (NullPointerException e) {
                 System.out.println("Ошибка " + e);
             }
-            return tasksManager;
         }
 }
