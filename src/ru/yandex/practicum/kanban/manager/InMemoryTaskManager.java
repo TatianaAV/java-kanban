@@ -3,7 +3,6 @@ package ru.yandex.practicum.kanban.manager;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
-import ru.yandex.practicum.kanban.tasks.TypeTasks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +65,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         } else {
             Task task = tasksMap.get(id);
-            historyManager.add(task);
+            historyManager.addHistory(task);
             return task;
         }
     }
@@ -81,7 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         } else {
             Epic task = epicsMap.get(id);
-            historyManager.add(task);
+            historyManager.addHistory(task);
 
             return task;
         }
@@ -93,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
             return null;
         } else {
             SubTask task = subTasksMap.get(id);
-            historyManager.add(task);
+            historyManager.addHistory(task);
             return task;
         }
     }
