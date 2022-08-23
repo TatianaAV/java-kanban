@@ -1,10 +1,5 @@
 id,type,name,status,description,epic
-1,TASK,Сентябрь,IN_PROGRESS,Отправить сына в институт
-6,TASK,Декабрь,NEW,Скоро новый год
-2,EPIC,Октябрь,NEW,Съездить в отпуск
-5,EPIC,Ноябрь,NEW,Скоро новый год!
-7,EPIC,Ноябрь,NEW,Description November Epic 5
-3,SUBTASK,Отпуск,NEW,Привет кукушечка,epic,2
-4,SUBTASK,Школа,NEW,Репетиторы,epic,2
+1,TASK,Заголовок задачи,NEW,Описание задачи
+2,EPIC,Заголовок эпика,NEW,Описание Эпика
+3,SUBTASK,Заголовок подзадачи,NEW, Описание подзадачи,epic,2
 
-3,4,1,2,6,5

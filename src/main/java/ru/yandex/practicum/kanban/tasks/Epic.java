@@ -19,8 +19,6 @@ public class Epic extends Task {
         super(id, title, status, description);
         this.type = TypeTasks.EPIC;
         this.subTaskIds = new ArrayList<>();
-        this.type = TypeTasks.EPIC;
-
     }
 
     public Epic(String title, String description) {

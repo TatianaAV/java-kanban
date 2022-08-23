@@ -1,0 +1,14 @@
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\ManagerSaveException.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\tasks\Task.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\Main.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\Managers.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\InMemoryTaskManager.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\StatusTask.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\tasks\SubTask.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\tasks\TypeTasks.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\HistoryManager.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\CSVFormatter.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\tasks\Epic.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\InMemoryHistoryManager.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\TaskManager.java
+D:\Java\Praktikum\java-kanban\src\main\java\ru\yandex\practicum\kanban\manager\FileBackedTasksManager.java

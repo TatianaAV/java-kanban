@@ -5,16 +5,8 @@ import ru.yandex.practicum.kanban.manager.StatusTask;
 import java.util.Objects;
 
 public class Task {
+
     protected int id;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     protected String title;
     protected String description;
     protected StatusTask status;
@@ -27,6 +19,7 @@ public class Task {
         this.status = status;
         this.type = TypeTasks.TASK;
     }
+
     public Task(int id, String title, StatusTask status, String description) {
         this.id = id;
         this.title = title;
@@ -57,29 +50,37 @@ public class Task {
         this.status = status;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
     public TypeTasks getType() {
         return type;
     }
 
     @Override
     public String toString() {
-        return   " id " + id +
+        return " id " + id +
                 ", " + type +
                 ", " + status +
                 ", " + title +
-                ", " + description ;
+                ", " + description;
     }
 
     public int getId() {
 
         return id;
     }
-    public String toCSVDescription(){
+
+    public String toCSVDescription() {
         return id +
                 "," + type +
                 "," + title +
                 "," + status +
-                "," + description ;
+                "," + description;
     }
 
     @Override

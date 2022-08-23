@@ -11,6 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -113,7 +116,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
         return id;
     }
-
     @Override
     public Task getTaskById(int id) {
         var task = super.getTaskById(id);
@@ -217,8 +219,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                                     break;
                                 case SUBTASK:
                                     tasksManager.subTasksMap.put(id, (SubTask) task);
-                                    int epicId = tasksManager.getSubTaskById(id).getEpicId();
-                                    ArrayList<Integer> listIdSubTask = tasksManager.getSubTaskIds(tasksManager.getEpicById(epicId));
+                                    int epicId = tasksManager.subTasksMap.get(id).getEpicId();
+                                    ArrayList<Integer> listIdSubTask =
+                                            tasksManager.epicsMap.get(epicId).getSubTaskIds();
                                     listIdSubTask.add(id);
                             }
                         }
