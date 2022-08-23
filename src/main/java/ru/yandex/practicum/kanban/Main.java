@@ -134,7 +134,7 @@ public class Main {
                         String title = scanner.nextLine();
                         System.out.println("Введите описание подзадачи:");
                         String descriptionSubTask = scanner.nextLine();
-                        SubTask newSubTask = new SubTask(title, descriptionSubTask, StatusTask.NEW, newEpicId);//создаем подзадачу
+                        SubTask newSubTask = new SubTask(title, descriptionSubTask, newEpicId);//создаем подзадачу
                         manager.addTask(newSubTask);//записываем
                         System.out.println("Создать ещё подзадачу? Y - да/ N - нет");
                         input = in.next();

@@ -4,6 +4,7 @@ import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,6 +145,31 @@ public class InMemoryTaskManager implements TaskManager {
         epicsMap.put(epic.getId(), epic);
     }
 
+    private void updateEpicDurationAndStartTime(int epicId){
+        Epic epic = epicsMap.get(epicId);
+        ArrayList <Integer> subTaskIds = epic.getSubTaskIds();
+        if(subTaskIds.isEmpty()){
+            epic.setDuration(0L);
+            return;
+        }
+        LocalDateTime startEpic = LocalDateTime.MAX;
+        LocalDateTime endEpic = LocalDateTime.MAX;
+        long durationEpic = 0L;
+
+        for (int id : subTaskIds) {
+          SubTask subTask = subTasksMap.get(id);
+          LocalDateTime startTime = subTask.getStartTime();
+          LocalDateTime endTime = subTask.getStartTime();
+          if(startTime.isBefore(startEpic)){
+              startEpic = startTime;
+          }
+          if(endTime.isAfter(endEpic)){
+              endEpic = endTime;
+          }
+          durationEpic += subTask.getDuration();
+                  }
+        epic.setStartTime(startEpic);
+    }
     @Override
     public StatusTask updateSubTask(SubTask subTask) {
         subTasksMap.put(subTask.getId(), subTask);//обновляем подзадачу

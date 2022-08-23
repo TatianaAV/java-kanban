@@ -2,6 +2,7 @@ package ru.yandex.practicum.kanban.tasks;
 
 import ru.yandex.practicum.kanban.manager.StatusTask;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -11,6 +12,18 @@ public class Task {
     protected String description;
     protected StatusTask status;
     protected TypeTasks type;
+    protected long duration;
+    protected LocalDateTime startTime;
+
+    public Task(LocalDateTime startTime, long duration, int id, String title, String description, StatusTask status) {
+        this.startTime = startTime;
+        this.duration = duration;
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.type = TypeTasks.TASK;
+    }
 
 
     public Task(String title, String description, StatusTask status) {
@@ -34,6 +47,21 @@ public class Task {
         this.type = TypeTasks.TASK;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 
     public void setId(int id) {
 
@@ -57,8 +85,13 @@ public class Task {
     public String getDescription() {
         return description;
     }
+
     public TypeTasks getType() {
         return type;
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plusMinutes(duration);
     }
 
     @Override
