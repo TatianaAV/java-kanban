@@ -110,9 +110,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         final Task task1 = taskManager.getTaskById(task.getId());
 
         assertNotNull(task1, "Задача не найдена.");
+
         task1.setStatus(IN_PROGRESS);
+
         assertEquals(task, task1, "Задачи не совпадают.");
+
         task1.setStatus(DONE);
+
         assertEquals(task, task1, "Задачи не совпадают.");
     }
 

@@ -27,7 +27,7 @@ public interface TaskManager {
 
     StatusTask updateSubTask(SubTask subTask);
 
-    void updateEpic(Epic epic);
+    void updateEpicStatus (Epic epic);
 
     ArrayList<SubTask> getSubTasksByEpic(Integer epicId);
 
@@ -44,6 +44,7 @@ public interface TaskManager {
     void deleteEpic(int epicId);
 
     List<Task> getTasks();
+    List<Task> getPrioritizedTasks();
 
     List<Epic> getEpics();
 

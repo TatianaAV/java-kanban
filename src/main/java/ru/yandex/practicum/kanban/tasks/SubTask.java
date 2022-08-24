@@ -2,14 +2,15 @@ package ru.yandex.practicum.kanban.tasks;
 
 import ru.yandex.practicum.kanban.manager.StatusTask;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SubTask extends Task {
     private final int epicId;
 
-    public SubTask(LocalDateTime startTime, long duration, int id, String title, String description, StatusTask status, int epicId) {
-        super(startTime, duration, id, title, description, status);
+    public SubTask(LocalDateTime startTime, Duration duration, int id, String title, String description, StatusTask status, int epicId) {
+        super(startTime, duration, title, description);
         this.epicId = epicId;
         this.type = TypeTasks.SUBTASK;
     }
@@ -36,6 +37,7 @@ public class SubTask extends Task {
     public int getEpicId() {
         return epicId;
     }
+
 
     @Override
     public String toString() {

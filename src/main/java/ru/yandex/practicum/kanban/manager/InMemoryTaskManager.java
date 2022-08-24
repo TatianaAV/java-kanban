@@ -4,15 +4,16 @@ import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
+import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
     protected final HashMap<Integer, Epic> epicsMap = new HashMap<>();
     protected final HashMap<Integer, SubTask> subTasksMap = new HashMap<>();
+    protected TreeSet<Task> priorityTask = new TreeSet<>(Comparator.comparing(task -> task.getStartTime()));
 
     protected int generatedId = 0;
 
@@ -45,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasksMap.put(id, subTask);
         Epic epic = epicsMap.get(subTask.getEpicId());
         getSubTaskIds(epic).add(id);
-        updateEpic(epic);
+        updateEpicStatus(epic);
 
         return id;
     }
@@ -56,12 +57,22 @@ public class InMemoryTaskManager implements TaskManager {
         task.setId(id);
         task.setStatus(StatusTask.NEW);
         task.setId(id);
+        try {
+            validateTaskInTime(task.getStartTime(), task.getDuration());
+        } catch (IOException e) {
+            try {
+                throw new InvalidTimeException( "Задача пересекается по времени");
+            } catch (InvalidTimeException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        }
         tasksMap.put(id, task);
         return id;
     }
 
     @Override
-    public Task getTaskById(int id) {//задача из таблицы по идентификатору
+    public Task getTaskById(int id) {//задача из таблицы сохраняется в истории просмотра
         if (!tasksMap.containsKey(id)) {
             return null;
         } else {
@@ -76,7 +87,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic getEpicById(int id) {//эпик из таблицы по номеру
+    public Epic getEpicById(int id) {//эпик из таблицы по номеру сохраняется в истории просмотра
         if (!epicsMap.containsKey(id)) {
             return null;
         } else {
@@ -88,7 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public SubTask getSubTaskById(int id) {//подзадача из таблицы
+    public SubTask getSubTaskById(int id) {//подзадача из таблицы сохраняется в истории просмотра
         if (!subTasksMap.containsKey(id)) {
             return null;
         } else {
@@ -104,7 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpic(Epic epic) {
+    public void updateEpicStatus(Epic epic) {
         ArrayList<Integer> changeEpic = getSubTaskIds(epic);
         if (!changeEpic.isEmpty()) {
             int countNew = 0;
@@ -145,38 +156,123 @@ public class InMemoryTaskManager implements TaskManager {
         epicsMap.put(epic.getId(), epic);
     }
 
-    private void updateEpicDurationAndStartTime(int epicId){
+    private void updateEpicDurationAndStartTime(int epicId) {
         Epic epic = epicsMap.get(epicId);
-        ArrayList <Integer> subTaskIds = epic.getSubTaskIds();
-        if(subTaskIds.isEmpty()){
-            epic.setDuration(0L);
+        ArrayList<Integer> subTaskIds = epic.getSubTaskIds();
+        if (subTaskIds.isEmpty()) {
+            epic.setDuration(Duration.ofMinutes(0));
             return;
         }
         LocalDateTime startEpic = LocalDateTime.MAX;
-        LocalDateTime endEpic = LocalDateTime.MAX;
-        long durationEpic = 0L;
+        LocalDateTime endEpic = LocalDateTime.MIN;
+        Duration durationEpic = Duration.ofDays(0);
 
         for (int id : subTaskIds) {
-          SubTask subTask = subTasksMap.get(id);
-          LocalDateTime startTime = subTask.getStartTime();
-          LocalDateTime endTime = subTask.getStartTime();
-          if(startTime.isBefore(startEpic)){
-              startEpic = startTime;
-          }
-          if(endTime.isAfter(endEpic)){
-              endEpic = endTime;
-          }
-          durationEpic += subTask.getDuration();
-                  }
+            SubTask subTask = subTasksMap.get(id);
+            LocalDateTime startTime = subTask.getStartTime();
+            LocalDateTime endTime = subTask.getEndTime();
+            if (startTime.isBefore(startEpic)) {
+                startEpic = startTime;
+            }
+            if (startTime == null & endTime == null) {
+                epic.setStartTime(startEpic);
+                epic.setDuration(durationEpic);
+                return;
+            }
+            if (endTime.isAfter(endEpic)) {
+                endEpic = endTime;
+            }
+            durationEpic.plus(subTask.getDuration());
+        }
         epic.setStartTime(startEpic);
+        epic.setDuration(durationEpic);
     }
+
     @Override
     public StatusTask updateSubTask(SubTask subTask) {
-        subTasksMap.put(subTask.getId(), subTask);//обновляем подзадачу
-        Epic epic = getEpicById(subTask.getEpicId());
-        updateEpic(epic);
+        final int id = subTask.getId();
+        subTasksMap.put(id, subTask);//обновляем подзадачу
+        Epic epic = epicsMap.get(subTask.getEpicId());
+        updateEpicStatus(epic);
+        updateEpicDurationAndStartTime(epic.getId());
         return epic.getStatus();
     }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {//Отсортируйте все задачи по приоритету —
+        // то есть по startTime. Если дата старта не задана, добавьте задачу в конец списка задач,
+        // подзадач, отсортированных по startTime. Напишите новый метод getPrioritizedTasks,
+        // возвращающий список задач и подзадач в заданном порядке.
+        for (Task task : tasksMap.values()) {
+            if (task.getStartTime() != null) {
+                priorityTask.add(task);
+            }
+        }
+        for (SubTask subTask : subTasksMap.values()) {
+            if (subTask.getStartTime() != null) {
+                priorityTask.add(subTask);
+            }
+        }
+        List<Task> list = new ArrayList<Task>(priorityTask);
+        for (SubTask subTask : subTasksMap.values()) {
+            if (subTask.getStartTime() == null) {
+                list.add(subTask);
+            }
+        }
+        for (Task task1 : tasksMap.values()) {
+            if (task1.getStartTime() == null) {
+                list.add(task1);
+            }
+        }
+        return list;
+    }
+
+    public void validateTaskInTime(LocalDateTime startTime, Duration duration) throws InvalidTimeException {
+    /*Проверьте пересечения
+    Предполагается, что пользователь будет выполнять не более одной задачи за раз.
+    Научите трекер проверять, что задачи и подзадачи не пересекаются по времени выполнения.
+    Добавьте валидацию во время создания или изменения задач, подзадач.
+    Подсказка: как искать пересечения за O(n)
+    getPrioritizedTasks возвращает отсортированный список задач.
+    По нему можно пройтись за O(n) и проверить все задачи на пересечение.
+            Дополнительное задание*
+            А теперь необязательное задание для тех, кто хочет бросить себе вызов!
+             Подумайте, какая структура данных и какой алгоритм проверки подойдут,
+              чтобы уменьшить сложность поиска пересечений до O(1).
+*/
+        if (startTime != null && duration != null) {
+            LocalDateTime endTime = startTime.plus(duration);
+
+            for (Task task : tasksMap.values()) {
+                if (task.getStartTime() != null) {
+                    priorityTask.add(task);
+                }
+            }
+            for (Epic epic : epicsMap.values()) {
+                if (epic.getStartTime() != null) {
+                    priorityTask.add(epic);
+                }
+            }
+            if (priorityTask.isEmpty()) {
+                return;
+            } else if (!priorityTask.isEmpty()) {
+                LocalDateTime startFirstTask = priorityTask.first().getStartTime();
+                LocalDateTime ednFirstTask = priorityTask.first().getEndTime();
+                LocalDateTime startLastTask = priorityTask.last().getStartTime();
+                LocalDateTime ednLastTask = priorityTask.last().getEndTime();
+                if (startTime.isBefore(startFirstTask) && endTime.isBefore(ednFirstTask)) {
+                    return;
+                }
+                if (startTime.isBefore(startLastTask) && endTime.isBefore(ednLastTask)) {
+                    return;
+                } else if (startTime.isAfter(ednFirstTask) && endTime.isAfter(ednFirstTask)) {
+                    return;
+                }
+                throw new InvalidTimeException();
+            }
+        } else return;
+    }
+
 
     @Override
     public ArrayList<Task> getTasks() {//получение списка задач
@@ -242,7 +338,7 @@ public class InMemoryTaskManager implements TaskManager {
                 }
                 subTaskDelete.clear();
                 epicDelete.setSubTaskIds(subTaskDelete);
-                updateEpic(epicDelete);//обновление эпика
+                updateEpicStatus(epicDelete);//обновление эпика
             }
             subTasksMap.clear();
         }
@@ -282,7 +378,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicDelete.setSubTaskIds(subTaskDeleteNumber);//перезаписываем измененный список
             subTasksMap.remove(subTaskId);
             historyManager.remove(subTaskId);
-            updateEpic(epicDelete);
+            updateEpicStatus(epicDelete);
         }
     }
 

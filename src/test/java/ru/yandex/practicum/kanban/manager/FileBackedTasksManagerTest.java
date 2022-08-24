@@ -1,10 +1,6 @@
 package ru.yandex.practicum.kanban.manager;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.api.*;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
@@ -12,7 +8,8 @@ import ru.yandex.practicum.kanban.tasks.Task;
 import java.io.File;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
@@ -63,13 +60,14 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Disabled
     @Test
-    public void shouldtrowException() {
-        assertThrows(ManagerSaveException.class, new Executable() {
-                    @Override
-                    public void execute() {
-                        FileBackedTasksManager.loadFromFile(file);
-                    }
-                }
-        );
+    void testExpectedException() {
+        ManagerSaveException exception =
+                Assertions.assertThrows(
+                        ManagerSaveException.class, () -> {
+                            file = new File("resources/tasks1.csv");
+                            FileBackedTasksManager.loadFromFile(file);
+                        });
+        Assertions.assertNotNull(exception.getMessage());
+        Assertions.assertFalse(exception.getMessage().isBlank());
     }
 }

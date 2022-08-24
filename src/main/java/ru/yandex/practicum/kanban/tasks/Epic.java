@@ -2,6 +2,7 @@ package ru.yandex.practicum.kanban.tasks;
 
 import ru.yandex.practicum.kanban.manager.StatusTask;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,11 +14,10 @@ public class Epic extends Task {
         super(title, description, status);
         this.subTaskIds = subTaskIds;
         this.type = TypeTasks.EPIC;
-
     }
 
-    public Epic(LocalDateTime startTime, long duration, int id, String title, StatusTask status, String description) {
-        super(startTime, duration, id, title, description, status);
+    public Epic(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description) {
+        super(startTime, duration, title, description);
         this.type = TypeTasks.EPIC;
         this.subTaskIds = new ArrayList<>();
     }
@@ -37,6 +37,10 @@ public class Epic extends Task {
 
     public ArrayList<Integer> getSubTaskIds() {
         return subTaskIds;
+    }
+
+    public LocalDateTime getEndTime(LocalDateTime endTime) {
+        return endTime;
     }
 
     public void setSubTaskIds(ArrayList<Integer> subTaskIds) {

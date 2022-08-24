@@ -11,9 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -22,7 +19,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         FileBackedTasksManager tasksManager = new FileBackedTasksManager();
 
         try {
-            System.out.println("Создание задач 1 ");
+            /*System.out.println("Создание задач 1 ");
             tasksManager.addTask(new Task("Сентябрь", "Отправить сына в институт"));
             Epic epic2 = new Epic("Октябрь", "Съездить в отпуск");
             tasksManager.addTask(epic2);
@@ -36,11 +33,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             tasksManager.getSubTaskById(4);
             System.out.println("История просмотра после просмотра: 1 3 3 4 " + "\n" + CSVFormatter.historyToString(tasksManager.historyManager));
 
-            System.out.println("Чтение из файла: 1 " + "\n");
+            System.out.println("Чтение из файла: 1 " + "\n");*/
 
             tasksManager = loadFromFile(new File("resources/tasks.csv"));
 
-            tasksManager.getTasks().forEach(System.out::println);
+           /* tasksManager.getTasks().forEach(System.out::println);
             tasksManager.getEpics().forEach(System.out::println);
             tasksManager.getSubTasks().forEach(System.out::println);
             Task task1 = tasksManager.getTaskById(1);
@@ -68,10 +65,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             tasksManager = loadFromFile(new File("resources/tasks.csv"));
             tasksManager.getTasks().forEach(System.out::println);
             tasksManager.getEpics().forEach(System.out::println);
-            tasksManager.getSubTasks().forEach(System.out::println);
+            tasksManager.getSubTasks().forEach(System.out::println);*/
 
         } catch (NullPointerException e) {
-            System.out.println("Ошибка " + e);
+            System.out.println("Ошибка чтения файла");
+            e.getMessage();
         }
     }
 
@@ -90,7 +88,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             fileWriter.write(System.lineSeparator());
             fileWriter.write(CSVFormatter.historyToString(historyManager));
 
-        } catch (IOException e) {
+        } catch (IOException | ManagerSaveException e) {
             System.out.println("Произошла ошибка чтения файла.");
         }
     }
@@ -116,6 +114,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
         return id;
     }
+
     @Override
     public Task getTaskById(int id) {
         var task = super.getTaskById(id);
@@ -137,8 +136,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateEpic(Epic epic) {
-        super.updateEpic(epic);
+    public void updateEpicStatus(Epic epic) {
+        super.updateEpicStatus(epic);
         save();
     }
 
@@ -193,8 +192,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTasksManager loadFromFile(File file) {
-
-        System.out.println("Проверка загрузки из файла " + file);
 
         FileBackedTasksManager tasksManager = new FileBackedTasksManager();
 
