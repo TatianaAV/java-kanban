@@ -1,0 +1,5 @@
+ru\yandex\practicum\kanban\manager\InMemoryTaskManagerTest.class
+ru\yandex\practicum\kanban\manager\TaskManagerTest.class
+ru\yandex\practicum\kanban\manager\FileBackedTasksManagerTest.class
+ru\yandex\practicum\kanban\manager\HistoryManagerTest.class
+ru\yandex\practicum\kanban\tasks\EpicTest.class

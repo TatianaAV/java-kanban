@@ -7,32 +7,53 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class SubTask extends Task {
+
     private final int epicId;
 
-    public SubTask(LocalDateTime startTime, Duration duration, int id, String title, String description, StatusTask status, int epicId) {
-        super(startTime, duration, title, description);
-        this.epicId = epicId;
-        this.type = TypeTasks.SUBTASK;
-    }
 
-    public SubTask(String title, String description, StatusTask status, int epicId) {
+
+   public SubTask(int id, String title, StatusTask  status, String description, int epicId) {
+
         super(title, description, status);
+
         this.epicId = epicId;
+
         this.type = TypeTasks.SUBTASK;
+
     }
 
-    public SubTask(int id, String title, StatusTask status, String description, int epicId) {
-        super(id, title, status, description);
+
+
+    public SubTask(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description,  int epicId) {
+
+        super(startTime, duration, id, title, status, description);
+
         this.type = TypeTasks.SUBTASK;
+
         this.epicId = epicId;
+
     }
+
+
 
     public SubTask(String title, String description, int epicId) {
-        super(title, description);
-        this.epicId = epicId;
-        this.type = TypeTasks.SUBTASK;
 
+        super(title, description);
+
+        this.epicId = epicId;
+
+        this.type = TypeTasks.SUBTASK;
     }
+
+    public SubTask(LocalDateTime startTime, Duration duration, String title, String description, int epicId) {
+
+        super(startTime, duration, title, description);
+
+        this.epicId = epicId;
+
+        this.type = TypeTasks.SUBTASK;
+    }
+
 
     public int getEpicId() {
         return epicId;

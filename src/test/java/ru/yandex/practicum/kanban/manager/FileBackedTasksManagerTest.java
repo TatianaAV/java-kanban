@@ -6,10 +6,12 @@ import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
@@ -59,10 +61,10 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
     @Disabled
-    @Test
+    @Test//не получается проверить exception, не пойму почему. сообщение выводится
     void testExpectedException() {
         ManagerSaveException exception =
-                Assertions.assertThrows(
+                assertThrows(
                         ManagerSaveException.class, () -> {
                             file = new File("resources/tasks1.csv");
                             FileBackedTasksManager.loadFromFile(file);

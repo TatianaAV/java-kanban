@@ -1,5 +1,10 @@
-id,type,name,status,description,epic
-1,TASK,Заголовок задачи,NEW,Описание задачи
-2,EPIC,Заголовок эпика,NEW,Описание Эпика
-3,SUBTASK,Заголовок подзадачи,NEW, Описание подзадачи,epic,2
-
+startTime,duration,id,type,name,status,description,epic
+2022-08-25T10:00,PT14M,1,TASK,Задача со временем,IN_PROGRESS,Проверка записи в лист  c startTime
+null,null,2,TASK,Декабрь,NEW,Скоро новый год
+2022-08-10T10:00,PT10M,3,TASK,Сентябрь,NEW,Отправить сына в институт
+null,null,1,EPIC,Ноябрь,NEW,Скоро новый год!
+null,null,3,EPIC,Ноябрь,NEW,Description November Epic 5
+null,null,4,EPIC,Октябрь,NEW,Съездить в отпуск
+null,null,0,SUBTASK,Школа,NEW,Репетиторы,epic,4
+uuii
+1,3

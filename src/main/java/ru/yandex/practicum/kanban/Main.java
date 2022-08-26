@@ -114,7 +114,7 @@ public class Main {
                     System.out.println("Введите описание задачи:");
                     String description = scanner.nextLine();
 
-                    Task newTask = new Task(name, description);
+                    Task newTask = new Task( name, description);
                     manager.addTask(newTask);
                     break;
 
@@ -126,7 +126,8 @@ public class Main {
                     String descriptionEpic = scanner.nextLine();
 
                     Epic newEpic = new Epic(nameEpic, descriptionEpic, StatusTask.NEW, null);
-                    int newEpicId = manager.addTask(newEpic);//получаем номер эпика для подзадачи
+                    manager.addTask(newEpic);//получаем номер эпика для подзадачи
+                    int newEpicId = newEpic.getId();
                     String input;
 
                     do {
@@ -259,17 +260,17 @@ public class Main {
                 case 10:
                     System.out.println("Создание задач");
 
-                    Task task1 = new Task("Задача 1", "Описание задачи 1");
-                    Task task2 = new Task("Задача 2", "Описание задачи 2");
+                    Task task1 = new Task("Задача 1",  "Описание задачи 1");
+                    Task task2 = new Task( "Задача 2",  "Описание задачи 2");
                     manager.addTask(task1);
                     manager.addTask(task2);
 
                     Epic epic3 = new Epic("Название эпика 3", "Описание 3");//создаем эпик
-                    int epicId3 = manager.addTask(epic3);//получаем номер эпика
-
-                    SubTask subTask4 = new SubTask("Подзадача 4", " Описание подзадачи 4",  epicId3);
-                    SubTask subTask5 = new SubTask("Подзадача 5", " Описание подзадачи 5",  epicId3);
-                    SubTask subTask6 = new SubTask("Подзадача 6", " Описание подзадачи 6",  epicId3);
+                    manager.addTask(epic3);//получаем номер эпика
+                    int epicId3 = epic3.getId();
+                            SubTask subTask4 = new SubTask("Подзадача 4", " Описание подзадачи 4", epicId3);
+                    SubTask subTask5 = new SubTask("Подзадача 5", " Описание подзадачи 5", epicId3);
+                    SubTask subTask6 = new SubTask("Подзадача 6", " Описание подзадачи 6", epicId3);
                     manager.addTask(subTask4);//добавляем в таблицу подзадач и получаем номер
                     manager.addTask(subTask5);
                     manager.addTask(subTask6);
@@ -315,7 +316,7 @@ public class Main {
 
                     System.out.println("Удаление задач по номеру 1 5 3");
                     //manager.deleteTask(1);
-                    //manager.deleteAllTask();
+                    manager.deleteAllTask();
 
                     System.out.println("История просмотра");
                     System.out.println(manager.getHistoryManager());

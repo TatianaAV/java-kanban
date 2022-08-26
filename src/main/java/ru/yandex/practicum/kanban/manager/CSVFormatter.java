@@ -5,6 +5,8 @@ import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 import ru.yandex.practicum.kanban.tasks.TypeTasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,21 +24,40 @@ public class CSVFormatter {
 
     public static Task fromString(String value) {// создание задачи из строки
         String[] split = value.split(",");
-        TypeTasks type = TypeTasks.valueOf(split[1]);
-        int id = Integer.parseInt(split[0]);
-        String title = split[2];
-        String description = split[4];
-        StatusTask status = StatusTask.valueOf(split[3]);
+
+        int id = Integer.parseInt(split[2]);
+        TypeTasks type = TypeTasks.valueOf(split[3]);
+        String title = split[4];
+        StatusTask status = StatusTask.valueOf(split[5]);
+        String description = split[6];
 
         switch (type) {
             case TASK:
-                return new Task(id, title, status, description);
+                if (split[0].equals("null")) {
+                    return new Task(id, title, status, description);
+                } else {
+                    LocalDateTime startTime = LocalDateTime.parse(split[0]);
+                    Duration duration = Duration.parse(split[1]);
+                    return new Task(startTime,  duration,  id, title, status, description);
+                }
             case EPIC:
-
-                return new Epic(id, title, status, description);
+                if (split[0].equals("null")) {
+                    return new Epic(id, title, status, description);
+                } else {
+                    LocalDateTime startTime = LocalDateTime.parse(split[0]);
+                    Duration duration = Duration.parse(split[1]);
+                    return new Epic(startTime,  duration,  id, title, status, description);
+                }
             case SUBTASK:
-                int epicId = Integer.parseInt(split[6]);
-                return new SubTask(id, title, status, description, epicId);
+                if (split[0].equals("null")) {
+                    int epicId = Integer.parseInt(split[8]);
+                    return new SubTask(id, title, status, description, epicId);
+                } else {
+                    LocalDateTime startTime = LocalDateTime.parse(split[0]);
+                    Duration duration = Duration.parse(split[1]);
+                    int epicId = Integer.parseInt(split[8]);
+                    return new SubTask(startTime,  duration,  id, title, status, description, epicId);
+                }
         }
         return null;
     }

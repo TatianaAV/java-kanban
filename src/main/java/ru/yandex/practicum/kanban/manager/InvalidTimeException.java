@@ -1,16 +1,13 @@
 package ru.yandex.practicum.kanban.manager;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
 
-public class InvalidTimeException extends IOException {
-    public InvalidTimeException(String message) {
+public class InvalidTimeException extends Exception {
+    private LocalDateTime time;
+    public LocalDateTime getTime(){return time;}
+    public InvalidTimeException(String message, LocalDateTime startTime){
+
         super(message);
-    }
-
-    public InvalidTimeException() {
-    }
-
-    public InvalidTimeException(String message, IOException cause) {
-        super(message, cause);
+        time = startTime;
     }
 }

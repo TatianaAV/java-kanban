@@ -16,7 +16,47 @@ public class Task {
     protected Duration duration;
     protected LocalDateTime startTime;
 
+    public Task(String title, String description, StatusTask status) {
 
+        this.title = title;
+
+        this.description = description;
+
+        this.status = status;
+
+        this.type = TypeTasks.TASK;
+
+    }
+//
+    public Task(int id, String title, StatusTask status, String description) {
+
+        this.id = id;
+
+        this.title = title;
+
+        this.description = description;
+
+        this.status = status;
+
+        this.type = TypeTasks.TASK;
+
+    }
+
+
+
+    public Task(String title, String description) {
+
+        this.title = title;
+
+        this.description = description;
+
+        this.type = TypeTasks.TASK;
+
+    }
+
+
+
+//DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm");
     public Task(
             LocalDateTime startTime,
             Duration duration,
@@ -32,24 +72,35 @@ public class Task {
     }
 
 
-    public Task(String title, String description, StatusTask status) {
+    /*public Task(String title, String description, StatusTask status) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.type = TypeTasks.TASK;
-    }
+    }*/
 
-    public Task(int id, String title, StatusTask status, String description) {
+   /* public Task(int id, String title, StatusTask status, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
         this.type = TypeTasks.TASK;
-    }
+    }*/
 
-    public Task(String title, String description) {
+    public Task( int id, String title, String description) {
+        this.id = id;
         this.title = title;
         this.description = description;
+        this.type = TypeTasks.TASK;
+    }
+
+        public Task(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description) {
+        this.startTime = startTime;
+        this.duration = duration;
+        this.id = id;
+        this.status = status;
+        this.description = description;
+        this.title = title;
         this.type = TypeTasks.TASK;
     }
 
@@ -103,7 +154,10 @@ public class Task {
 
     @Override
     public String toString() {
-        return " id " + id +
+        return startTime +
+                ", " + duration +
+                ", " +
+                " id " + id +
                 ", " + type +
                 ", " + status +
                 ", " + title +
@@ -116,12 +170,15 @@ public class Task {
     }
 
     public String toCSVDescription() {
-        return id +
-                "," + type +
-                "," + title +
-                "," + status +
-                "," + description;
-    }
+
+           return  startTime + "," + duration +
+                    "," + id +
+                    "," + type +
+                    "," + title +
+                    "," + status +
+                    "," + description;
+        }
+
 
     @Override
     public boolean equals(Object o) {

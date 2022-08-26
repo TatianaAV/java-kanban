@@ -8,30 +8,39 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Epic extends Task {
+
     private ArrayList<Integer> subTaskIds;
+
+
 
     public Epic(String title, String description, StatusTask status, ArrayList<Integer> subTaskIds) {
         super(title, description, status);
         this.subTaskIds = subTaskIds;
         this.type = TypeTasks.EPIC;
-    }
+}
 
-    public Epic(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description) {
-        super(startTime, duration, title, description);
-        this.type = TypeTasks.EPIC;
-        this.subTaskIds = new ArrayList<>();
-    }
-
+public Epic(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description){
+        super(startTime, duration, id, title, status, description);
+    this.subTaskIds = subTaskIds;
+    this.type = TypeTasks.EPIC;
+}
 
     public Epic(int id, String title, StatusTask status, String description) {
         super(id, title, status, description);
-        this.type = TypeTasks.EPIC;
         this.subTaskIds = new ArrayList<>();
+        this.type = TypeTasks.EPIC;
+
+
+
     }
+
+
 
     public Epic(String title, String description) {
         super(title, description);
         this.type = TypeTasks.EPIC;
+
+
 
     }
 
@@ -52,6 +61,7 @@ public class Epic extends Task {
         return super.toString() +
                 ", subTaskIds" + subTaskIds;
     }
+
 
     @Override
 

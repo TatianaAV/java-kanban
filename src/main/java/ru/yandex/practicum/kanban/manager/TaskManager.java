@@ -11,11 +11,11 @@ public interface TaskManager {
 
 
 
-    int addTask(Epic epic);
+    void addTask(Epic epic);
 
-    int addTask(SubTask subTask);
+    void addTask(SubTask subTask);
 
-    int addTask(Task task);
+    void addTask(Task task);
 
     Task getTaskById(int id);
 
