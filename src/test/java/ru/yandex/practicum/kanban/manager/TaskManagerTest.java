@@ -31,7 +31,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void addNewTaskStandard() {
-        Task task = new Task(startTimeNotNull, durationNotNull, id, "Test addNewTask", status, "Test addNewTask description");
+        Task task = new Task( "Test addNewTask", "Test addNewTask description");
         taskManager.addTask(task);
         int taskId = task.getId();
         final Task savedTask = taskManager.getTaskById(taskId);

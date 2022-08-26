@@ -324,10 +324,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTasksMap.isEmpty()) {
             return listSubTask;
         } else if (!epicsMap.isEmpty() & epicsMap.containsKey(epicId)) {
-            ArrayList<Integer> listIdSubTask = getSubTaskIds(getEpicById(epicId));
+            ArrayList<Integer> listIdSubTask = getSubTaskIds(epicsMap.get(epicId));
 
             for (int idSubTask : listIdSubTask) {
-                SubTask subTask = getSubTaskById(idSubTask);
+                SubTask subTask = subTasksMap.get(idSubTask);
                 listSubTask.add(subTask);
             }
         }

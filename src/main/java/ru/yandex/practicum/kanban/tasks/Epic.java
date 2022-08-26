@@ -15,13 +15,13 @@ public class Epic extends Task {
 
     public Epic(String title, String description, StatusTask status, ArrayList<Integer> subTaskIds) {
         super(title, description, status);
-        this.subTaskIds = subTaskIds;
+        this.subTaskIds = new ArrayList<>();
         this.type = TypeTasks.EPIC;
 }
 
 public Epic(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description){
         super(startTime, duration, id, title, status, description);
-    this.subTaskIds = subTaskIds;
+    this.subTaskIds = new ArrayList<>();
     this.type = TypeTasks.EPIC;
 }
 

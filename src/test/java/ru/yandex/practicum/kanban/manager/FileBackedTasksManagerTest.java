@@ -48,12 +48,12 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         List<Epic> epics = tasksManager.getEpics();
         assertNotNull(epics, "Эпики не получаются");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
-        assertEquals(epic.toString(), epics.get(0).toString(), "Эпики не совпадают.");
+       assertEquals(epic, epics.get(0), "Эпики не совпадают.");
 
         List<SubTask> subTasks = tasksManager.getSubTasks();
         assertNotNull(subTasks, "Эпики не получаются");
         assertEquals(1, subTasks.size(), "Неверное количество эпиков.");
-        assertEquals(subTask, subTasks.get(0), "Подзадачи не совпадают.");
+        assertEquals(subTasks, List.of(subTasks.get(0)), "Подзадачи не совпадают.");
 
         final List<Task> history = taskManager.getHistoryManager();
         assertNotNull(history, "История не пустая.");

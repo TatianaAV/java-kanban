@@ -221,9 +221,10 @@ tasksManager.getTasks().forEach(System.out::println);
                 for (int i = 1; i < lines.length; i++) {
                     if (!lines[i].isEmpty()) {
                         Task task = CSVFormatter.fromString(lines[i]);
-                        int id = 0;
+
+                     //  int id;
                         if (task != null) {
-                            id = task.getId();
+                        int id = task.getId();
                             tasksManager.generatedId = id;
                             TypeTasks type = task.getType();
                             switch (type) {
@@ -235,7 +236,7 @@ tasksManager.getTasks().forEach(System.out::println);
                                     break;
                                 case SUBTASK:
                                     tasksManager.subTasksMap.put(id, (SubTask) task);
-                                    int epicId = tasksManager.subTasksMap.get(id).getEpicId();
+       /*Здесь добавляется 0*/      int epicId = tasksManager.subTasksMap.get(id).getEpicId();
                                     ArrayList<Integer> listIdSubTask =
                                             tasksManager.epicsMap.get(epicId).getSubTaskIds();
                                     listIdSubTask.add(id);

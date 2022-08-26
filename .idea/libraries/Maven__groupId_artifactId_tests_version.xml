@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="Maven: groupId:artifactId-tests:version">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/apiguardian-api-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/junit-jupiter-api-5.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/junit-jupiter-engine-5.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/junit-jupiter-params-5.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/junit-platform-commons-1.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/junit-platform-engine-1.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/opentest4j-1.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/groupId/artifactId-tests/version/artifactId-tests-version-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/apiguardian-api-1.0.0-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../m1-t23-junit/lib/opentest4j-1.1.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/groupId/artifactId-tests/version/artifactId-tests-version-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
