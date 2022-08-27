@@ -33,11 +33,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     "Проверка записи в лист c startTime2");
             tasksManager.addTask(taskTime2);
             System.out.println("Создание задач 1 ");
-            tasksManager.addTask(new Task(LocalDateTime.of(2022,8,10,10,0), Duration.ofMinutes(10), "Сентябрь", "Отправить сына в институт"));
+            tasksManager.addTask(new Task(LocalDateTime.of(2022, 8, 10, 10, 0), Duration.ofMinutes(10), "Сентябрь", "Отправить сына в институт"));
 
             tasksManager.getPrioritizedTasks().forEach(System.out::println);
 
-             Epic epic2 = new Epic("Октябрь", "Съездить в отпуск");
+            Epic epic2 = new Epic("Октябрь", "Съездить в отпуск");
             tasksManager.addTask(epic2);
             tasksManager.addTask(new SubTask("Отпуск", "Привет кукушечка", epic2.getId()));
             tasksManager.addTask(new SubTask("Школа", "Репетиторы", epic2.getId()));
@@ -46,8 +46,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             tasksManager.getSubTasks().forEach(System.out::println);
 
             //просмотр задач
-           System.out.println("История просмотра после создания: " + "\n");
-                    tasksManager.getHistoryManager().stream().forEach(System.out::println);
+            System.out.println("История просмотра после создания: " + "\n");
+            tasksManager.getHistoryManager().stream().forEach(System.out::println);
             tasksManager.getTaskById(1);
             tasksManager.getSubTaskById(5);
             tasksManager.getSubTaskById(6);
@@ -56,13 +56,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             System.out.println("Чтение из файла: 1 " + "\n");
 
-       tasksManager = loadFromFile(new File("resources/tasks.csv"));
+            tasksManager = loadFromFile(new File("resources/tasks.csv"));
 
-tasksManager.getTasks().forEach(System.out::println);
+            tasksManager.getTasks().forEach(System.out::println);
 
             tasksManager.getEpics().forEach(System.out::println);
             tasksManager.getSubTasks().forEach(System.out::println);
-           Task task1 = tasksManager.getTaskById(1);
+            Task task1 = tasksManager.getTaskById(1);
             task1.setStatus(StatusTask.IN_PROGRESS);
             tasksManager.getEpicById(2);
 
@@ -75,7 +75,7 @@ tasksManager.getTasks().forEach(System.out::println);
             System.out.println("\n" + "Создание задач 2 ");
 
             tasksManager.addTask(new Epic("Ноябрь", "Скоро новый год!"));
-            tasksManager.addTask(new Task( "Декабрь",  "Скоро новый год"));
+            tasksManager.addTask(new Task("Декабрь", "Скоро новый год"));
             tasksManager.addTask(new Epic("Ноябрь", "Description November Epic 5"));
             tasksManager.getTaskById(3);
             tasksManager.getEpicById(5);
@@ -101,7 +101,7 @@ tasksManager.getTasks().forEach(System.out::println);
             for (Task task : tasksMap.values()) {
                 fileWriter.write(task.toCSVDescription() + System.lineSeparator());
             }
-          for (Epic epic : epicsMap.values()) {
+            for (Epic epic : epicsMap.values()) {
                 fileWriter.write(epic.toCSVDescription() + System.lineSeparator());
             }
             for (SubTask subTask : subTasksMap.values()) {
@@ -110,8 +110,9 @@ tasksManager.getTasks().forEach(System.out::println);
             fileWriter.write(System.lineSeparator());
             fileWriter.write(CSVFormatter.historyToString(historyManager));
 
-        } catch (IOException |ManagerSaveException e) {
-            System.out.println("Произошла ошибка записи файла."); e.getMessage();
+        } catch (IOException | ManagerSaveException e) {
+            System.out.println("Произошла ошибка записи файла.");
+            e.getMessage();
         }
     }
 
@@ -120,19 +121,19 @@ tasksManager.getTasks().forEach(System.out::println);
     public void addTask(Task task) {
         super.addTask(task);
         save();
-       }
+    }
 
     @Override
     public void addTask(Epic epic) {
-      super.addTask(epic);
+        super.addTask(epic);
         save();
-       }
+    }
 
     @Override
     public void addTask(SubTask subTask) {
         super.addTask(subTask);
         save();
-        }
+    }
 
     @Override
     public Task getTaskById(int id) {
@@ -150,9 +151,9 @@ tasksManager.getTasks().forEach(System.out::println);
 
     @Override
     public void updateTask(Task task) {
-           super.updateTask(task);
-           save();
-          }
+        super.updateTask(task);
+        save();
+    }
 
     @Override
     public void updateEpicStatus(Epic epic) {
@@ -222,9 +223,8 @@ tasksManager.getTasks().forEach(System.out::println);
                     if (!lines[i].isEmpty()) {
                         Task task = CSVFormatter.fromString(lines[i]);
 
-                     //  int id;
                         if (task != null) {
-                        int id = task.getId();
+                            int id = task.getId();
                             tasksManager.generatedId = id;
                             TypeTasks type = task.getType();
                             switch (type) {
@@ -236,7 +236,7 @@ tasksManager.getTasks().forEach(System.out::println);
                                     break;
                                 case SUBTASK:
                                     tasksManager.subTasksMap.put(id, (SubTask) task);
-       /*Здесь добавляется 0*/      int epicId = tasksManager.subTasksMap.get(id).getEpicId();
+                                    int epicId = tasksManager.subTasksMap.get(id).getEpicId();
                                     ArrayList<Integer> listIdSubTask =
                                             tasksManager.epicsMap.get(epicId).getSubTaskIds();
                                     listIdSubTask.add(id);

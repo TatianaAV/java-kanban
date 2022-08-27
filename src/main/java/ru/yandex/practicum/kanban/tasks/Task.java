@@ -27,7 +27,7 @@ public class Task {
         this.type = TypeTasks.TASK;
 
     }
-//
+
     public Task(int id, String title, StatusTask status, String description) {
 
         this.id = id;
@@ -43,7 +43,6 @@ public class Task {
     }
 
 
-
     public Task(String title, String description) {
 
         this.title = title;
@@ -54,15 +53,12 @@ public class Task {
 
     }
 
-
-
-//DateTimeFormatter  formatter = DateTimeFormatter.ofPattern("dd,MM,yyyy,HH,mm");
     public Task(
             LocalDateTime startTime,
             Duration duration,
             String title,
             String description
-            ) {
+    ) {
 
         this.startTime = startTime;
         this.duration = duration;
@@ -71,30 +67,14 @@ public class Task {
         this.type = TypeTasks.TASK;
     }
 
-
-    /*public Task(String title, String description, StatusTask status) {
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.type = TypeTasks.TASK;
-    }*/
-
-   /* public Task(int id, String title, StatusTask status, String description) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        this.type = TypeTasks.TASK;
-    }*/
-
-    public Task( int id, String title, String description) {
+    public Task(int id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.type = TypeTasks.TASK;
     }
 
-        public Task(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description) {
+    public Task(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description) {
         this.startTime = startTime;
         this.duration = duration;
         this.id = id;
@@ -151,7 +131,6 @@ public class Task {
         return startTime.plus(duration);
     }
 
-
     @Override
     public String toString() {
         return startTime +
@@ -171,13 +150,13 @@ public class Task {
 
     public String toCSVDescription() {
 
-           return  startTime + "," + duration +
-                    "," + id +
-                    "," + type +
-                    "," + title +
-                    "," + status +
-                    "," + description;
-        }
+        return startTime + "," + duration +
+                "," + id +
+                "," + type +
+                "," + title +
+                "," + status +
+                "," + description;
+    }
 
 
     @Override

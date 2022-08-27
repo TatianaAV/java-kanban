@@ -29,27 +29,33 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void updateEpicDuration(){
+    void updateEpicDuration() {
         Epic epicTime1 = new Epic(
-                 "Задача со временем3",
-                "Проверка записи в лист");
+                "Epic",
+                "Description");
         taskManager.addTask(epicTime1);
-        SubTask taskTime2 = new SubTask(
-                LocalDateTime.now().plusMinutes(2), Duration.ofMinutes(1), "Задача со временем2",
-                "Проверка записи в лист", epicTime1.getId());
-        taskManager.addTask(taskTime2);
-        SubTask taskTime1 = new SubTask(
-                LocalDateTime.now(), Duration.ofMinutes(1), "Задача со временем1",
-                "Проверка записи в лист", epicTime1.getId());
-        taskManager.addTask(taskTime1);
-        taskManager.getEpics().forEach(System.out::println);
-        taskManager.getSubTasks().forEach(System.out::println);
+
+        assertNull(taskManager.getEpicById(epicTime1.getId()).getStartTime(), "ошибка добавления эпика.");
+        SubTask subTask1 = new SubTask(
+                LocalDateTime.now().plusMinutes(2), Duration.ofMinutes(1), "Subtask now+2",
+                "Description", epicTime1.getId());
+        taskManager.addTask(subTask1);
+
+        assertEquals(epicTime1.getStartTime(), subTask1.getStartTime(), "ошибка добавления эпика.");
+        assertEquals(epicTime1.getDuration(), subTask1.getDuration(), "ошибка добавления эпика.");
+
+        SubTask subTask2 = new SubTask(
+                LocalDateTime.now(), Duration.ofMinutes(1), "subtask now",
+                "Description", epicTime1.getId());
+        taskManager.addTask(subTask2);
+
+        assertEquals(epicTime1.getStartTime(), subTask2.getStartTime(), "ошибка добавления эпика.");
+        assertEquals(epicTime1.getDuration(), subTask2.getDuration().plus(subTask1.getDuration()), "ошибка добавления эпика.");
     }
 
     @Test
     void getPrioritizedTasks() {
-       /* taskManager.deleteAllTask();
-        taskManager.deleteAllEpic();*/
+        //список задач и подзадач.
         Task taskTime3 = new Task(
                 LocalDateTime.now().plusMinutes(4), Duration.ofMinutes(1), "Задача со временем3",
                 "Проверка записи в лист");
@@ -63,25 +69,27 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 "Проверка записи в лист");
         taskManager.addTask(taskTime1);
 
-
         List<Task> sorted = taskManager.getPrioritizedTasks();
+
         assertNotNull(sorted, "Приоритетный лист не заполняется");
         assertEquals(5, sorted.size(), "Неверное количество задач.");
         assertEquals(taskTime1, sorted.get(0), "Задачи не совпадают.");
         assertEquals(taskTime2, sorted.get(1), "Задачи не совпадают.");
         assertEquals(taskTime3, sorted.get(2), "Задачи не совпадают.");
+        assertEquals(task, sorted.get(3), "Задачи не совпадают.");
+        assertEquals(subTask, sorted.get(4), "Задачи не совпадают.");
     }
 
     @Test
     void validateTaskInTimeAdd() {
         Task taskTime1 = new Task(
-                LocalDateTime.of(2022, 8, 25, 10, 00), Duration.ofHours(1), "Задача со временем",
+                LocalDateTime.of(2022, 8, 25, 10, 0), Duration.ofHours(1), "Задача со временем",
                 "Проверка записи в лист  c startTime");
         taskManager.addTask(taskTime1);
         int taskId1 = taskTime1.getId();
 
         Task taskTime2 = new Task(
-                LocalDateTime.of(2022, 8, 25, 11, 01), Duration.ofHours(1), "Задача со временем2",
+                LocalDateTime.of(2022, 8, 25, 11, 1), Duration.ofHours(1), "Задача со временем2",
                 "Проверка записи в лист c startTime");
         taskManager.addTask(taskTime2);
         int taskId2 = taskTime2.getId();
