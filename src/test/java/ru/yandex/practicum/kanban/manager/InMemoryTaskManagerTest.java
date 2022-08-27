@@ -2,6 +2,8 @@ package ru.yandex.practicum.kanban.manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.kanban.tasks.Epic;
+import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.time.Duration;
@@ -27,15 +29,47 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void getPrioritizedTasks() {
-        Task taskTime = new Task(
-                LocalDateTime.now(), Duration.ofHours(1), "Задача со временем",
+    void updateEpicDuration(){
+        Epic epicTime1 = new Epic(
+                 "Задача со временем3",
                 "Проверка записи в лист");
-        taskManager.addTask(taskTime);
+        taskManager.addTask(epicTime1);
+        SubTask taskTime2 = new SubTask(
+                LocalDateTime.now().plusMinutes(2), Duration.ofMinutes(1), "Задача со временем2",
+                "Проверка записи в лист", epicTime1.getId());
+        taskManager.addTask(taskTime2);
+        SubTask taskTime1 = new SubTask(
+                LocalDateTime.now(), Duration.ofMinutes(1), "Задача со временем1",
+                "Проверка записи в лист", epicTime1.getId());
+        taskManager.addTask(taskTime1);
+        taskManager.getEpics().forEach(System.out::println);
+        taskManager.getSubTasks().forEach(System.out::println);
+    }
+
+    @Test
+    void getPrioritizedTasks() {
+       /* taskManager.deleteAllTask();
+        taskManager.deleteAllEpic();*/
+        Task taskTime3 = new Task(
+                LocalDateTime.now().plusMinutes(4), Duration.ofMinutes(1), "Задача со временем3",
+                "Проверка записи в лист");
+        taskManager.addTask(taskTime3);
+        Task taskTime2 = new Task(
+                LocalDateTime.now().plusMinutes(2), Duration.ofMinutes(1), "Задача со временем2",
+                "Проверка записи в лист");
+        taskManager.addTask(taskTime2);
+        Task taskTime1 = new Task(
+                LocalDateTime.now(), Duration.ofMinutes(1), "Задача со временем1",
+                "Проверка записи в лист");
+        taskManager.addTask(taskTime1);
+
+
         List<Task> sorted = taskManager.getPrioritizedTasks();
         assertNotNull(sorted, "Приоритетный лист не заполняется");
-        assertEquals(3, sorted.size(), "Неверное количество задач.");
-        assertEquals(taskTime, sorted.get(0), "Задачи не совпадают.");
+        assertEquals(5, sorted.size(), "Неверное количество задач.");
+        assertEquals(taskTime1, sorted.get(0), "Задачи не совпадают.");
+        assertEquals(taskTime2, sorted.get(1), "Задачи не совпадают.");
+        assertEquals(taskTime3, sorted.get(2), "Задачи не совпадают.");
     }
 
     @Test
@@ -48,7 +82,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
         Task taskTime2 = new Task(
                 LocalDateTime.of(2022, 8, 25, 11, 01), Duration.ofHours(1), "Задача со временем2",
-                "Проверка записи в лист c startTime == now()+1");
+                "Проверка записи в лист c startTime");
         taskManager.addTask(taskTime2);
         int taskId2 = taskTime2.getId();
         final Task savedTask1 = taskManager.getTaskById(taskId1);

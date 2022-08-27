@@ -37,6 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
             validateTaskInTime(epic.getStartTime(), epic.getDuration());
             epicsMap.put(id, epic);
             epic.setSubTaskIds(new ArrayList<>());
+            updateEpicDurationAndStartTime(id);
         } catch (InvalidTimeException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getTime());
@@ -49,12 +50,15 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(id);
         subTask.setStatus(StatusTask.NEW);
         try {
+
             validateTaskInTime(subTask.getStartTime(), subTask.getDuration());
 
             subTasksMap.put(id, subTask);
             Epic epic = epicsMap.get(subTask.getEpicId());
             getSubTaskIds(epic).add(id);
             updateEpicStatus(epic);
+
+            updateEpicDurationAndStartTime(epic.getId());
         } catch (InvalidTimeException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getTime());
@@ -186,16 +190,18 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int id : subTaskIds) {
             SubTask subTask = subTasksMap.get(id);
-            LocalDateTime startTime = subTask.getStartTime();
-            LocalDateTime endTime = subTask.getEndTime();
-            if (startTime.isBefore(startEpic)) {
-                startEpic = startTime;
-            }
-            if (startTime == null & endTime == null) {
+            LocalDateTime  startTime = subTask.getStartTime();
+            Duration duration = subTask.getDuration();
+
+            if (startTime == null & duration == null) {
                 epic.setStartTime(startEpic);
                 epic.setDuration(durationEpic);
                 return;
             }
+            if (startTime.isBefore(startEpic)) {
+                startEpic = startTime;
+            }
+            LocalDateTime endTime = subTask.getEndTime();
             if (endTime.isAfter(endEpic)) {
                 endEpic = endTime;
             }
@@ -225,7 +231,7 @@ public class InMemoryTaskManager implements TaskManager {
         // то есть по startTime. Если дата старта не задана, добавьте задачу в конец списка задач,
         // подзадач, отсортированных по startTime. Напишите новый метод getPrioritizedTasks,
         // возвращающий список задач и подзадач в заданном порядке.
-       // priorityTask.clear();
+        priorityTask.clear();
         for (Task task : tasksMap.values()) {
             if (task.getStartTime() != null) {
                 priorityTask.add(task);
@@ -236,8 +242,8 @@ public class InMemoryTaskManager implements TaskManager {
                     priorityTask.add(subTask);
                 }
             }
-        System.out.println("metod getPriorytizedTask():");
-        priorityTask.stream().forEach(System.out::println);
+
+       /* priorityTask.stream().forEach(System.out::println);*/
 
         List<Task> list = new ArrayList<Task>(priorityTask);
         for (SubTask subTask : subTasksMap.values()) {
