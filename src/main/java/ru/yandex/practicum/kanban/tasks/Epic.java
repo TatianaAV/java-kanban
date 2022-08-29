@@ -39,10 +39,6 @@ public class Epic extends Task {
         return subTaskIds;
     }
 
-    public LocalDateTime getEndTime(LocalDateTime endTime) {
-        return endTime;
-    }
-
     public void setSubTaskIds(ArrayList<Integer> subTaskIds) {
         this.subTaskIds = subTaskIds;
     }

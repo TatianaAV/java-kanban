@@ -17,38 +17,26 @@ public class Task {
     protected LocalDateTime startTime;
 
     public Task(String title, String description, StatusTask status) {
-
         this.title = title;
-
         this.description = description;
-
         this.status = status;
-
         this.type = TypeTasks.TASK;
-
     }
 
     public Task(int id, String title, StatusTask status, String description) {
 
         this.id = id;
-
         this.title = title;
-
         this.description = description;
-
         this.status = status;
-
         this.type = TypeTasks.TASK;
-
     }
 
 
     public Task(String title, String description) {
 
         this.title = title;
-
         this.description = description;
-
         this.type = TypeTasks.TASK;
 
     }
@@ -101,17 +89,14 @@ public class Task {
     }
 
     public void setId(int id) {
-
         this.id = id;
     }
 
     public StatusTask getStatus() {
-
         return status;
     }
 
     public void setStatus(StatusTask status) {
-
         this.status = status;
     }
 
