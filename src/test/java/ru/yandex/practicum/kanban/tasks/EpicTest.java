@@ -28,14 +28,14 @@ class EpicTest {
                 "Проверка записи в лист");
         manager.addTask(epic);
         subTask = new SubTask(
-                LocalDateTime.of(2022, 8, 25, 10, 00),
+                LocalDateTime.of(2022, 8, 25, 10, 0),
                 Duration.ofMinutes(59),
                 "Задача со временем",
                 "Проверка записи в лист",
                 epic.getId());
         manager.addTask(subTask);
         subTask = new SubTask(
-                LocalDateTime.of(2022, 8, 25, 11, 00),
+                LocalDateTime.of(2022, 8, 25, 11, 0),
                 Duration.ofMinutes(59),
                 "Задача со временем",
                 "Проверка записи в лист",

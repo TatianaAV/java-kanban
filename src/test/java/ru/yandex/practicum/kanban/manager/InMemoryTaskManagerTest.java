@@ -141,6 +141,4 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertNotNull(taskManager.getTaskById(taskTime.getId()), "Задача должна быть добавлена");
         assertNull(taskManager.getTaskById(taskTime2.getId()), "Задача не должна быть добавлена");
     }
-
-
 }

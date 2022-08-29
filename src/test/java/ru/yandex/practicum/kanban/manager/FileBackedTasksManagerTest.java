@@ -29,7 +29,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @AfterEach
     void tearDown() {
-       //assertTrue(file.delete());
+        //assertTrue(file.delete());
     }
 
     @Test
@@ -64,7 +64,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertNotNull(history, "История не пустая.");
         assertEquals(1, history.size(), "История не пустая.");
     }
-
 
     @Test
 //С IDE было что-то непонятное. тест не прроходил проверку. сейчас всё ок

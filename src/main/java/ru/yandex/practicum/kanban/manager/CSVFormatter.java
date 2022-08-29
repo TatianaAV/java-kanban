@@ -40,7 +40,7 @@ public class CSVFormatter {
                 int epicId = Integer.parseInt(split[8]);
                 return new SubTask(startTime, duration, id, title, status, description, epicId);
         }
-    return null;
+        return null;
     }
 
 
