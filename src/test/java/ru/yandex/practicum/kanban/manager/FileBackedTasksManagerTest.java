@@ -6,9 +6,9 @@ import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,14 +26,15 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @AfterEach
     void tearDown() {
-        // assertTrue(file.delete());
+       assertTrue(file.delete());
     }
 
-    @Disabled
     @Test
-    void save() {
-    }
+    void fileIsExist(){
+        Path path = Paths.get("resources/tasks.csv");
 
+        assertTrue(Files.exists(path), "Файл не создается");
+    }
     @Test
     void loadFromFile() {
         taskManager.getTaskById(task.getId());//история задач = 1
@@ -60,8 +61,8 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertEquals(1, history.size(), "История не пустая.");
     }
 
-    @Disabled
-    @Test//не получается проверить exception, не пойму почему. сообщение выводится
+
+    @Test//С IDE было что-то непонятное. тест не прроходил проверку. сейчас всё ок
     void testExpectedException() {
         ManagerSaveException exception =
                 assertThrows(
