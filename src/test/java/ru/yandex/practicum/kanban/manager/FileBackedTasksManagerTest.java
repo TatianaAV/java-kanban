@@ -1,6 +1,9 @@
 package ru.yandex.practicum.kanban.manager;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
@@ -26,15 +29,16 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @AfterEach
     void tearDown() {
-       assertTrue(file.delete());
+        assertTrue(file.delete());
     }
 
     @Test
-    void fileIsExist(){
+    void fileIsExist() {
         Path path = Paths.get("resources/tasks.csv");
 
         assertTrue(Files.exists(path), "Файл не создается");
     }
+
     @Test
     void loadFromFile() {
         taskManager.getTaskById(task.getId());//история задач = 1
@@ -49,7 +53,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         List<Epic> epics = tasksManager.getEpics();
         assertNotNull(epics, "Эпики не получаются");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
-       assertEquals(epic, epics.get(0), "Эпики не совпадают.");
+        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
 
         List<SubTask> subTasks = tasksManager.getSubTasks();
         assertNotNull(subTasks, "Эпики не получаются");
@@ -62,7 +66,8 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     }
 
 
-    @Test//С IDE было что-то непонятное. тест не прроходил проверку. сейчас всё ок
+    @Test
+//С IDE было что-то непонятное. тест не прроходил проверку. сейчас всё ок
     void testExpectedException() {
         ManagerSaveException exception =
                 assertThrows(

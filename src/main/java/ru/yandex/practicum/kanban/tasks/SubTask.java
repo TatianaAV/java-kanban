@@ -15,11 +15,8 @@ public class SubTask extends Task {
    public SubTask(int id, String title, StatusTask  status, String description, int epicId) {
 
        super(id, title, status, description);
-
         this.epicId = epicId;
-
         this.type = TypeTasks.SUBTASK;
-
     }
 
 
@@ -27,11 +24,8 @@ public class SubTask extends Task {
     public SubTask(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description,  int epicId) {
 
         super(startTime, duration, id, title, status, description);
-
         this.type = TypeTasks.SUBTASK;
-
         this.epicId = epicId;
-
     }
 
 
@@ -39,18 +33,14 @@ public class SubTask extends Task {
     public SubTask(String title, String description, int epicId) {
 
         super(title, description);
-
         this.epicId = epicId;
-
         this.type = TypeTasks.SUBTASK;
     }
 
     public SubTask(LocalDateTime startTime, Duration duration, String title, String description, int epicId) {
 
         super(startTime, duration, title, description);
-
         this.epicId = epicId;
-
         this.type = TypeTasks.SUBTASK;
     }
 
