@@ -104,7 +104,6 @@ class EpicTest {
     void updateEpicStatusNewDone() {
         ArrayList<Integer> subTaskIds = epic.getSubTaskIds();
         SubTask subTask1 = manager.getSubTaskById(subTaskIds.get(0));
-        SubTask subTask2 = manager.getSubTaskById(subTaskIds.get(1));
 
         assertEquals(StatusTask.NEW, epic.getStatus(), "Статусы не совпадают.");
 
@@ -134,8 +133,6 @@ class EpicTest {
         updatedEpic = manager.getEpicById(subTask.getEpicId());
 
         assertEquals(StatusTask.IN_PROGRESS, updatedEpic.getStatus(), "Статусы не изменились.");
-
-
     }
 
     @Test
@@ -159,8 +156,6 @@ class EpicTest {
         updatedEpic = manager.getEpicById(subTask.getEpicId());
 
         assertEquals(StatusTask.NEW, updatedEpic.getStatus(), "Статусы не изменились.");
-
-
     }
 
 
