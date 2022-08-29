@@ -48,9 +48,11 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 LocalDateTime.now(), Duration.ofMinutes(1), "subtask now",
                 "Description", epicTime1.getId());
         taskManager.addTask(subTask2);
-
-        assertEquals(epicTime1.getStartTime(), subTask2.getStartTime(), "ошибка добавления эпика.");
-        assertEquals(epicTime1.getDuration(), subTask2.getDuration().plus(subTask1.getDuration()), "ошибка добавления эпика.");
+Epic epic = taskManager.getEpicById(epicTime1.getId());
+        assertEquals(epic.getStartTime(), subTask2.getStartTime(), "ошибка добавления эпика.");
+        assertEquals(epic.getEndTime(), subTask1.getEndTime(), "ошибка обновления эпика.");
+        assertEquals(epic.getDuration(),
+                Duration.between(subTask2.getStartTime(),subTask1.getEndTime()), "ошибка расчета продолжительности эпика.");
     }
 
     @Test
