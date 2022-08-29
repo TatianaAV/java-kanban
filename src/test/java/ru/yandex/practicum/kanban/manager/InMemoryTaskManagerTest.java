@@ -25,10 +25,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void generatedId() {
-    }
-
-    @Test
     void updateEpicDuration() {
         Epic epicTime1 = new Epic(
                 "Epic",
@@ -48,38 +44,57 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 LocalDateTime.now(), Duration.ofMinutes(1), "subtask now",
                 "Description", epicTime1.getId());
         taskManager.addTask(subTask2);
-Epic epic = taskManager.getEpicById(epicTime1.getId());
+        Epic epic = taskManager.getEpicById(epicTime1.getId());
+
         assertEquals(epic.getStartTime(), subTask2.getStartTime(), "ошибка добавления эпика.");
         assertEquals(epic.getEndTime(), subTask1.getEndTime(), "ошибка обновления эпика.");
         assertEquals(epic.getDuration(),
-                Duration.between(subTask2.getStartTime(),subTask1.getEndTime()), "ошибка расчета продолжительности эпика.");
+                Duration.between(subTask2.getStartTime(), subTask1.getEndTime()), "ошибка расчета продолжительности эпика.");
     }
 
     @Test
     void getPrioritizedTasks() {
         //список задач и подзадач.
-        Task taskTime3 = new Task(
-                LocalDateTime.now().plusMinutes(4), Duration.ofMinutes(1), "Задача со временем3",
-                "Проверка записи в лист");
-        taskManager.addTask(taskTime3);
         Task taskTime2 = new Task(
-                LocalDateTime.now().plusMinutes(2), Duration.ofMinutes(1), "Задача со временем2",
+                LocalDateTime.now().plusMinutes(2), Duration.ofSeconds(59), "Задача со временем3",
                 "Проверка записи в лист");
         taskManager.addTask(taskTime2);
         Task taskTime1 = new Task(
-                LocalDateTime.now(), Duration.ofMinutes(1), "Задача со временем1",
+                LocalDateTime.now().plusMinutes(1), Duration.ofSeconds(59), "Задача со временем2",
                 "Проверка записи в лист");
         taskManager.addTask(taskTime1);
+        Task taskTime0 = new Task(
+                LocalDateTime.now(), Duration.ofSeconds(59), "Задача со временем1",
+                "Проверка записи в лист");
+        taskManager.addTask(taskTime0);
+        List<Task> sorted1 = taskManager.getPrioritizedTasks();
+
+        SubTask subTask3 = new SubTask(
+                LocalDateTime.now().plusMinutes(3), Duration.ofSeconds(59), "subtask now",
+                "Description", epic.getId());
+        taskManager.addTask(subTask3);
+        subTask3.setStatus(StatusTask.IN_PROGRESS);
+        taskManager.updateSubTask(subTask3);
+        taskTime0.setStatus(StatusTask.DONE);
+        taskManager.updateTask(taskTime0);
+        taskTime0 = taskManager.getTaskById(taskTime0.getId());
+        subTask3 = taskManager.getSubTaskById(subTask3.getId());
 
         List<Task> sorted = taskManager.getPrioritizedTasks();
 
+        assertNotEquals(sorted, sorted1, "Приоритетный лист не изменяется");
+        assertEquals(taskTime0.getStatus(), sorted.get(0).getStatus(), "Статусы задач не совпадают.");
+        assertEquals(taskTime2.getStatus(), sorted.get(2).getStatus(), "Статусы подзадач не совпадают.");
+
         assertNotNull(sorted, "Приоритетный лист не заполняется");
-        assertEquals(5, sorted.size(), "Неверное количество задач.");
-        assertEquals(taskTime1, sorted.get(0), "Задачи не совпадают.");
-        assertEquals(taskTime2, sorted.get(1), "Задачи не совпадают.");
-        assertEquals(taskTime3, sorted.get(2), "Задачи не совпадают.");
-        assertEquals(task, sorted.get(3), "Задачи не совпадают.");
-        assertEquals(subTask, sorted.get(4), "Задачи не совпадают.");
+        assertEquals(6, sorted.size(), "Неверное количество задач.");
+        assertEquals(taskTime0, sorted.get(0), "Задачи не совпадают.");
+        assertEquals(taskTime1, sorted.get(1), "Задачи не совпадают.");
+        assertEquals(taskTime2, sorted.get(2), "Задачи не совпадают.");
+        assertEquals(subTask3, sorted.get(3), "Задачи не совпадают.");
+        assertEquals(task, sorted.get(4), "Задачи не совпадают.");
+        assertEquals(subTask, sorted.get(5), "Задачи не совпадают.");
+
     }
 
     @Test
@@ -108,11 +123,11 @@ Epic epic = taskManager.getEpicById(epicTime1.getId());
         assertEquals(3, tasks.size(), "Неверное количество задач.");
         assertEquals(savedTask1, tasks.get(1), "Задачи не совпадают.");
         assertEquals(savedTask2, tasks.get(2), "Задачи не совпадают.");
-        System.out.println(savedTask1 + "\n" + savedTask2);
     }
 
     @Test
     void testValidateTimeNotAdd() {
+        System.out.println("testValidateTimeNotAdd()");
         Task taskTime = new Task(
                 LocalDateTime.now(), Duration.ofDays(1), "Задача со временем",
                 "Проверка записи в лист");

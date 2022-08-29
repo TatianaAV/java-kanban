@@ -24,43 +24,25 @@ public class CSVFormatter {
 
     public static Task fromString(String value) {// создание задачи из строки
         String[] split = value.split(",");
-
+        LocalDateTime startTime = split[0].equals("null") ? null : LocalDateTime.parse(split[0]);
+        Duration duration = split[1].equals("null") ? null : Duration.parse(split[1]);
         int id = Integer.parseInt(split[2]);
         TypeTasks type = TypeTasks.valueOf(split[3]);
         String title = split[4];
         StatusTask status = StatusTask.valueOf(split[5]);
         String description = split[6];
-
         switch (type) {
             case TASK:
-                if (split[0].equals("null")) {
-                    return new Task(id, title, status, description);
-                } else {
-                    LocalDateTime startTime = LocalDateTime.parse(split[0]);
-                    Duration duration = Duration.parse(split[1]);
-                    return new Task(startTime,  duration,  id, title, status, description);
-                }
+                return new Task(startTime, duration, id, title, status, description);
             case EPIC:
-                if (split[0].equals("null")) {
-                    return new Epic(id, title, status, description);
-                } else {
-                    LocalDateTime startTime = LocalDateTime.parse(split[0]);
-                    Duration duration = Duration.parse(split[1]);
-                    return new Epic(startTime,  duration,  id, title, status, description);
-                }
+                return new Epic(startTime, duration, id, title, status, description);
             case SUBTASK:
-                if (split[0].equals("null")) {
-                    int epicId = Integer.parseInt(split[8]);
-                    return new SubTask(id, title, status, description, epicId);
-                } else {
-                    LocalDateTime startTime = LocalDateTime.parse(split[0]);
-                    Duration duration = Duration.parse(split[1]);
-                    int epicId = Integer.parseInt(split[8]);
-                    return new SubTask(startTime,  duration,  id, title, status, description, epicId);
-                }
+                int epicId = Integer.parseInt(split[8]);
+                return new SubTask(startTime, duration, id, title, status, description, epicId);
         }
-        return null;
+    return null;
     }
+
 
     public static List<Integer> historyFromString(String value) {
         String[] split = value.split(",");

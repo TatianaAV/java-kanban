@@ -47,7 +47,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             //просмотр задач
             System.out.println("История просмотра после создания: " + "\n");
-            tasksManager.getHistoryManager().stream().forEach(System.out::println);
+            tasksManager.getHistoryManager().forEach(System.out::println);
             tasksManager.getTaskById(1);
             tasksManager.getSubTaskById(5);
             tasksManager.getSubTaskById(6);
@@ -91,7 +91,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         } catch (NullPointerException e) {
             System.out.println("Ошибка чтения файла");
-            e.getMessage();
+            //e.getMessage();
         }
     }
 
@@ -110,9 +110,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             fileWriter.write(System.lineSeparator());
             fileWriter.write(CSVFormatter.historyToString(historyManager));
 
-        } catch (IOException | ManagerSaveException e) {
-            System.out.println("Произошла ошибка записи файла.");
-            e.getMessage();
+        } catch (IOException e) {
+            throw new ManagerSaveException("Произошла ошибка записи файла.", e);
         }
     }
 

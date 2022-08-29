@@ -29,7 +29,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @AfterEach
     void tearDown() {
-        assertTrue(file.delete());
+       //assertTrue(file.delete());
     }
 
     @Test

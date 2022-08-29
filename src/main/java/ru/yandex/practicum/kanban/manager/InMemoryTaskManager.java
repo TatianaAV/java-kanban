@@ -33,15 +33,8 @@ public class InMemoryTaskManager implements TaskManager {
         int id = generatedId();
         epic.setId(id);
         epic.setStatus(StatusTask.NEW);
-        try {
-            validateTaskInTime(epic.getStartTime(), epic.getDuration());
-            epicsMap.put(id, epic);
-            epic.setSubTaskIds(new ArrayList<>());
-            updateEpicDurationAndStartTime(id);
-        } catch (InvalidTimeException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getTime());
-        }
+        epicsMap.put(id, epic);
+        epic.setSubTaskIds(new ArrayList<>());
     }
 
     @Override
@@ -50,10 +43,13 @@ public class InMemoryTaskManager implements TaskManager {
         subTask.setId(id);
         subTask.setStatus(StatusTask.NEW);
         try {
-
-            validateTaskInTime(subTask.getStartTime(), subTask.getDuration());
-
+            LocalDateTime startTime = subTask.getStartTime() == null ? null : subTask.getStartTime();
+            Duration duration = subTask.getDuration() == null ? null : subTask.getDuration();
+            validateTaskInTime(startTime, duration);
             subTasksMap.put(id, subTask);
+            if (startTime != null && duration != null) {
+                priorityTask.add(subTask);
+            }//проверить на null
             Epic epic = epicsMap.get(subTask.getEpicId());
             getSubTaskIds(epic).add(id);
             updateEpicStatus(epic);
@@ -71,8 +67,13 @@ public class InMemoryTaskManager implements TaskManager {
         task.setStatus(StatusTask.NEW);
         task.setId(id);
         try {
-            validateTaskInTime(task.getStartTime(), task.getDuration());
+            LocalDateTime startTime = task.getStartTime() == null ? null : task.getStartTime();
+            Duration duration = task.getDuration() == null ? null : task.getDuration();
+            validateTaskInTime(startTime, duration);
             tasksMap.put(id, task);
+            if (startTime != null && duration != null) {
+                priorityTask.add(task);
+            }
         } catch (InvalidTimeException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getTime());
@@ -127,8 +128,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
-    @Override
     public void updateEpicStatus(Epic epic) {
         try {
             if (epic != null) {
@@ -158,7 +157,6 @@ public class InMemoryTaskManager implements TaskManager {
                                 break;
                         }
                     }
-
                     if (countNew == changeEpic.size()) {
                         epic.setStatus(StatusTask.NEW);
                     } else if (countDone == changeEpic.size()) {
@@ -196,14 +194,19 @@ public class InMemoryTaskManager implements TaskManager {
             if (startEpic == null && endTimeEpic == null) {
                 epic.setStartTime(startSubTask);
                 epic.setEndTime(subTaskEndTime);
+                assert startSubTask != null;
                 epic.setDuration(Duration.between(startSubTask, subTaskEndTime));
                 return;
             }
+            assert startEpic != null;
+            assert startSubTask != null;
             if (startSubTask.isBefore(startEpic)) {
                 epic.setStartTime(startSubTask);
-              if (subTaskEndTime.isAfter(endTimeEpic))
-                epic.setEndTime(subTaskEndTime);
-                epic.setDuration(Duration.between(epic.getStartTime(),epic.getEndTime()));
+                assert endTimeEpic != null;
+                assert subTaskEndTime != null;
+                if (subTaskEndTime.isAfter(endTimeEpic))
+                    epic.setEndTime(subTaskEndTime);
+                epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime()));
             }
         }
     }
@@ -228,20 +231,6 @@ public class InMemoryTaskManager implements TaskManager {
         // то есть по startTime. Если дата старта не задана, добавьте задачу в конец списка задач,
         // подзадач, отсортированных по startTime. Напишите новый метод getPrioritizedTasks,
         // возвращающий список задач и подзадач в заданном порядке.
-        priorityTask.clear();
-        for (Task task : tasksMap.values()) {
-            if (task.getStartTime() != null) {
-                priorityTask.add(task);
-            }
-        }
-        for (SubTask subTask : subTasksMap.values()) {
-            if (subTask.getStartTime() != null) {
-                priorityTask.add(subTask);
-            }
-        }
-
-        /* priorityTask.stream().forEach(System.out::println);*/
-
         List<Task> list = new ArrayList<>(priorityTask);
 
         for (Task task1 : tasksMap.values()) {
@@ -254,7 +243,6 @@ public class InMemoryTaskManager implements TaskManager {
                 list.add(subTask);
             }
         }
-
         return list;
     }
 
@@ -263,36 +251,26 @@ public class InMemoryTaskManager implements TaskManager {
         if (startTime != null && duration != null) {
             LocalDateTime endTime = startTime.plus(duration);
 
-            for (Task task : tasksMap.values()) {
-                if (task.getStartTime() != null) {
-                    priorityTask.add(task);
-                }
-            }
-            for (Epic epic : epicsMap.values()) {
-                if (epic.getStartTime() != null) {
-                    priorityTask.add(epic);
-                }
-            }
             if (priorityTask.isEmpty()) {
                 return;
             } else {
-                LocalDateTime startFirstTask = priorityTask.first().getStartTime();
-                LocalDateTime ednFirstTask = priorityTask.first().getEndTime();
-                LocalDateTime startLastTask = priorityTask.last().getStartTime();
-                LocalDateTime ednLastTask = priorityTask.last().getEndTime();
-                if (startTime.isBefore(startFirstTask) && endTime.isBefore(ednFirstTask)) {
-                    return;
-                } else if (startTime.isBefore(startLastTask) && endTime.isBefore(ednLastTask)) {
-                    return;
-                } else if (startTime.isAfter(ednFirstTask) && endTime.isAfter(ednFirstTask)) {
-                    return;
-                } else {
-                    throw new InvalidTimeException("Для этого времени задача не может быть добавлена. ", startTime);
-                }
-            }
-        } else return;
-    }
+                int counter = 0;
+                for (Task task : priorityTask) {
 
+                    LocalDateTime startTask = task.getStartTime();
+                    LocalDateTime endTask = task.getEndTime();
+
+                    if (startTime.isBefore(startTask) && endTime.isBefore(startTask)) {
+                        counter++;
+                    } else if (startTime.isAfter(endTask) && endTime.isAfter(endTask)) {
+                        counter++;
+                    }
+                }
+                if (counter == priorityTask.size()) return;
+                throw new InvalidTimeException("Для этого времени задача не может быть добавлена. ", startTime);
+            }
+        }
+    }
 
     @Override
     public ArrayList<Task> getTasks() {//получение списка задач
