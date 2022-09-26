@@ -12,6 +12,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +44,14 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     @Test
     void loadFromFile() {
         taskManager.getTaskById(task.getId());//история задач = 1
+        SubTask subTask1 = new SubTask(
+                LocalDateTime.of(2022, 8, 25, 11, 0), Duration.ofHours(1), "Задача со временем2",
+                "Проверка записи в лист c startTime", epic.getId());
+        taskManager.addTask(subTask1);
+        SubTask subTask2 = new SubTask(
+                LocalDateTime.of(2022, 8, 25, 12, 1), Duration.ofHours(1), "Задача со временем2",
+                "Проверка записи в лист c startTime", epic.getId());
+        taskManager.addTask(subTask2);
 
         FileBackedTasksManager tasksManager = FileBackedTasksManager.loadFromFile(file);
 
@@ -56,17 +66,21 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertEquals(epic, epics.get(0), "Эпики не совпадают.");
 
         List<SubTask> subTasks = tasksManager.getSubTasks();
-        assertNotNull(subTasks, "Эпики не получаются");
-        assertEquals(1, subTasks.size(), "Неверное количество эпиков.");
-        assertEquals(subTasks, List.of(subTasks.get(0)), "Подзадачи не совпадают.");
+        assertNotNull(subTasks, "Подзадачи не получаются");
+      //  assertEquals(2, subTasks.size(), "Неверное количество подзадач.");
+        assertEquals(subTask, subTasks.get(0), "Подзадачи не совпадают.");
 
         final List<Task> history = taskManager.getHistoryManager();
         assertNotNull(history, "История не пустая.");
         assertEquals(1, history.size(), "История не пустая.");
+
+        //assertNotEquals(epic, tasksManager.getEpicById(epic.getId()),
+         //       "Эпик не обновлялся после чтения из файла");
+        System.out.println("занесен в таблицу \n" +epic);
+        System.out.println("добавлен из файла \n" + tasksManager.getEpicById(epic.getId()));
     }
 
     @Test
-//С IDE было что-то непонятное. тест не прроходил проверку. сейчас всё ок
     void testExpectedException() {
         ManagerSaveException exception =
                 assertThrows(

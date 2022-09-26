@@ -1,5 +1,8 @@
 startTime,duration,id,type,name,status,description,epic
 null,null,1,TASK,Заголовок задачи,NEW,Описание задачи
-null,null,2,EPIC,Заголовок эпика,NEW,Описание Эпика
+2022-08-25T11:00,PT1H,2,EPIC,Заголовок эпика,NEW,Описание Эпика
 null,null,3,SUBTASK,Заголовок подзадачи,NEW, Описание подзадачи,epic,2
+2022-08-25T11:00,PT1H,4,SUBTASK,Задача со временем2,NEW,Проверка записи в лист c startTime,epic,2
+2022-08-25T12:01,PT1H,5,SUBTASK,Задача со временем2,NEW,Проверка записи в лист c startTime,epic,2
 
+1

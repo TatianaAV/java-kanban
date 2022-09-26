@@ -20,7 +20,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         FileBackedTasksManager tasksManager = new FileBackedTasksManager();
 
         try {
-            tasksManager.getTasks().forEach(System.out::println);
             Task taskTime1 = new Task(
                     LocalDateTime.of(2022, 8, 25, 10, 0),
                     Duration.ofMinutes(14), "Задача со временем",
@@ -41,9 +40,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             tasksManager.addTask(epic2);
             tasksManager.addTask(new SubTask("Отпуск", "Привет кукушечка", epic2.getId()));
             tasksManager.addTask(new SubTask("Школа", "Репетиторы", epic2.getId()));
-            tasksManager.getTasks().forEach(System.out::println);
-            tasksManager.getEpics().forEach(System.out::println);
-            tasksManager.getSubTasks().forEach(System.out::println);
+
 
             //просмотр задач
             System.out.println("История просмотра после создания: " + "\n");
@@ -58,19 +55,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             tasksManager = loadFromFile(new File("resources/tasks.csv"));
 
-            tasksManager.getTasks().forEach(System.out::println);
 
-            tasksManager.getEpics().forEach(System.out::println);
-            tasksManager.getSubTasks().forEach(System.out::println);
             Task task1 = tasksManager.getTaskById(1);
             task1.setStatus(StatusTask.IN_PROGRESS);
             tasksManager.getEpicById(2);
 
             System.out.println("\n" + "История просмотра после просмотра: 1 2 " + "\n"
                     + CSVFormatter.historyToString(tasksManager.historyManager));
-            tasksManager.getTasks().forEach(System.out::println);
-            tasksManager.getEpics().forEach(System.out::println);
-            tasksManager.getSubTasks().forEach(System.out::println);
 
             System.out.println("\n" + "Создание задач 2 ");
 
@@ -85,13 +76,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             System.out.println("Чтение из файла: 2 " + "\n");
 
             tasksManager = loadFromFile(new File("resources/tasks.csv"));
-            tasksManager.getTasks().forEach(System.out::println);
-            tasksManager.getEpics().forEach(System.out::println);
-            tasksManager.getSubTasks().forEach(System.out::println);
+            //tasksManager.getTasks().forEach(System.out::println);
+            //tasksManager.getEpics().forEach(System.out::println);
+            //tasksManager.getSubTasks().forEach(System.out::println);
 
         } catch (NullPointerException e) {
             System.out.println("Ошибка чтения файла");
-            //e.getMessage();
         }
     }
 
@@ -159,6 +149,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.updateEpicStatus(epic);
         save();
     }
+
+    /*@Override
+    public void validateTaskInTime(LocalDateTime startTime, Duration duration) throws InvalidTimeException {
+        super.validateTaskInTime(startTime, duration);
+        save();
+    }*/
 
     @Override
     public StatusTask updateSubTask(SubTask subTask) {

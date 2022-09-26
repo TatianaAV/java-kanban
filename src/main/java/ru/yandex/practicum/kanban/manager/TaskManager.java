@@ -24,6 +24,8 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
+    void updateEpicDurationAndStartTime(int epicId);
+
     StatusTask updateSubTask(SubTask subTask);
 
     ArrayList<SubTask> getSubTasksByEpic(Integer epicId);

@@ -27,13 +27,13 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @Test
     void updateEpicDuration() {
         Epic epicTime1 = new Epic(
-                "Epic",
+                "Epic update epic duration",
                 "Description");
         taskManager.addTask(epicTime1);
 
         assertNull(taskManager.getEpicById(epicTime1.getId()).getStartTime(), "ошибка добавления эпика.");
         SubTask subTask1 = new SubTask(
-                LocalDateTime.now().plusMinutes(2), Duration.ofMinutes(1), "Subtask now+2",
+                LocalDateTime.now().plusMinutes(2), Duration.ofMinutes(1), "Subtask epic duration",
                 "Description", epicTime1.getId());
         taskManager.addTask(subTask1);
 
@@ -50,6 +50,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertEquals(epic.getEndTime(), subTask1.getEndTime(), "ошибка обновления эпика.");
         assertEquals(epic.getDuration(),
                 Duration.between(subTask2.getStartTime(), subTask1.getEndTime()), "ошибка расчета продолжительности эпика.");
+        taskManager.getEpics().forEach(System.out::println);
+        System.out.println("\n");
+        taskManager.getSubTasks().forEach(System.out::println);
     }
 
     @Test
