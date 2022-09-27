@@ -6,7 +6,6 @@ import ru.yandex.practicum.kanban.tasks.Task;
 import ru.yandex.practicum.kanban.tasks.TypeTasks;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         FileBackedTasksManager tasksManager = new FileBackedTasksManager();
 
         try {
@@ -209,7 +208,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public static FileBackedTasksManager loadFromFile(File file) {
 
         FileBackedTasksManager tasksManager = new FileBackedTasksManager();
-
+        //Для всех прочитанных эпиков нужно рассчитать endTime.
         try {
             String csv = Files.readString(file.toPath()); //читает файл
             if (!csv.isBlank()) {

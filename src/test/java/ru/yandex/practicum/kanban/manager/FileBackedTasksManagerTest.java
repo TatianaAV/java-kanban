@@ -67,17 +67,12 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
         List<SubTask> subTasks = tasksManager.getSubTasks();
         assertNotNull(subTasks, "Подзадачи не получаются");
-      //  assertEquals(2, subTasks.size(), "Неверное количество подзадач.");
+        assertEquals(3, subTasks.size(), "Неверное количество подзадач.");
         assertEquals(subTask, subTasks.get(0), "Подзадачи не совпадают.");
 
         final List<Task> history = taskManager.getHistoryManager();
         assertNotNull(history, "История не пустая.");
         assertEquals(1, history.size(), "История не пустая.");
-
-        //assertNotEquals(epic, tasksManager.getEpicById(epic.getId()),
-         //       "Эпик не обновлялся после чтения из файла");
-        System.out.println("занесен в таблицу \n" +epic);
-        System.out.println("добавлен из файла \n" + tasksManager.getEpicById(epic.getId()));
     }
 
     @Test

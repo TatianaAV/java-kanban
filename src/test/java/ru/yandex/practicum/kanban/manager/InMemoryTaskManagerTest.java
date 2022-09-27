@@ -87,6 +87,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
         assertNotEquals(sorted, sorted1, "Приоритетный лист не изменяется");
         assertEquals(taskTime0.getStatus(), sorted.get(0).getStatus(), "Статусы задач не совпадают.");
+
         assertEquals(taskTime2.getStatus(), sorted.get(2).getStatus(), "Статусы подзадач не совпадают.");
 
         assertNotNull(sorted, "Приоритетный лист не заполняется");
