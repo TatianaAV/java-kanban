@@ -48,10 +48,16 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
                 LocalDateTime.of(2022, 8, 25, 11, 0), Duration.ofHours(1), "Задача со временем2",
                 "Проверка записи в лист c startTime", epic.getId());
         taskManager.addTask(subTask1);
+
         SubTask subTask2 = new SubTask(
                 LocalDateTime.of(2022, 8, 25, 12, 1), Duration.ofHours(1), "Задача со временем2",
                 "Проверка записи в лист c startTime", epic.getId());
         taskManager.addTask(subTask2);
+
+        SubTask subTask3 = new SubTask(LocalDateTime.now().plusMinutes(3), Duration.ofSeconds(59), "subtask now", "Description", epic.getId());
+        taskManager.addTask(subTask3);
+        subTask3.setStatus(StatusTask.IN_PROGRESS);
+        taskManager.updateSubTask(subTask3);
 
         FileBackedTasksManager tasksManager = FileBackedTasksManager.loadFromFile(file);
 
@@ -64,10 +70,14 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertNotNull(epics, "Эпики не получаются");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
         assertEquals(epic, epics.get(0), "Эпики не совпадают.");
+        assertNotNull(epic.getEndTime(), "у эпика не обновилось время при считывании из файла");
+        assertEquals(epic.getDuration(), Duration.between(subTask1.getStartTime(), subTask3.getEndTime()),
+                "Обновление времени не происходит");
+
 
         List<SubTask> subTasks = tasksManager.getSubTasks();
         assertNotNull(subTasks, "Подзадачи не получаются");
-        assertEquals(3, subTasks.size(), "Неверное количество подзадач.");
+        assertEquals(4, subTasks.size(), "Неверное количество подзадач.");
         assertEquals(subTask, subTasks.get(0), "Подзадачи не совпадают.");
 
         final List<Task> history = taskManager.getHistoryManager();

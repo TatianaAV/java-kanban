@@ -5,6 +5,8 @@ import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,39 +196,63 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteAllTaskReturnListEmpty() {
-        List<Task> tasks = taskManager.getTasks();
+        Task task1 = new Task(
+                LocalDateTime.of(2022, 8, 25, 11, 0), Duration.ofHours(1), "Задача со временем2",
+                "Проверка записи в лист c startTime");
+        taskManager.addTask(task1);
 
+        List<Task> tasks = taskManager.getTasks();
+        List<Task> priority = taskManager.getPrioritizedTasks();
+
+        assertNotNull(priority, "Задачи не получаются");
         assertNotNull(tasks, "Задачи не получаются");
-        assertEquals(1, tasks.size(), "Неверное количество задач.");
+        assertEquals(2, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
 
         taskManager.deleteAllTask();
+        assertEquals(taskManager.getPrioritizedTasks(), List.of(subTask));
         assertEquals(taskManager.getTasks(), List.of());
     }
 
     @Test
     void deleteAllSubTasksStandard() {
-        List<SubTask> subTasks = taskManager.getSubTasks();
+        SubTask subTask1 = new SubTask(
+                LocalDateTime.of(2022, 8, 25, 11, 0), Duration.ofHours(1), "Задача со временем2",
+                "Проверка записи в лист c startTime", epic.getId());
+        taskManager.addTask(subTask1);
 
+        List<SubTask> subTasks = taskManager.getSubTasks();
+        List<Task> priority = taskManager.getPrioritizedTasks();
+
+        assertNotNull(priority, "Задачи не получаются");
         assertNotNull(subTasks, "Задачи не получаются");
-        assertEquals(1, subTasks.size(), "Неверное количество задач.");
+        assertEquals(2, subTasks.size(), "Неверное количество задач.");
         assertEquals(subTask, subTasks.get(0), "Задачи не совпадают.");
 
         taskManager.deleteAllSubTasks();
 
+        assertEquals(taskManager.getPrioritizedTasks(), List.of(task));
         assertNull(taskManager.getSubTasks(), "Подзадачи не удалены.");
     }
 
     @Test
     void deleteAllEpicStandard() {
+        SubTask subTask1 = new SubTask(
+                LocalDateTime.of(2022, 8, 25, 11, 0), Duration.ofHours(1), "Задача со временем2",
+                "Проверка записи в лист c startTime", epic.getId());
+        taskManager.addTask(subTask1);
+
+        List<Task> priority = taskManager.getPrioritizedTasks();
         List<Epic> epics = taskManager.getEpics();
 
+        assertNotNull(priority, "Задачи не получаются");
         assertNotNull(epics, "Задачи не получаются");
         assertEquals(1, epics.size(), "Неверное количество задач.");
         assertEquals(epic, epics.get(0), "Задачи не совпадают.");
 
         taskManager.deleteAllEpic();
 
+        assertEquals(taskManager.getPrioritizedTasks(), List.of(task));
         assertNull(taskManager.getEpics(), "Подзадачи не удалены.");
         assertNull(taskManager.getSubTasks(), "Подзадачи не удалены.");
 
@@ -234,30 +260,46 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteTaskStandard() {
+        Task task1 = new Task(
+                LocalDateTime.of(2022, 8, 25, 11, 0), Duration.ofHours(1), "Задача со временем2",
+                "Проверка записи в лист c startTime");
+        taskManager.addTask(task1);
         List<Task> tasks = taskManager.getTasks();
+        List<Task> priority = taskManager.getPrioritizedTasks();
+
+        assertNotNull(priority, "Задачи не получаются");
 
         assertNotNull(tasks, "Задачи не получаются");
-        assertEquals(1, tasks.size(), "Неверное количество задач.");
+        assertEquals(2, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
 
         taskManager.deleteTask(task.getId());
 
-        assertEquals(taskManager.getTasks(), List.of(), "Подзадачи не удалены.");
+        assertEquals(taskManager.getPrioritizedTasks(), List.of(task1, subTask));
+        assertEquals(taskManager.getTasks(), List.of(task1), "Подзадачи не удалены.");
 
 
     }
 
     @Test
     void deleteSubTaskStandard() {
-        List<SubTask> subTasks = taskManager.getSubTasks();
+        SubTask subTask1 = new SubTask(
+                LocalDateTime.of(2022, 8, 25, 11, 0), Duration.ofHours(1), "Задача со временем2",
+                "Проверка записи в лист c startTime", epic.getId());
+        taskManager.addTask(subTask1);
 
+        List<SubTask> subTasks = taskManager.getSubTasks();
+        List<Task> priority = taskManager.getPrioritizedTasks();
+
+        assertNotNull(priority, "Задачи не получаются");
         assertNotNull(subTasks, "Задачи не получаются");
-        assertEquals(1, subTasks.size(), "Неверное количество задач.");
+        assertEquals(2, subTasks.size(), "Неверное количество задач.");
         assertEquals(subTask, subTasks.get(0), "Задачи не совпадают.");
 
         taskManager.deleteSubTask(subTask.getId());
 
-        assertNull(taskManager.getSubTasks(), "Подзадачи не удалены.");
+        assertEquals(taskManager.getPrioritizedTasks(), List.of(subTask1, task));
+        assertEquals(taskManager.getSubTasks(), List.of(subTask1), "Подзадачи не удалены.");
     }
 
     @Test
@@ -305,7 +347,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getHistoryManagerStandard() {
-        final Task task1 = taskManager.getTaskById(task.getId());
+        taskManager.getTaskById(task.getId());
 
         List<Task> history = taskManager.getHistoryManager();
         assertNotNull(history, "Задачи не получаются");

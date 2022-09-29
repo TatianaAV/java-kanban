@@ -149,17 +149,17 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    /*@Override
-    public void validateTaskInTime(LocalDateTime startTime, Duration duration) throws InvalidTimeException {
-        super.validateTaskInTime(startTime, duration);
-        save();
-    }*/
-
     @Override
     public StatusTask updateSubTask(SubTask subTask) {
         StatusTask status = super.updateSubTask(subTask);
         save();
         return status;
+    }
+
+    @Override
+    public void updateEpicTime(int id) {
+        super.updateEpicTime(id);
+        save();
     }
 
     @Override
@@ -206,6 +206,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTasksManager loadFromFile(File file) {
+
 
         FileBackedTasksManager tasksManager = new FileBackedTasksManager();
         //Для всех прочитанных эпиков нужно рассчитать endTime.

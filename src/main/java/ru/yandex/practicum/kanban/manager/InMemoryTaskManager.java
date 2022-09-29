@@ -38,23 +38,19 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(SubTask subTask) {
+    public void addTask(SubTask subTask) throws InvalidTimeException {
         int id = generatedId();
         subTask.setId(id);
         subTask.setStatus(StatusTask.NEW);
         try {
-            /*
-            Дублирование кода, лучше переменные startTime и duration
-             перенести в метод validateTaskInTime(...). А в сам метод передавать только задачу.
-            validateTaskInTime(subTask);
-Аналогично для таски.
-*/
             validateTaskInTime(subTask);
             subTasksMap.put(id, subTask);
             Epic epic = epicsMap.get(subTask.getEpicId());
             getSubTaskIds(epic).add(id);
             updateEpicStatus(epic);
             updateEpicTime(epic.getId());
+            //я не понимаю этого комментария. Нужно же сделать какой-то вывод сообщения,
+            // если задача не подходит по времени.
             //Корректный исход при невалидном времени выглядит маловероятным.
             // Лучше сделать исключение InvalidTimeException непроверяемым и не перехватывать его.
             // Аналогично для всех методов.
@@ -65,12 +61,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws InvalidTimeException {
         int id = generatedId();
         task.setId(id);
         task.setStatus(StatusTask.NEW);
         task.setId(id);
-       try {
+        try {
             validateTaskInTime(task);
             tasksMap.put(id, task);
         } catch (InvalidTimeException e) {
@@ -126,10 +122,14 @@ public class InMemoryTaskManager implements TaskManager {
         // И еще проверить обновленную задачу на пересечение по времени с уже существующими.
         // Аналогично для сабтаски.
         try {
-            if (task != null)
-                tasksMap.put(task.getId(), task);
+            int id = task.getId();
+            updatePriorityTask(task);
+            tasksMap.put(id, task);
+
         } catch (NullPointerException ignored) {
             System.out.println("Task is null");
+        } catch (InvalidTimeException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -197,7 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
             LocalDateTime subTaskStartTime = subTask.getStartTime();
             LocalDateTime subTaskEndTime = subTask.getEndTime();
             Duration duration = subTask.getDuration();
-            if (subTaskStartTime != null &&  subTaskStartTime.isBefore(startTimeEpic)) {
+            if (subTaskStartTime != null && subTaskStartTime.isBefore(startTimeEpic)) {
                 startTimeEpic = subTaskStartTime;
             }
             if (subTaskEndTime != null && subTaskEndTime.isAfter(endTimeEpic)) {
@@ -211,39 +211,36 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setEndTime(endTimeEpic);
         //По ТЗ:
         //Продолжительность эпика — сумма продолжительности всех его подзадач
-       // epic.setDuration(Duration.ofSeconds(epicDurationInSec));
-       epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime()));
+        // epic.setDuration(Duration.ofSeconds(epicDurationInSec));
+        epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime()));
+        //если подзадачи записаны с промежутком по времени исполнения, то продолжительность эпика должна быть от начала первой задачи до конца последней, не так ли?
     }
 
     @Override
     public StatusTask updateSubTask(SubTask subTask) {
-        //При обновлении задачи нужно актуализировать ее значение в
-        // priorityTask (удалить старое, потом добавить обновленное).
-        // И еще проверить обновленную задачу на пересечение по времени с уже существующими.
-        // Аналогично для сабтаски.
         try {
             final int id = subTask.getId();
             subTasksMap.put(id, subTask);//обновляем подзадачу
             Epic epic = epicsMap.get(subTask.getEpicId());
             updateEpicStatus(epic);
             updateEpicTime(epic.getId());
+            updatePriorityTask(subTask);
             return epic.getStatus();
         } catch (NullPointerException ignored) {
             System.out.println("Task is null");
+        } catch (InvalidTimeException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
 
     @Override
-    public List<Task> getPrioritizedTasks() {//Отсортируйте все задачи по приоритету —
-        // то есть по startTime. Если дата старта не задана, добавьте задачу в конец списка задач,
-        // подзадач, отсортированных по startTime. Напишите новый метод getPrioritizedTasks,
-        // возвращающий список задач и подзадач в заданном порядке.
+    public List<Task> getPrioritizedTasks() {
         List<Task> list = new ArrayList<>(priorityTask);
 
-        for (Task task1 : tasksMap.values()) {
-            if (task1.getStartTime() == null) {
-                list.add(task1);
+        for (Task task : tasksMap.values()) {
+            if (task.getStartTime() == null) {
+                list.add(task);
             }
         }
         for (SubTask subTask : subTasksMap.values()) {
@@ -254,7 +251,7 @@ public class InMemoryTaskManager implements TaskManager {
         return list;
     }
 
-    public void validateTaskInTime(Task task) throws InvalidTimeException {
+    public void validateTaskInTime(Task task) {
         LocalDateTime startTime = task.getStartTime();
         Duration duration = task.getDuration();
 
@@ -263,9 +260,9 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (startTime != null && duration != null) {
             LocalDateTime endTime = startTime.plus(duration);
             int counter = 0;
-            for (Task iTask : priorityTask) {
-                LocalDateTime startTask = iTask.getStartTime();
-                LocalDateTime endTask = iTask.getEndTime();
+            for (Task taskPriority : priorityTask) {
+                LocalDateTime startTask = taskPriority.getStartTime();
+                LocalDateTime endTask = taskPriority.getEndTime();
                 if (!endTime.isAfter(startTask)) {
                     //замена isBefore на !isAfter,
                     // чтобы учесть кейсы, когда начало одной задачи
@@ -328,26 +325,24 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTask() {
-        //Задачи нужно удалить и из priorityTask,
-        // аналогично для сабтасок и сабтасок при удалении эпика.
         if (!tasksMap.isEmpty()) {
             for (Integer id : tasksMap.keySet()) {
                 historyManager.remove(id);
+                removePriorityTaskId(id);
             }
-            tasksMap.clear();
         }
+        tasksMap.clear();
     }
 
     @Override
     public void deleteAllSubTasks() {
-        //Задачи нужно удалить и из priorityTask,
-        // аналогично для сабтасок и сабтасок при удалении эпика.
         if (!subTasksMap.isEmpty()) {
             for (Integer id : epicsMap.keySet()) {//в мапе ищем номер эпика
                 Epic epicDelete = epicsMap.get(id);
                 ArrayList<Integer> subTaskDelete = getSubTaskIds(epicDelete);
-                for (int subTask : subTaskDelete) {
-                    historyManager.remove(subTask);
+                for (int subTaskId : subTaskDelete) {
+                    historyManager.remove(subTaskId);
+                    removePriorityTaskId(subTaskId);
                 }
                 subTaskDelete.clear();
                 epicDelete.setSubTaskIds(subTaskDelete);
@@ -359,13 +354,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllEpic() {//SubTasks не может быть без Epics
-        //Задачи нужно удалить и из priorityTask, //
-        // аналогично для сабтасок и сабтасок при удалении эпика.
+    public void deleteAllEpic() {
         if (!epicsMap.isEmpty() & !subTasksMap.isEmpty()) {
             for (Integer id : subTasksMap.keySet()) {
                 historyManager.remove(id);
-                //priorityTask.remove(id);
+                removePriorityTaskId(id);
             }
             subTasksMap.clear();
             for (Integer id : epicsMap.keySet()) {
@@ -379,19 +372,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(Integer taskId) {//удаление задачи по номеру
-       // Задачи нужно удалить и из priorityTask,
-        // аналогично для сабтасок и сабтасок при удалении эпика.
         if (tasksMap.containsKey(taskId)) {
             tasksMap.remove(taskId);
             historyManager.remove(taskId);
-           // priorityTask.remove(taskId);
+            removePriorityTaskId(taskId);
         }
     }
 
     @Override
     public void deleteSubTask(Integer subTaskId) {//удаление подзадачи по номеру и удаление информации в эпике и обновление эпика
-       //Задачи нужно удалить и из priorityTask,
-        // аналогично для сабтасок и сабтасок при удалении эпика.
         if (subTasksMap.containsKey(subTaskId)) {
             int epicId = subTasksMap.get(subTaskId).getEpicId();//извлекаем Id epic
             Epic epicDelete = epicsMap.get(epicId);
@@ -400,7 +389,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicDelete.setSubTaskIds(subTaskDeleteNumber);//перезаписываем измененный список
             subTasksMap.remove(subTaskId);
             historyManager.remove(subTaskId);
-           // priorityTask.remove(subTaskId);
+            removePriorityTaskId(subTaskId);
             updateEpicStatus(epicDelete);
             updateEpicTime(epicDelete.getId());
         }
@@ -408,18 +397,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpic(int epicId) {//удаление эпика и подзадач с ним связанных
-        //Задачи нужно удалить и из priorityTask,
-        // аналогично для сабтасок и сабтасок при удалении эпика.
         if (!epicsMap.isEmpty() & epicsMap.containsKey(epicId)) {
             Epic epic = epicsMap.get(epicId);
             ArrayList<Integer> subTaskDelete = getSubTaskIds(epic);
             for (int idSubTask : subTaskDelete) {
                 subTasksMap.remove(idSubTask);
                 historyManager.remove(idSubTask);
-               // priorityTask.remove(idSubTask);
+                removePriorityTaskId(idSubTask);
             }
             epicsMap.remove(epicId);
             historyManager.remove(epicId);
         }
+    }
+
+    public void removePriorityTaskId(int id) {
+        priorityTask.removeIf(task -> id == task.getId());
+    }
+
+    public void updatePriorityTask(Task task) throws InvalidTimeException {
+        int id = task.getId();
+        removePriorityTaskId(id);
+        validateTaskInTime(task);
     }
 }
