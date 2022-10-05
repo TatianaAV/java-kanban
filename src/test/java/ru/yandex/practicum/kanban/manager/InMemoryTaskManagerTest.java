@@ -1,8 +1,10 @@
 package ru.yandex.practicum.kanban.manager;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.kanban.manager.emums.StatusTask;
+import ru.yandex.practicum.kanban.manager.exceptions.InvalidTimeException;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
@@ -114,16 +116,20 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void testValidateTimeNotAdd() {
-        System.out.println("testValidateTimeNotAdd()");
+    void testValidateTimeException() {
         Task taskTime = new Task(LocalDateTime.now(), Duration.ofDays(1), "task1", " ");
+        Task taskTimeCopy = new Task(LocalDateTime.now(), Duration.ofDays(1), "task1 (copy)", " ");
         taskManager.addTask(taskTime);
 
-        Task taskTime2 = new Task(LocalDateTime.now(), Duration.ofDays(1), "task1 (copy)", " ");
-        taskManager.addTask(taskTime2);
+        /*assertNotNull(taskManager.getTaskById(taskTime.getId()), "Задача должна быть добавлена");
+        assertNull(taskManager.getTaskById(taskTime2.getId()), "Задача не должна быть добавлена");*/
 
-        assertNotNull(taskManager.getTaskById(taskTime.getId()), "Задача должна быть добавлена");
-        assertNull(taskManager.getTaskById(taskTime2.getId()), "Задача не должна быть добавлена");
-        System.out.println("testValidateTimeNotAdd completed");
+        InvalidTimeException exception =
+                assertThrows(
+                        InvalidTimeException.class, () -> {
+                            taskManager.addTask(taskTimeCopy);
+                        });
+        Assertions.assertNotNull(exception.getMessage());
+        Assertions.assertFalse(exception.getMessage().isBlank());
     }
 }
