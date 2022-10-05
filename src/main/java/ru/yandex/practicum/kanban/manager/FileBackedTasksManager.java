@@ -226,9 +226,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                             switch (type) {
                                 case TASK:
                                     tasksManager.tasksMap.put(id, task);
+                                    tasksManager.updateTask(task);
                                     break;
                                 case EPIC:
                                     tasksManager.epicsMap.put(id, (Epic) task);
+                                    tasksManager.updateEpicTime(task.getId());
                                     break;
                                 case SUBTASK:
                                     tasksManager.subTasksMap.put(id, (SubTask) task);
@@ -236,6 +238,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                                     ArrayList<Integer> listIdSubTask =
                                             tasksManager.epicsMap.get(epicId).getSubTaskIds();
                                     listIdSubTask.add(id);
+                                    tasksManager.updateSubTask((SubTask) task);
                             }
                         }
                     } else {

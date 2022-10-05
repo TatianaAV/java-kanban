@@ -153,7 +153,18 @@ public class Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id
+        boolean timeMatches = true;
+        boolean endTimeMatches = true;
+        boolean durationMatches = true;
+        if (startTime != null && duration != null && getEndTime() != null) {
+            timeMatches = Objects.equals(startTime, task.startTime);
+            durationMatches = duration.equals(task.duration);
+            endTimeMatches = Objects.equals(getEndTime(), task.getEndTime());
+        }
+        return timeMatches
+                && durationMatches
+                && endTimeMatches
+                && id == task.id
                 && title.equals(task.title)
                 && description.equals(task.description)
                 && status == task.status
@@ -162,6 +173,6 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, status, type);
+        return Objects.hash(startTime, duration, id, title, description, status, type);
     }
 }

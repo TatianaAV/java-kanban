@@ -60,6 +60,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         taskManager.addTask(subTask3);
         subTask3.setStatus(StatusTask.IN_PROGRESS);
         taskManager.updateSubTask(subTask3);
+        epic = taskManager.epicsMap.get(epic.getId());
 
         FileBackedTasksManager tasksManager = FileBackedTasksManager.loadFromFile(file);
 
@@ -69,13 +70,14 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertEquals(task, tasks.get(0), "Задачи не совпадают.");
 
         List<Epic> epics = tasksManager.getEpics();
+
         assertNotNull(epics, "Эпики не получаются");
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
-        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
         assertNotNull(epic.getEndTime(), "у эпика не обновилось время при считывании из файла");
 
         assertEquals(epic.getDuration(), subTask1.getDuration().plus(subTask3.getDuration().plus(subTask2.getDuration())),
                 "Обновление времени не происходит");
+        assertEquals(epic, epics.get(0), "Эпики не совпадают.");
 
 
         List<SubTask> subTasks = tasksManager.getSubTasks();

@@ -46,8 +46,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertEquals(epic.getStartTime(), subTask2.getStartTime(), "ошибка добавления эпика.");
         assertEquals(epic.getEndTime(), subTask1.getEndTime(), "ошибка обновления эпика.");
         assertEquals(epic.getDuration(), subTask2.getDuration().plus(subTask1.getDuration()), "ошибка расчета продолжительности эпика.");
-        System.out.println("update epicDuration completed");
-    }
+        }
 
     @Test
     void getPrioritizedTasks() {
@@ -84,9 +83,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertEquals(subTask3, sorted.get(3), "Задачи не совпадают.");
         assertEquals(task, sorted.get(4), "Задачи не совпадают.");
         assertEquals(subTask, sorted.get(5), "Задачи не совпадают.");
-        System.out.println("getPrioritizedTasks completed");
-
-    }
+       }
 
     @Test
     void validateTaskInTimeAdd() {
@@ -110,10 +107,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertEquals(3, tasks.size(), "Неверное количество задач.");
         assertEquals(savedTask1, tasks.get(1), "Задачи не совпадают.");
         assertEquals(savedTask2, tasks.get(2), "Задачи не совпадают.");
-
-        System.out.println("validateTaskInTimeAdd completed");
-
-    }
+}
 
     @Test
     void testValidateTimeException() {

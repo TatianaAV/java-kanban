@@ -29,7 +29,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addTask(epic);
         subTask = new SubTask(3, "Заголовок подзадачи", NEW, " Описание подзадачи", epic.getId());
         taskManager.addTask(subTask);
-    }
+           }
 
     @Test
     void addNewTaskStandard() {
