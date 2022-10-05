@@ -376,9 +376,4 @@ public class InMemoryTaskManager implements TaskManager {
         priorityTask.removeIf(task -> id == task.getId());
     }
 
-    public void updatePriorityTask(Task task) throws InvalidTimeException {
-        int id = task.getId();
-        removePriorityTaskId(id);
-        validateTaskInTime(task);
-    }
 }

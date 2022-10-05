@@ -232,7 +232,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllSubTasks();
 
         assertEquals(taskManager.getPrioritizedTasks(), List.of(task));
-        assertNull(taskManager.getSubTasks(), "Подзадачи не удалены.");
+        assertEquals(taskManager.getSubTasks(), List.of(), "Подзадачи не удалены.");
+
     }
 
     @Test
@@ -253,8 +254,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllEpic();
 
         assertEquals(taskManager.getPrioritizedTasks(), List.of(task));
-        assertNull(taskManager.getEpics(), "Подзадачи не удалены.");
-        assertNull(taskManager.getSubTasks(), "Подзадачи не удалены.");
+        assertEquals(taskManager.getEpics(), List.of(), "Подзадачи не удалены.");
+        assertEquals(taskManager.getSubTasks(), List.of(), "Подзадачи не удалены.");
 
     }
 
@@ -312,8 +313,9 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.deleteEpic(epic.getId());
 
-        assertNull(taskManager.getEpics(), "Подзадачи не удалены.");
-        assertNull(taskManager.getSubTasks(), "Подзадачи не удалены.");
+        assertEquals(taskManager.getEpics(), List.of(), "Неверное количество задач.");
+        assertEquals(taskManager.getSubTasks(), List.of(), "Подзадачи не удалены.");
+
     }
 
     @Test
