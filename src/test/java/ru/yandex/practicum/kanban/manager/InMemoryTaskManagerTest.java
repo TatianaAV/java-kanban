@@ -45,7 +45,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
         assertEquals(epic.getStartTime(), subTask2.getStartTime(), "ошибка добавления эпика.");
         assertEquals(epic.getEndTime(), subTask1.getEndTime(), "ошибка обновления эпика.");
-        assertEquals(epic.getDuration(), Duration.between(subTask2.getStartTime(), subTask1.getEndTime()), "ошибка расчета продолжительности эпика.");
+        assertEquals(epic.getDuration(), subTask2.getDuration().plus(subTask1.getDuration()), "ошибка расчета продолжительности эпика.");
         System.out.println("update epicDuration completed");
     }
 
@@ -120,10 +120,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         Task taskTime = new Task(LocalDateTime.now(), Duration.ofDays(1), "task1", " ");
         Task taskTimeCopy = new Task(LocalDateTime.now(), Duration.ofDays(1), "task1 (copy)", " ");
         taskManager.addTask(taskTime);
-
-        /*assertNotNull(taskManager.getTaskById(taskTime.getId()), "Задача должна быть добавлена");
-        assertNull(taskManager.getTaskById(taskTime2.getId()), "Задача не должна быть добавлена");*/
-
         InvalidTimeException exception =
                 assertThrows(
                         InvalidTimeException.class, () -> {

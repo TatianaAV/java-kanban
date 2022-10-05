@@ -103,10 +103,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        //При обновлении задачи нужно актуализировать ее значение в
-        // priorityTask (удалить старое, потом добавить обновленное).
-        // И еще проверить обновленную задачу на пересечение по времени с уже существующими.
-        // Аналогично для сабтаски.
       Task savedTask = tasksMap.get(task.getId());
       if (savedTask == null){
           return;
@@ -117,8 +113,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public void updateEpicStatus(Epic epic) {
-        try {
-            if (epic != null) {
+             if (epic != null) {
                 ArrayList<Integer> changeEpic = getSubTaskIds(epic);
                 if (!changeEpic.isEmpty()) {
                     int countNew = 0;
@@ -156,10 +151,9 @@ public class InMemoryTaskManager implements TaskManager {
                     epic.setStatus(StatusTask.NEW);
                 }
                 epicsMap.put(epic.getId(), epic);
-            }
-        } catch (NullPointerException ignored) {
-            System.out.println("Task is null");
-        }
+            } else {
+                 System.out.println("Task is null");
+             }
     }
 
     @Override
@@ -194,10 +188,8 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setEndTime(endTimeEpic);
         //По ТЗ:
         //Продолжительность эпика — сумма продолжительности всех его подзадач
-        // epic.setDuration(Duration.ofSeconds(epicDurationInSec));
-        epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime()));
-        //если подзадачи записаны с промежутком по времени исполнения, то продолжительность эпика должна быть от начала первой задачи до конца последней, не так ли?
-    }
+         epic.setDuration(Duration.ofSeconds(epicDurationInSec));
+        }
 
     @Override
     public void updateSubTask(SubTask subTask) {
