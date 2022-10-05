@@ -206,6 +206,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getPrioritizedTasks() {
+        //ТЗ: Если дата старта не задана,
+        // добавьте задачу в конец списка задач,
+        // подзадач, отсортированных по startTime.
         List<Task> list = new ArrayList<>(priorityTask);
 
         for (Task task : tasksMap.values()) {
@@ -253,27 +256,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getTasks() {//получение списка задач
-        ArrayList<Task> allTasks = new ArrayList<>();
-        if (tasksMap.isEmpty()) {
-            return allTasks;
-        }
-        allTasks = new ArrayList<>(tasksMap.values());
-        return allTasks;
+        return new ArrayList<>(tasksMap.values());
     }
 
     @Override
     public ArrayList<Epic> getEpics() {//получение списка эпиков
-        if (epicsMap.isEmpty()) {
-            return null;
-        }
         return new ArrayList<>(epicsMap.values());
     }
 
     @Override
     public ArrayList<SubTask> getSubTasks() {//получение списка всех подзадач
-        if (subTasksMap.isEmpty()) {
-            return null;
-        }
         return new ArrayList<>(subTasksMap.values());
     }
 
