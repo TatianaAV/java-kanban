@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.yandex.practicum.kanban.manager.StatusTask.*;
+import static ru.yandex.practicum.kanban.manager.emums.StatusTask.*;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 

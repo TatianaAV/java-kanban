@@ -1,6 +1,6 @@
 package ru.yandex.practicum.kanban.tasks;
 
-import ru.yandex.practicum.kanban.manager.StatusTask;
+import ru.yandex.practicum.kanban.manager.emums.StatusTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

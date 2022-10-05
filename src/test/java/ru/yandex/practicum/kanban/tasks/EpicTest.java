@@ -3,7 +3,7 @@ package ru.yandex.practicum.kanban.tasks;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.kanban.manager.Managers;
-import ru.yandex.practicum.kanban.manager.StatusTask;
+import ru.yandex.practicum.kanban.manager.emums.StatusTask;
 import ru.yandex.practicum.kanban.manager.TaskManager;
 
 import java.time.Duration;

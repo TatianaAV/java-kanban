@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.manager;
+package ru.yandex.practicum.kanban.manager.exceptions;
 
 import java.time.LocalDateTime;
 

@@ -1,7 +1,7 @@
 package ru.yandex.practicum.kanban;
 
 import ru.yandex.practicum.kanban.manager.Managers;
-import ru.yandex.practicum.kanban.manager.StatusTask;
+import ru.yandex.practicum.kanban.manager.emums.StatusTask;
 import ru.yandex.practicum.kanban.manager.TaskManager;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
