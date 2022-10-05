@@ -73,7 +73,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertEquals(1, epics.size(), "Неверное количество эпиков.");
         assertEquals(epic, epics.get(0), "Эпики не совпадают.");
         assertNotNull(epic.getEndTime(), "у эпика не обновилось время при считывании из файла");
-        
+
         assertEquals(epic.getDuration(), subTask1.getDuration().plus(subTask3.getDuration().plus(subTask2.getDuration())),
                 "Обновление времени не происходит");
 

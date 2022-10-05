@@ -103,57 +103,57 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-      Task savedTask = tasksMap.get(task.getId());
-      if (savedTask == null){
-          return;
-      }
-      removePriorityTaskId(savedTask.getId());
-      validateTaskInTime(task);
-      tasksMap.put(savedTask.getId(), task);
+        Task savedTask = tasksMap.get(task.getId());
+        if (savedTask == null) {
+            return;
+        }
+        removePriorityTaskId(savedTask.getId());
+        validateTaskInTime(task);
+        tasksMap.put(savedTask.getId(), task);
     }
 
     public void updateEpicStatus(Epic epic) {
-             if (epic != null) {
-                ArrayList<Integer> changeEpic = getSubTaskIds(epic);
-                if (!changeEpic.isEmpty()) {
-                    int countNew = 0;
-                    int countDone = 0;
+        if (epic != null) {
+            ArrayList<Integer> changeEpic = getSubTaskIds(epic);
+            if (!changeEpic.isEmpty()) {
+                int countNew = 0;
+                int countDone = 0;
 
-                    for (Integer subTaskId : changeEpic) {
-                        StatusTask statusSubTask = subTasksMap.get(subTaskId).getStatus();//СТАТУС ПОДЗАДАЧИ
+                for (Integer subTaskId : changeEpic) {
+                    StatusTask statusSubTask = subTasksMap.get(subTaskId).getStatus();//СТАТУС ПОДЗАДАЧИ
 
-                        switch (statusSubTask) {
+                    switch (statusSubTask) {
 
-                            case NEW:
-                                ++countNew;
-                                break;
+                        case NEW:
+                            ++countNew;
+                            break;
 
-                            case DONE:
-                                ++countDone;
-                                break;
+                        case DONE:
+                            ++countDone;
+                            break;
 
-                            case IN_PROGRESS:
-                                epic.setStatus(StatusTask.IN_PROGRESS);
-                                break;
+                        case IN_PROGRESS:
+                            epic.setStatus(StatusTask.IN_PROGRESS);
+                            break;
 
-                            default:
-                                break;
-                        }
+                        default:
+                            break;
                     }
-                    if (countNew == changeEpic.size()) {
-                        epic.setStatus(StatusTask.NEW);
-                    } else if (countDone == changeEpic.size()) {
-                        epic.setStatus(StatusTask.DONE);
-                    } else {
-                        epic.setStatus(StatusTask.IN_PROGRESS);
-                    }
-                } else {
-                    epic.setStatus(StatusTask.NEW);
                 }
-                epicsMap.put(epic.getId(), epic);
+                if (countNew == changeEpic.size()) {
+                    epic.setStatus(StatusTask.NEW);
+                } else if (countDone == changeEpic.size()) {
+                    epic.setStatus(StatusTask.DONE);
+                } else {
+                    epic.setStatus(StatusTask.IN_PROGRESS);
+                }
             } else {
-                 System.out.println("Task is null");
-             }
+                epic.setStatus(StatusTask.NEW);
+            }
+            epicsMap.put(epic.getId(), epic);
+        } else {
+            System.out.println("Task is null");
+        }
     }
 
     @Override
@@ -188,23 +188,20 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setEndTime(endTimeEpic);
         //По ТЗ:
         //Продолжительность эпика — сумма продолжительности всех его подзадач
-         epic.setDuration(Duration.ofSeconds(epicDurationInSec));
-        }
+        epic.setDuration(Duration.ofSeconds(epicDurationInSec));
+    }
 
     @Override
     public void updateSubTask(SubTask subTask) {
-        try {
-            final int id = subTask.getId();
-            subTasksMap.put(id, subTask);//обновляем подзадачу
-            Epic epic = epicsMap.get(subTask.getEpicId());
-            updateEpicStatus(epic);
-            updateEpicTime(epic.getId());
-            updatePriorityTask(subTask);
-        } catch (NullPointerException ignored) {
-            System.out.println("Task is null");
-        } catch (InvalidTimeException e) {
-            throw new RuntimeException(e);
+        SubTask savedTask = subTasksMap.get(subTask.getId());
+        if (savedTask == null) {
+            return;
         }
+        removePriorityTaskId(savedTask.getId());
+        validateTaskInTime(subTask);
+        Epic epic = epicsMap.get(subTask.getEpicId());
+        updateEpicStatus(epic);
+        updateEpicTime(epic.getId());
     }
 
     @Override
