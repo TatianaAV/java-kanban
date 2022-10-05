@@ -217,7 +217,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public StatusTask updateSubTask(SubTask subTask) {
+    public void updateSubTask(SubTask subTask) {
         try {
             final int id = subTask.getId();
             subTasksMap.put(id, subTask);//обновляем подзадачу
@@ -225,13 +225,11 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicStatus(epic);
             updateEpicTime(epic.getId());
             updatePriorityTask(subTask);
-            return epic.getStatus();
         } catch (NullPointerException ignored) {
             System.out.println("Task is null");
         } catch (InvalidTimeException e) {
             throw new RuntimeException(e);
         }
-        return null;
     }
 
     @Override
