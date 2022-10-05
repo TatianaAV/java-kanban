@@ -203,9 +203,10 @@ public class Main {
                                     System.out.println("не верный выбор");
                                 }
                                 //отправить для изменения подзадачу
-                                StatusTask newStatusEpic1 = manager.updateSubTask(changeSubTask);
-                                System.out.println("Подзадача " + manager.getSubTaskById(subTaskIdByUpgrade)
-                                        + " статус эпика " + (newStatusEpic1));
+                               manager.updateSubTask(changeSubTask);
+                                SubTask subTask = manager.getSubTaskById(subTaskIdByUpgrade);
+                                System.out.println("Подзадача " + subTask
+                                        + " статус эпика " + subTask.getStatus());
                             } else {
                                 System.out.println("Подзадачи c " + subTaskIdByUpgrade +
                                         " номером нет");
