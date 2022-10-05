@@ -57,7 +57,6 @@ public class InMemoryTaskManager implements TaskManager {
         int id = generatedId();
         task.setId(id);
         task.setStatus(StatusTask.NEW);
-        task.setId(id);
         validateTaskInTime(task);
         tasksMap.put(id, task);
     }
@@ -108,16 +107,13 @@ public class InMemoryTaskManager implements TaskManager {
         // priorityTask (удалить старое, потом добавить обновленное).
         // И еще проверить обновленную задачу на пересечение по времени с уже существующими.
         // Аналогично для сабтаски.
-        try {
-            int id = task.getId();
-            updatePriorityTask(task);
-            tasksMap.put(id, task);
-
-        } catch (NullPointerException ignored) {
-            System.out.println("Task is null");
-        } catch (InvalidTimeException e) {
-            throw new RuntimeException(e);
-        }
+      Task savedTask = tasksMap.get(task.getId());
+      if (savedTask == null){
+          return;
+      }
+      removePriorityTaskId(savedTask.getId());
+      validateTaskInTime(task);
+      tasksMap.put(savedTask.getId(), task);
     }
 
     public void updateEpicStatus(Epic epic) {
