@@ -40,41 +40,26 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void addTask(SubTask subTask) throws InvalidTimeException {
+    public void addTask(SubTask subTask) {
         int id = generatedId();
         subTask.setId(id);
         subTask.setStatus(StatusTask.NEW);
-        try {
-            validateTaskInTime(subTask);
-            subTasksMap.put(id, subTask);
-            Epic epic = epicsMap.get(subTask.getEpicId());
-            getSubTaskIds(epic).add(id);
-            updateEpicStatus(epic);
-            updateEpicTime(epic.getId());
-            //я не понимаю этого комментария. Нужно же сделать какой-то вывод сообщения,
-            // если задача не подходит по времени.
-            //Корректный исход при невалидном времени выглядит маловероятным.
-            // Лучше сделать исключение InvalidTimeException непроверяемым и не перехватывать его.
-            // Аналогично для всех методов.
-        } catch (InvalidTimeException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getTime());
-        }
+        validateTaskInTime(subTask);
+        subTasksMap.put(id, subTask);
+        Epic epic = epicsMap.get(subTask.getEpicId());
+        getSubTaskIds(epic).add(id);
+        updateEpicStatus(epic);
+        updateEpicTime(epic.getId());
     }
 
     @Override
-    public void addTask(Task task) throws InvalidTimeException {
+    public void addTask(Task task) {
         int id = generatedId();
         task.setId(id);
         task.setStatus(StatusTask.NEW);
         task.setId(id);
-        try {
-            validateTaskInTime(task);
-            tasksMap.put(id, task);
-        } catch (InvalidTimeException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getTime());
-        }
+        validateTaskInTime(task);
+        tasksMap.put(id, task);
     }
 
     @Override
