@@ -176,8 +176,7 @@ public class InMemoryTaskManager implements TaskManager {
             Duration duration = subTask.getDuration();
             if (subTaskStartTime != null && subTaskStartTime.isBefore(startTimeEpic)) {
                 startTimeEpic = subTaskStartTime;
-            }
-            if (subTaskEndTime != null && subTaskEndTime.isAfter(endTimeEpic)) {
+            }           if (subTaskEndTime != null && subTaskEndTime.isAfter(endTimeEpic)) {
                 endTimeEpic = subTaskEndTime;
             }
             if (duration != null) {
@@ -186,8 +185,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         epic.setStartTime(startTimeEpic);
         epic.setEndTime(endTimeEpic);
-        //По ТЗ:
-        //Продолжительность эпика — сумма продолжительности всех его подзадач
         epic.setDuration(Duration.ofSeconds(epicDurationInSec));
     }
 
@@ -199,6 +196,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         removePriorityTaskId(savedTask.getId());
         validateTaskInTime(subTask);
+        subTasksMap.put(subTask.getId(), subTask);
         Epic epic = epicsMap.get(subTask.getEpicId());
         updateEpicStatus(epic);
         updateEpicTime(epic.getId());

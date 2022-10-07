@@ -1,5 +1,7 @@
 startTime,duration,id,type,name,status,description,epic
 null,null,1,TASK,Заголовок задачи,NEW,Описание задачи
-+999999999-12-31T23:59:59.999999999,PT0S,2,EPIC,Заголовок эпика,NEW,Описание Эпика
-null,null,3,SUBTASK,Заголовок подзадачи,NEW, Описание подзадачи,epic,2
+2022-10-07T22:44:34.391766,PT59S,2,EPIC,Заголовок эпика,DONE,Описание Эпика
+null,null,3,SUBTASK,Заголовок подзадачи,DONE, Описание подзадачи,epic,2
+2022-10-07T22:44:34.391766,PT59S,4,SUBTASK,subtask now,DONE,Description,epic,2
 
+3,4

@@ -164,6 +164,44 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
+    void updateSubtaskTest() {
+        SubTask id4 = new SubTask(LocalDateTime.now().plusMinutes(3), Duration.ofSeconds(59), "subtask now", "Description", epic.getId());
+        taskManager.addTask(id4);
+
+        final SubTask subTaskId3 = taskManager.getSubTaskById(subTask.getId());
+        final SubTask subTaskId4 = taskManager.getSubTaskById(id4.getId());
+
+        assertEquals(taskManager.getPrioritizedTasks().get(0), subTaskId4, "Задача не найдена.");
+        assertEquals(taskManager.getPrioritizedTasks().get(2), subTaskId3, "Задача не найдена.");
+        assertNotNull(subTaskId3, "Задача не найдена.");
+        assertNotNull(subTaskId4, "Задача не найдена.");
+
+        subTaskId3.setStatus(IN_PROGRESS);
+        subTaskId4.setStatus(IN_PROGRESS);
+
+        taskManager.updateSubTask(subTaskId3);
+        taskManager.updateSubTask(subTaskId4);
+
+        assertEquals(subTask, subTaskId3, "Задачи не совпадают.");
+        assertEquals(id4, subTaskId4, "Задачи не совпадают.");
+        assertEquals(epic.getStatus(),IN_PROGRESS, "Статус эпика не изменился");
+
+        subTaskId3.setStatus(DONE);
+        subTaskId4.setStatus(DONE);
+        taskManager.updateSubTask(subTaskId3);
+        taskManager.updateSubTask(subTaskId4);
+
+        assertEquals(taskManager.getPrioritizedTasks().get(0), subTaskId4, "Задача не найдена.");
+        assertEquals(taskManager.getPrioritizedTasks().get(2), subTaskId3, "Задача не найдена.");
+        assertEquals(subTask, subTaskId3, "Задачи не совпадают.");
+        assertEquals(id4, subTaskId4, "Задачи не совпадают.");
+        assertEquals(epic.getStatus(), DONE, "Задачи не совпадают.");
+        assertEquals(epic.getStartTime(), subTaskId4.getStartTime(), "Задачи не совпадают.");
+        assertEquals(epic.getEndTime(), subTaskId4.getEndTime(), "Задачи не совпадают.");
+        assertEquals(epic.getDuration(), subTaskId4.getDuration(), "Задачи не совпадают.");
+    }
+
+    @Test
     void getSubTasksByEpicStandard() {
         final int epicId = epic.getId();
 
