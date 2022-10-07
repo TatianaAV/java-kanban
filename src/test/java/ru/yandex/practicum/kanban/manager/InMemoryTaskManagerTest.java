@@ -83,7 +83,6 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         assertEquals(subTask3, sorted.get(3), "Задачи не совпадают.");
         assertEquals(task, sorted.get(4), "Задачи не совпадают.");
         assertEquals(subTask, sorted.get(5), "Задачи не совпадают.");
-        taskManager.getPrioritizedTasks().forEach(System.out::println);
        }
 
     @Test
