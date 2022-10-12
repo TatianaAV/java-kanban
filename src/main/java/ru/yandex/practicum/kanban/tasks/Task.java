@@ -1,6 +1,7 @@
 package ru.yandex.practicum.kanban.tasks;
 
 import ru.yandex.practicum.kanban.manager.emums.StatusTask;
+import ru.yandex.practicum.kanban.user.User;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 public class Task {
 
+    protected User user;
     protected int id;
     protected String title;
     protected String description;
@@ -61,6 +63,13 @@ public class Task {
         this.description = description;
         this.type = TypeTasks.TASK;
     }
+    public Task(int id, String title, String description, User user) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.type = TypeTasks.TASK;
+        this.user = user;
+    }
 
     public Task(LocalDateTime startTime, Duration duration, int id, String title, StatusTask status, String description) {
         this.startTime = startTime;
@@ -70,6 +79,28 @@ public class Task {
         this.description = description;
         this.title = title;
         this.type = TypeTasks.TASK;
+    }
+
+    public Task(LocalDateTime startTime, Duration duration, String title, String description, User user) {
+        this.startTime = startTime;
+        this.duration = duration;
+        this.description = description;
+        this.title = title;
+        this.type = TypeTasks.TASK;
+        this.user = user;
+    }
+    public Task(Task task) {
+        this.startTime = startTime;
+        this.duration = duration;
+        this.id = id;
+        this.status = status;
+        this.description = description;
+        this.title = title;
+        this.type = TypeTasks.TASK;
+        this.user = user;
+    }
+
+    public Task(String title, String description, StatusTask status, int id, LocalDateTime startTime, Duration duration, User user) {
     }
 
     public Duration getDuration() {
@@ -174,5 +205,9 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(startTime, duration, id, title, description, status, type);
+    }
+
+    public User getUser() {
+        return user;
     }
 }
