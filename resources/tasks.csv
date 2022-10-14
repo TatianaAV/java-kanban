@@ -1,6 +1,4 @@
 startTime,duration,id,type,name,status,description,epic
-2022-10-13T00:04:19.524012,PT1H,1,TASK,Test task,NEW,Test task description
 null,null,2,TASK,Test task2,NEW,Test description2
 null,null,3,TASK,Test task3,NEW,Test  description3
 
-1

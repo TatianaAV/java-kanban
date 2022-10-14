@@ -5,9 +5,9 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.manager.TaskManager;
+import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.Objects;
 
@@ -63,7 +63,7 @@ public class HttpTaskServer {
                     httpExchange.sendResponseHeaders(405, 0);
                 }
             }
-        }catch (Exception exception){
+        } catch (Exception exception) {
             System.out.println("Ошибка обработки запроса");
         } finally {
             httpExchange.close();
@@ -81,108 +81,139 @@ public class HttpTaskServer {
 
     }
 
-    private void handleSubtask(HttpExchange httpExchange) {
-
-    }
-
-    private void handleTasks(HttpExchange httpExchange) throws IOException {
+    private void handleSubtask(HttpExchange httpExchange) throws IOException {
         String requestMethod = httpExchange.getRequestMethod();
-String query = httpExchange.getRequestURI().getQuery();
+        String query = httpExchange.getRequestURI().getQuery();
+        String body = readText(httpExchange);
         switch (requestMethod) {
             case "GET":
                 if (Objects.nonNull(query)) {
                     String idString = query.substring(3);
-                    int id = Integer.parseInt(idString);
+                    int id = parsePathId(idString);
                     final String response = gson.toJson(taskManager.getTaskById(id));
+                    if (id != -1 && !response.equals("null")) {
+                        sendText(httpExchange, response);
+                        return;
+                    } else {
+                        System.out.println("Нет задачи с идентификатором -" + id);
+                        httpExchange.sendResponseHeaders(404, 0);
 
-                    sendText(httpExchange, response);
-                   return;
-                }
-                else {
+                    }
+                } else {
                     final String response = gson.toJson(taskManager.getTasks());
                     sendText(httpExchange, response);
                 }
                 break;
             case "POST":
-               //
+                Task task = gson.fromJson(body, Task.class);
+
+                if (Objects.nonNull(task)) {
+                    if (task.getId() != 0 && task.getStatus() != null) {
+                        taskManager.updateTask(task);
+                        httpExchange.sendResponseHeaders(201, 0);
+                    } else {
+                        taskManager.addTask(task);
+                        httpExchange.sendResponseHeaders(201, 0);
+                    }
+
+                    return;
+                } else {
+                    System.out.println("Попробуйте еще раз добавить задачу");
+                    httpExchange.sendResponseHeaders(405, 0);
+                }
                 break;
             case "DELETE":
-               //
+                if (Objects.nonNull(query)) {
+                    String idString = query.substring(3);
+                    int id = parsePathId(idString);
+                    if (id != -1) {
+                        taskManager.deleteTask(id);
+                        sendText(httpExchange, "Задача " + id + " удалена");
+                        return;
+                    } else {
+                        System.out.println("Нет задачи с идентификатором -" + id);
+                        httpExchange.sendResponseHeaders(404, 0);
+                    }
+                } else {
+                    taskManager.deleteAllTask();
+                    sendText(httpExchange, "Удалены все задачи");
+                }
                 break;
             default: {
-                System.out.println("/ ждем GET-запрос или DELETE-запрос, а получили - " + requestMethod);
+                System.out.println("/ ждем GET-запрос, POST-запрос, DELETE-запрос, а получили - " + requestMethod);
+                httpExchange.sendResponseHeaders(405, 0);
+            }
+        }
+    }
+
+    private void handleTasks(HttpExchange httpExchange) throws IOException {
+        String requestMethod = httpExchange.getRequestMethod();
+        String query = httpExchange.getRequestURI().getQuery();
+        String body = readText(httpExchange);
+        switch (requestMethod) {
+            case "GET":
+                if (Objects.nonNull(query)) {
+                    String idString = query.substring(3);
+                    int id = parsePathId(idString);
+                    final String response = gson.toJson(taskManager.getTaskById(id));
+                    if (id != -1 && !response.equals("null")) {
+                        sendText(httpExchange, response);
+                        return;
+                    } else {
+                        System.out.println("Нет задачи с идентификатором -" + id);
+                        httpExchange.sendResponseHeaders(404, 0);
+
+                    }
+                } else {
+                    final String response = gson.toJson(taskManager.getTasks());
+                    sendText(httpExchange, response);
+                }
+                break;
+            case "POST":
+                Task task = gson.fromJson(body, Task.class);
+                if (Objects.nonNull(task)) {
+                    if (task.getId() != 0 && task.getStatus() != null) {
+                        taskManager.updateTask(task);
+                        httpExchange.sendResponseHeaders(201, 0);
+                    } else {
+                        taskManager.addTask(task);
+                        httpExchange.sendResponseHeaders(201, 0);
+                    }
+
+                    return;
+                } else {
+                    System.out.println("Попробуйте еще раз добавить задачу");
+                    httpExchange.sendResponseHeaders(405, 0);
+                }
+                break;
+            case "DELETE":
+                if (Objects.nonNull(query)) {
+                    String idString = query.substring(3);
+                    int id = Integer.parseInt(idString);
+                    taskManager.deleteTask(id);
+                    sendText(httpExchange, "Задача " + id + " удалена");
+                    return;
+                } else {
+                    taskManager.deleteAllTask();
+                    sendText(httpExchange, "Удалены все задачи");
+                }
+                break;
+            default: {
+                System.out.println("/ ждем GET-запрос, POST-запрос, DELETE-запрос, а получили - " + requestMethod);
                 httpExchange.sendResponseHeaders(405, 0);
             }
         }
 
     }
 
-/*
 
-                {
-
-
-                    if (Pattern.matches("^/api/v1/tasks/task$", path)) {
-                        final String response = gson.toJson(taskManager.getTasks());
-                        sendText(httpExchange, response);
-                        return;
-                    }
-                    if (Pattern.matches("^/api/v1/tasks/subtask$", path)) {
-                        final String response = gson.toJson(taskManager.getSubTasks());
-                        sendText(httpExchange, response);
-                        return;
-                    }
-                    if (Pattern.matches("^/api/v1/tasks/epic$", path)) {
-                        final String response = gson.toJson(taskManager.getEpics());
-                        sendText(httpExchange, response);
-                        return;
-                    }
-
-                    if (Pattern.matches("^/api/v1/tasks/\\d+$", path)) {
-                        String idString = path.replaceFirst("/api/v1/tasks/", "");
-                        int id = parsePathId(idString);
-                        if (id != -1) {
-                            final String response = gson.toJson(taskManager.getTaskById(id));
-                            sendText(httpExchange, response);
-                            return;
-                        } else {
-                            System.out.println("Нет задачи с идентификатором -" + id);
-                            httpExchange.sendResponseHeaders(404, 0);
-                        }
-                    }
-                    break;
-                }
-                case "DELETE": {
-                    if (Pattern.matches("^/api/v1/tasks/\\d+$", path)) {
-                        String idString = path.replaceFirst("/api/v1/tasks/", "");
-                        int id = parsePathId(idString);
-                        if (id != -1) {
-                            taskManager.deleteAllTask();
-                            System.out.println("Удалили все задачи");
-                            httpExchange.sendResponseHeaders(200, 0);
-                        }
-                    }
-                    break;
-                }
-                default: {
-                    System.out.println("/ ждем GET-запрос или DELETE-запрос, а получили - " + requestMethod);
-                    httpExchange.sendResponseHeaders(405, 0);
-                }
-            }
-        } catch (Exception exception) {
-            System.out.println("Ошибка при обработка запроса");
-        } finally {
-            httpExchange.close();
-        }
-    }*/
-
-   /* private int parsePathId(String idString) {
+    private int parsePathId(String idString) {
         try {
             return Integer.parseInt(idString);
         } catch (NumberFormatException e) {
             return -1;
         }
-    }*/
+    }
 
     public void start() {
         System.out.println("Started TaskServer " + PORT);

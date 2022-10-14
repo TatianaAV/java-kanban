@@ -32,7 +32,5 @@ public final class Managers {
         return gsonBuilder.create();
     }
 
-    public static UserManager getDefaultUser() {
-        return new InMemoryUserManager();
-    }
+
 }
