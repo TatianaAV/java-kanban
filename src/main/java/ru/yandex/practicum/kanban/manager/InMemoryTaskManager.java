@@ -2,6 +2,7 @@ package ru.yandex.practicum.kanban.manager;
 
 import ru.yandex.practicum.kanban.manager.emums.StatusTask;
 import ru.yandex.practicum.kanban.manager.exceptions.InvalidTimeException;
+import ru.yandex.practicum.kanban.manager.exceptions.ManagerSaveException;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
@@ -41,15 +42,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(SubTask subTask) {
-        int id = generatedId();
-        subTask.setId(id);
-        subTask.setStatus(StatusTask.NEW);
-        validateTaskInTime(subTask);
-        subTasksMap.put(id, subTask);
-        Epic epic = epicsMap.get(subTask.getEpicId());
-        getSubTaskIds(epic).add(id);
-        updateEpicStatus(epic);
-        updateEpicTime(epic.getId());
+        if (!epicsMap.containsKey(subTask.getEpicId())) {
+            throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
+        } else{
+                Epic epic = epicsMap.get(subTask.getEpicId());
+                int id = generatedId();
+                subTask.setId(id);
+                subTask.setStatus(StatusTask.NEW);
+                validateTaskInTime(subTask);
+                subTasksMap.put(id, subTask);
+                getSubTaskIds(epic).add(id);
+                updateEpicStatus(epic);
+                updateEpicTime(epic.getId());
+            }
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import ru.yandex.practicum.kanban.manager.adapter.DurationAdapter;
 import ru.yandex.practicum.kanban.manager.adapter.LocalDateTimeAdapter;
+import ru.yandex.practicum.kanban.manager.adapter.SubTaskAdapter;
+import ru.yandex.practicum.kanban.tasks.SubTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -28,7 +30,9 @@ public final class Managers {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setPrettyPrinting()
           .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-        .registerTypeAdapter(Duration.class, new DurationAdapter());
+        .registerTypeAdapter(Duration.class, new DurationAdapter())
+       // .registerTypeAdapter(SubTask.class, new SubTaskAdapter())
+        ;
         return gsonBuilder.create();
     }
 
