@@ -62,7 +62,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         taskManager.updateSubTask(subTask3);
         epic = taskManager.epicsMap.get(epic.getId());
 
-        FileBackedTasksManager tasksManager = FileBackedTasksManager.loadFromFile(file);
+        FileBackedTasksManager tasksManager = FileBackedTasksManager.loadedFromFileTasksManager();
 
         List<Task> tasks = tasksManager.getTasks();
         assertNotNull(tasks, "Задачи не получаются");
@@ -92,11 +92,12 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     void testExpectedException() {
+        FileBackedTasksManager fileBackedTasksManager = FileBackedTasksManager.loadedFromFileTasksManager();
         ManagerSaveException exception =
                 assertThrows(
                         ManagerSaveException.class, () -> {
-                            file = new File("resources/tasks1.csv");
-                            FileBackedTasksManager.loadFromFile(file);
+                            file.delete();
+                            fileBackedTasksManager.loadFromFile();
                         });
         Assertions.assertNotNull(exception.getMessage());
         Assertions.assertFalse(exception.getMessage().isBlank());

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
+       protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
     protected final HashMap<Integer, Epic> epicsMap = new HashMap<>();
     protected final HashMap<Integer, SubTask> subTasksMap = new HashMap<>();
     protected TreeSet<Task> priorityTask =
@@ -69,7 +69,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {//задача из таблицы сохраняется в истории просмотра
         if (!tasksMap.containsKey(id)) {
-            return null;
+            throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
         } else {
             Task task = tasksMap.get(id);
             historyManager.addHistory(task);
@@ -85,7 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpicById(int id) {
         //эпик из таблицы по номеру сохраняется в истории просмотра
         if (!epicsMap.containsKey(id)) {
-            return null;
+             throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
         } else {
             Epic task = epicsMap.get(id);
             historyManager.addHistory(task);
@@ -98,7 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
     public SubTask getSubTaskById(int id) {
         //подзадача из таблицы сохраняется в истории просмотра
         if (!subTasksMap.containsKey(id)) {
-            return null;
+            throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
         } else {
             SubTask task = subTasksMap.get(id);
             historyManager.addHistory(task);
@@ -270,6 +270,20 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<SubTask> getSubTasks() {//получение списка всех подзадач
         return new ArrayList<>(subTasksMap.values());
+    }
+
+    @Override
+    public Map<Integer, Task> getTasksMap() {
+        return tasksMap;
+    }
+
+@Override
+    public Map<Integer, Epic> getEpicsMap() {
+        return epicsMap;
+    }
+@Override
+    public Map<Integer, SubTask> getSubTasksMap() {
+        return subTasksMap;
     }
 
     @Override

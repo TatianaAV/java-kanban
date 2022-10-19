@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CSVFormatter {
 
-    protected static String historyToString(HistoryManager history) { //запись истории в строку
+    public static String historyToString(HistoryManager history) { //запись истории в строку
         var historyList = history.getHistory();
         List<String> ids = new ArrayList<>();
         for (Task task : historyList) {

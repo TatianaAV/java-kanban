@@ -1,9 +1,8 @@
-package ru.yandex.practicum.kanban.manager.json;
+package ru.yandex.practicum.kanban.manager.HTTPmanager;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import ru.yandex.practicum.kanban.manager.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.manager.TaskManager;
 import ru.yandex.practicum.kanban.manager.exceptions.InvalidTimeException;
@@ -12,7 +11,6 @@ import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.regex.Pattern;
@@ -29,7 +27,8 @@ public class HttpTaskServer {
 
 
     public HttpTaskServer() throws IOException {
-        this(Managers.getDefaultFileBackedTaskManager());
+        this(Managers.loadedHTTPTasksManager());
+        //Managers.loadedHTTPTasksManager();
     }
 
     public HttpTaskServer(TaskManager taskManager) throws IOException, ManagerSaveException, InvalidTimeException {
@@ -46,16 +45,13 @@ public class HttpTaskServer {
     }
 
     private void handle(HttpExchange httpExchange) throws IOException {
-        FileBackedTasksManager.loadFromFile(new File("resources/tasks.csv"));
+
         try {
             System.out.println("\n" + httpExchange
                     .getRequestURI()
-                    //)
                     .getPath());
 
-            final String path = httpExchange.getRequestURI().getPath()
-                    //.replaceFirst("/tasks", "")
-                    ;
+            final String path = httpExchange.getRequestURI().getPath();
             String requestMethod = httpExchange.getRequestMethod();
             String query = httpExchange.getRequestURI().getQuery();
             String body = readText(httpExchange);
@@ -133,10 +129,12 @@ public class HttpTaskServer {
                     }
                     break;
                 case "POST":
-                    if (!body.equals("")) {
+
+                    if (body.contains("title")) {
                         if (Pattern.matches("^/tasks/task$", path)) {
                             Task task = gson.fromJson(body, Task.class);
                             if (task.getId() != 0 && task.getStatus() != null) {
+
                                 taskManager.updateTask(task);
                             } else {
                                 taskManager.addTask(task);

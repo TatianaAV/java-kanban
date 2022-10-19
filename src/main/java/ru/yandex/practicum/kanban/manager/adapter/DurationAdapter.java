@@ -14,7 +14,7 @@ public class DurationAdapter extends TypeAdapter<Duration> {
     @Override
     public void write(JsonWriter jsonWriter, Duration duration) throws IOException {
         Object value = Objects.nonNull(duration) ? duration : Duration.ZERO;
-        jsonWriter.value(value.toString() /*String.format("%02d:%02d:%02d", s/ 3600, (s% 3600) / 60, (s% 60))*/);
+        jsonWriter.value(value.toString());
 
     }
 

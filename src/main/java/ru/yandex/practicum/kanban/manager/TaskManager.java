@@ -6,6 +6,7 @@ import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
 
@@ -27,6 +28,12 @@ public interface TaskManager {
     void updateEpicTime(int epicId);
 
     void updateSubTask(SubTask subTask);
+
+    Map<Integer, Task> getTasksMap();
+
+    Map<Integer, Epic> getEpicsMap();
+
+    Map<Integer, SubTask> getSubTasksMap();
 
     ArrayList<SubTask> getSubTasksByEpic(Integer epicId);
 

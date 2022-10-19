@@ -1,7 +1,9 @@
 startTime,duration,id,type,name,status,description,epic
-2022-10-13T02:09:27.507020,PT1H,3,TASK,addTask,NEW,description addTask
-2022-10-13T01:04:27.507020,PT1H,4,TASK,addTask,NEW,description addTask
-+999999999-12-31T23:59:59.999999999,PT0S,1,EPIC,Epic ,NEW,Test
-null,null,2,SUBTASK,Subtask ,NEW,Test,epic,1
+2022-10-19T21:28:55.378027200,PT20S,1,TASK,Test task1,NEW,task 1
+2022-10-19T21:58:55.975954,PT20S,2,TASK,Task task 2,NEW,task 2
+2022-10-19T22:28:56.018884,PT4M,3,EPIC,Epic id 3,NEW,epic 3
+2022-10-19T22:28:56.018884,PT20S,4,SUBTASK,subtask 4,NEW,subtask 4 epic 3,epic,3
+2022-10-19T22:58:56.130833100,PT20S,5,SUBTASK,SubTask 5,NEW,subtask 5 epic 3,epic,3
+2022-10-19T23:28:56.130833100,PT3M20S,6,SUBTASK,SubTask 6,NEW,subtask 6 epic 3,epic,3
 
-1,2,3
+1,3

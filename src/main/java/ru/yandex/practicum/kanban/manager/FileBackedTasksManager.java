@@ -1,94 +1,35 @@
 package ru.yandex.practicum.kanban.manager;
 
-import ru.yandex.practicum.kanban.manager.emums.StatusTask;
 import ru.yandex.practicum.kanban.manager.exceptions.ManagerSaveException;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 import ru.yandex.practicum.kanban.tasks.TypeTasks;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
+    private final static String PATH = "resources\\tasks.csv";
+    private final static String HEAD = "startTime,duration,id,type,name,status,description,epic";
 
-    public static void main(String[] args) {
-        FileBackedTasksManager tasksManager = new FileBackedTasksManager();
-
-        try {
-            Task taskTime1 = new Task(
-                    LocalDateTime.of(2022, 8, 25, 10, 0),
-                    Duration.ofMinutes(14), "Задача со временем",
-                    "Проверка записи в лист  c startTime");
-            tasksManager.addTask(taskTime1);
-
-            Task taskTime2 = new Task(
-                    LocalDateTime.of(2022, 8, 25, 10, 16),
-                    Duration.ofMinutes(14), "Задача со временем2",
-                    "Проверка записи в лист c startTime2");
-            tasksManager.addTask(taskTime2);
-            System.out.println("Создание задач 1 ");
-            tasksManager.addTask(new Task(LocalDateTime.of(2022, 8, 10, 10, 0), Duration.ofMinutes(10), "Сентябрь", "Отправить сына в институт"));
-
-            tasksManager.getPrioritizedTasks().forEach(System.out::println);
-
-            Epic epic2 = new Epic("Октябрь", "Съездить в отпуск");
-            tasksManager.addTask(epic2);
-            tasksManager.addTask(new SubTask("Отпуск", "Привет кукушечка", epic2.getId()));
-            tasksManager.addTask(new SubTask("Школа", "Репетиторы", epic2.getId()));
-
-
-            //просмотр задач
-            System.out.println("История просмотра после создания: " + "\n");
-            tasksManager.getHistoryManager().forEach(System.out::println);
-            tasksManager.getTaskById(1);
-            tasksManager.getSubTaskById(5);
-            tasksManager.getSubTaskById(6);
-            tasksManager.getSubTaskById(6);
-            System.out.println("История просмотра после просмотра: 1 5 6 6 " + "\n" + CSVFormatter.historyToString(tasksManager.historyManager));
-
-            System.out.println("Чтение из файла: 1 " + "\n");
-
-            tasksManager = loadFromFile(new File("resources/tasks.csv"));
-
-
-            Task task1 = tasksManager.getTaskById(1);
-            task1.setStatus(StatusTask.IN_PROGRESS);
-            tasksManager.getEpicById(2);
-
-            System.out.println("\n" + "История просмотра после просмотра: 1 2 " + "\n"
-                    + CSVFormatter.historyToString(tasksManager.historyManager));
-
-            System.out.println("\n" + "Создание задач 2 ");
-
-            tasksManager.addTask(new Epic("Ноябрь", "Скоро новый год!"));
-            tasksManager.addTask(new Task("Декабрь", "Скоро новый год"));
-            tasksManager.addTask(new Epic("Ноябрь", "Description November Epic 5"));
-            tasksManager.getTaskById(3);
-            tasksManager.getEpicById(5);
-
-            System.out.println("История просмотра после просмотра: 3 5 " + "\n" + CSVFormatter.historyToString(tasksManager.historyManager));
-
-            System.out.println("Чтение из файла: 2 " + "\n");
-
-            tasksManager = loadFromFile(new File("resources/tasks.csv"));
-            //tasksManager.getTasks().forEach(System.out::println);
-            //tasksManager.getEpics().forEach(System.out::println);
-            //tasksManager.getSubTasks().forEach(System.out::println);
-
-        } catch (NullPointerException e) {
-            System.out.println("Ошибка чтения файла");
-        }
+    public static FileBackedTasksManager loadedFromFileTasksManager() {
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
+        fileBackedTasksManager.loadFromFile();
+        return fileBackedTasksManager;
     }
 
+    public Map<Integer, Task> allTasks = new HashMap<>();
+
     protected void save() {
-        try (FileWriter fileWriter = new FileWriter("resources/tasks.csv")) {
-            fileWriter.write("startTime,duration,id,type,name,status,description,epic" + System.lineSeparator());
+
+        try (FileWriter fileWriter = new FileWriter(PATH)) {
+            fileWriter.write(HEAD + System.lineSeparator());
             for (Task task : tasksMap.values()) {
                 fileWriter.write(task.toCSVDescription() + System.lineSeparator());
             }
@@ -206,14 +147,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    public static FileBackedTasksManager loadFromFile(File file) {
+    public Map<Integer, Task> getAllTasks() {
+        return allTasks;
+    }
 
-
-        FileBackedTasksManager tasksManager = new FileBackedTasksManager();
-        //Для всех прочитанных эпиков нужно рассчитать endTime.
+    public void loadFromFile() {
+        //  FileBackedTasksManager tasksManager = new FileBackedTasksManager();
+        Path path = Path.of(PATH);
         try {
-            String csv = Files.readString(file.toPath()); //читает файл
+
+            String csv = Files.readString(path); //читает файл
             if (!csv.isBlank()) {
+
                 String[] lines = csv.split(System.lineSeparator());
                 for (int i = 1; i < lines.length; i++) {
                     if (!lines[i].isEmpty()) {
@@ -221,46 +166,48 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
                         if (task != null) {
                             int id = task.getId();
-                            tasksManager.generatedId = id;
+                            generatedId = id;
                             TypeTasks type = task.getType();
                             switch (type) {
                                 case TASK:
-                                    tasksManager.tasksMap.put(id, task);
-                                    tasksManager.updateTask(task);
+                                    tasksMap.put(id, task);
+                                    updateTask(task);
                                     break;
                                 case EPIC:
-                                    tasksManager.epicsMap.put(id, (Epic) task);
-                                    tasksManager.updateEpicTime(task.getId());
+                                    epicsMap.put(id, (Epic) task);
+                                    updateEpicTime(task.getId());
                                     break;
                                 case SUBTASK:
-                                    tasksManager.subTasksMap.put(id, (SubTask) task);
-                                    int epicId = tasksManager.subTasksMap.get(id).getEpicId();
+                                    subTasksMap.put(id, (SubTask) task);
+                                    int epicId = subTasksMap.get(id).getEpicId();
                                     ArrayList<Integer> listIdSubTask =
-                                            tasksManager.epicsMap.get(epicId).getSubTaskIds();
+                                            epicsMap.get(epicId).getSubTaskIds();
                                     listIdSubTask.add(id);
-                                    tasksManager.updateSubTask((SubTask) task);
+                                    updateSubTask((SubTask) task);
                             }
                         }
                     } else {
                         for (Integer taskId : CSVFormatter.historyFromString(lines[i + 1])) {
-                            if (tasksManager.tasksMap.containsKey(taskId)) {
-                                tasksManager.getTaskById(taskId);
-                            } else if (tasksManager.epicsMap.containsKey(taskId)) {
-                                tasksManager.getEpicById(taskId);
-                            } else if (tasksManager.subTasksMap.containsKey(taskId)) {
-                                tasksManager.getSubTaskById(taskId);
+                            if (tasksMap.containsKey(taskId)) {
+                                getTaskById(taskId);
+                            } else if (epicsMap.containsKey(taskId)) {
+                                getEpicById(taskId);
+                            } else if (subTasksMap.containsKey(taskId)) {
+                                getSubTaskById(taskId);
                             }
                         }
+
                         break;
                     }
                 }
+
+
             } else {
                 System.out.println("Файл пуст");
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Не могу прочитать файл: " + file.getName(), e);
+            throw new ManagerSaveException("Не могу прочитать файл: " + path, e);
         }
-        return tasksManager;
+        //   return tasksManager;
     }
 }
-
