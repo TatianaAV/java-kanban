@@ -129,38 +129,38 @@ public class HttpTaskServer {
                     }
                     break;
                 case "POST":
-
                     if (body.contains("title")) {
                         if (Pattern.matches("^/tasks/task$", path)) {
                             Task task = gson.fromJson(body, Task.class);
                             if (task.getId() != 0 && task.getStatus() != null) {
-
                                 taskManager.updateTask(task);
+                                sendText(httpExchange, "");
                             } else {
                                 taskManager.addTask(task);
+                                httpExchange.sendResponseHeaders(201, 0);
                             }
-                            httpExchange.sendResponseHeaders(201, 0);
                             return;
                         }
-
                         if (Pattern.matches("^/tasks/epic$", path)) {
                             Epic epic = gson.fromJson(body, Epic.class);
                             if (epic.getId() != 0 && epic.getStatus() != null) {
                                 taskManager.updateEpic(epic.getId());
+                                sendText(httpExchange, "");
                             } else {
                                 taskManager.addTask(epic);
+                                httpExchange.sendResponseHeaders(201, 0);
                             }
-                            httpExchange.sendResponseHeaders(201, 0);
                             return;
                         }
                         if (Pattern.matches("^/tasks/subtask$", path)) {
                             SubTask subTask = gson.fromJson(body, SubTask.class);
                             if (subTask.getId() != 0 && subTask.getStatus() != null) {
                                 taskManager.updateSubTask(subTask);
+                                sendText(httpExchange, "");
                             } else {
                                 taskManager.addTask(subTask);
+                                httpExchange.sendResponseHeaders(201, 0);
                             }
-                            httpExchange.sendResponseHeaders(201, 0);
                             return;
                         }
                     } else {
@@ -222,7 +222,6 @@ public class HttpTaskServer {
                         return;
                     }
                     break;
-
                 default: {
                     System.out.println("/ ждем GET-запрос, POST-запрос, DELETE-запрос, а получили - " + requestMethod);
                     httpExchange.sendResponseHeaders(405, 0);
