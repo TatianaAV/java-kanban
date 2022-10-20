@@ -1,8 +1,7 @@
-package ru.yandex.practicum.kanban.manager.HTTPmanager;
+package ru.yandex.practicum.kanban.manager.http;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.kanban.manager.FileBackedTasksManager;
 import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
@@ -11,8 +10,6 @@ import ru.yandex.practicum.kanban.tasks.Task;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 

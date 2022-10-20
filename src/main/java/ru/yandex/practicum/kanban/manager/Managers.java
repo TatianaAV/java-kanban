@@ -2,7 +2,7 @@ package ru.yandex.practicum.kanban.manager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ru.yandex.practicum.kanban.manager.HTTPmanager.HTTPTaskManager;
+import ru.yandex.practicum.kanban.manager.http.HTTPTaskManager;
 import ru.yandex.practicum.kanban.manager.adapter.DurationAdapter;
 import ru.yandex.practicum.kanban.manager.adapter.LocalDateTimeAdapter;
 

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.manager.HTTPmanager;
+package ru.yandex.practicum.kanban.manager.http;
 
 import java.io.IOException;
 import java.net.URI;

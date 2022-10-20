@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kanban.manager.HTTPmanager;
+package ru.yandex.practicum.kanban.manager.http;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
