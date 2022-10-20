@@ -99,8 +99,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateEpicTime(int id) {
-        super.updateEpicTime(id);
+    public void updateEpic(int id) {
+        super.updateEpic(id);
         save();
     }
 
@@ -175,7 +175,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                                     break;
                                 case EPIC:
                                     epicsMap.put(id, (Epic) task);
-                                    updateEpicTime(task.getId());
+                                    this.updateEpic(task.getId());
                                     break;
                                 case SUBTASK:
                                     subTasksMap.put(id, (SubTask) task);

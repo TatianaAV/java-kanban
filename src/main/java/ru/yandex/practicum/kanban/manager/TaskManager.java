@@ -25,7 +25,7 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    void updateEpicTime(int epicId);
+    void updateEpic(int epicId);
 
     void updateSubTask(SubTask subTask);
 

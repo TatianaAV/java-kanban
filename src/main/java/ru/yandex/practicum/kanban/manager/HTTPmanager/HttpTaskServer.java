@@ -146,7 +146,7 @@ public class HttpTaskServer {
                         if (Pattern.matches("^/tasks/epic$", path)) {
                             Epic epic = gson.fromJson(body, Epic.class);
                             if (epic.getId() != 0 && epic.getStatus() != null) {
-                                taskManager.updateEpicTime(epic.getId());
+                                taskManager.updateEpic(epic.getId());
                             } else {
                                 taskManager.addTask(epic);
                             }
