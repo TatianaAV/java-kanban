@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class HttpTaskServerTest {
 
     private HttpTaskServer server;
+    private KVServer serverKV;
     private TaskManager taskManager;
     private Task task;
     private Epic epic;
@@ -57,12 +58,14 @@ class HttpTaskServerTest {
         taskManager.addTask(subtask);
 
         server.start();
-        new KVServer().start();
+        serverKV = new KVServer();
+        serverKV.start();
     }
 
     @AfterEach
     void stop() {
         server.stop();
+        serverKV.stop();
     }
 
     @Test
