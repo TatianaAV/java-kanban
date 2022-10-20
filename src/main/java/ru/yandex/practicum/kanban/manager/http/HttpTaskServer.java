@@ -57,12 +57,12 @@ public class HttpTaskServer {
             String body = readText(httpExchange);
             switch (requestMethod) {
                 case "GET":
-                    if (Pattern.matches("^/tasks/task$", path)) {
+                    if (Pattern.matches("^/tasks/task$", path) && query == null) {
                         final String response = gson.toJson(taskManager.getTasks());
                         sendText(httpExchange, response);
                         return;
                     }
-                    if (Pattern.matches("^/tasks/task/$", path)) {
+                    if (Pattern.matches("^/tasks/task/$", path) && query != null) {
                         String idString = query.substring(3);
                         int id = parsePathId(idString);
                         if (id != -1) {
@@ -74,12 +74,12 @@ public class HttpTaskServer {
                             httpExchange.sendResponseHeaders(404, 0);
                         }
                     }
-                    if (Pattern.matches("^/tasks/subtask$", path)) {
+                    if (Pattern.matches("^/tasks/subtask$", path) && query == null) {
                         final String response = gson.toJson(taskManager.getSubTasks());
                         sendText(httpExchange, response);
                         return;
                     }
-                    if (Pattern.matches("^/tasks/subtask/$", path)) {
+                    if (Pattern.matches("^/tasks/subtask/$", path) && query != null) {
                         String idString = query.substring(3);
                         int id = parsePathId(idString);
                         if (id != -1) {
@@ -90,7 +90,7 @@ public class HttpTaskServer {
                             sendError404(httpExchange, "Нет подзадачи с идентификатором -" + id);
                         }
                     }
-                    if (Pattern.matches("^/tasks/subtask/epic/$", path)) {
+                    if (Pattern.matches("^/tasks/subtask/epic/$", path) && query != null) {
                         String idString = query.substring(3);
                         int id = parsePathId(idString);
                         if (id != -1) {
@@ -101,12 +101,12 @@ public class HttpTaskServer {
                             sendError404(httpExchange, "Нет подзадач для эпика с идентификатором -" + id);
                         }
                     }
-                    if (Pattern.matches("^/tasks/epic$", path)) {
+                    if (Pattern.matches("^/tasks/epic$", path) && query == null) {
                         final String response = gson.toJson(taskManager.getEpics());
                         sendText(httpExchange, response);
                         return;
                     }
-                    if (Pattern.matches("^/tasks/epic/$", path)) {
+                    if (Pattern.matches("^/tasks/epic/$", path) && query != null) {
                         String idString = query.substring(3);
                         int id = parsePathId(idString);
                         if (id != -1) {
