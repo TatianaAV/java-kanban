@@ -171,12 +171,12 @@ public class HttpTaskServer {
                     break;
 
                 case "DELETE":
-                    if (Pattern.matches("^/tasks/task$", path)) {
+                    if (Pattern.matches("^/tasks/task$", path) && query == null) {
                         taskManager.deleteAllTask();
                         sendText(httpExchange, "Удалены все задачи");
                         return;
                     }
-                    if (Pattern.matches("^/tasks/task/$", path)) {
+                    if (Pattern.matches("^/tasks/task/$", path) && query != null) {
                         String idString = query.substring(3);
                         int id = parsePathId(idString);
                         if (id != -1) {
@@ -188,12 +188,12 @@ public class HttpTaskServer {
                         }
                         return;
                     }
-                    if (Pattern.matches("^/tasks/subtask$", path)) {
+                    if (Pattern.matches("^/tasks/subtask$", path) && query == null) {
                         taskManager.deleteAllSubTasks();
                         sendText(httpExchange, "Удалены все подзадачи");
                         return;
                     }
-                    if (Pattern.matches("^/tasks/subtask/$", path)) {
+                    if (Pattern.matches("^/tasks/subtask/$", path) && query != null) {
                         String idString = query.substring(3);
                         int id = parsePathId(idString);
                         if (id != -1) {
@@ -205,12 +205,12 @@ public class HttpTaskServer {
                         return;
                     }
 
-                    if (Pattern.matches("^/tasks/epic$", path)) {
+                    if (Pattern.matches("^/tasks/epic$", path) && query == null) {
                         taskManager.deleteAllEpic();
                         sendText(httpExchange, "Удалены /все/ эпики и их подзадачи");
                         return;
                     }
-                    if (Pattern.matches("^/tasks/epic/$", path)) {
+                    if (Pattern.matches("^/tasks/epic/$", path) && query != null) {
                         String idString = query.substring(3);
                         int id = parsePathId(idString);
                         if (id != -1) {

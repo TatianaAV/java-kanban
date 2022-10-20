@@ -179,7 +179,7 @@ class HttpTaskServerTest {
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(404, response.statusCode());
+        assertEquals(400, response.statusCode());
     }
 
     @Test
@@ -199,7 +199,7 @@ class HttpTaskServerTest {
         request = HttpRequest.newBuilder().uri(url).POST(body).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(201, response.statusCode());
+        assertEquals(200, response.statusCode());
 
         url = URI.create("http://localhost:8080/tasks/task/?id=1");
         request = HttpRequest.newBuilder().uri(url).GET().build();
@@ -347,7 +347,7 @@ class HttpTaskServerTest {
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(404, response.statusCode());
+        assertEquals(400, response.statusCode());
     }
 
     @Test
@@ -367,7 +367,7 @@ class HttpTaskServerTest {
         request = HttpRequest.newBuilder().uri(url).POST(body).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(201, response.statusCode());
+        assertEquals(200, response.statusCode());
 
         url = URI.create("http://localhost:8080/tasks/subtask/?id=5");
         request = HttpRequest.newBuilder().uri(url).GET().build();
@@ -514,7 +514,7 @@ class HttpTaskServerTest {
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(404, response.statusCode());
+        assertEquals(400, response.statusCode());
     }
 
     @Test
@@ -538,7 +538,7 @@ class HttpTaskServerTest {
         request = HttpRequest.newBuilder().uri(url).POST(body).build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(201, response.statusCode());
+        assertEquals(200, response.statusCode());
 
         url = URI.create("http://localhost:8080/tasks/epic/?id=4");
         request = HttpRequest.newBuilder().uri(url).GET().build();
