@@ -49,11 +49,7 @@ public class KVServer {
                     h.sendResponseHeaders(400, 0);
                     return;
                 }
-                h.sendResponseHeaders(200, 0);
-
-                try (OutputStream os = h.getResponseBody()) {
-                    os.write(response.getBytes());
-                }
+                sendText(h, response);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -86,7 +82,7 @@ public class KVServer {
                 }
                 data.put(key, value);
                 System.out.println("Значение для ключа " + key + " успешно обновлено!");
-                h.sendResponseHeaders(200, 0);
+                sendText(h, "");
             } else {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -123,7 +119,8 @@ public class KVServer {
 
     protected boolean hasAuth(HttpExchange h) {
         String rawQuery = h.getRequestURI().getRawQuery();
-        return rawQuery != null && (rawQuery.contains("API_TOKEN=" + apiToken) || rawQuery.contains("API_TOKEN=DEBUG"));
+        return rawQuery != null && (rawQuery.contains("API_TOKEN=" + apiToken)
+                || rawQuery.contains("API_TOKEN=DEBUG"));
     }
 
 
