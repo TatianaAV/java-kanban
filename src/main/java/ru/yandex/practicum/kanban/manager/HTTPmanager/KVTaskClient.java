@@ -9,7 +9,7 @@ import java.net.http.HttpResponse;
 public class KVTaskClient {
     protected URI url;
     protected String apiToken;
-    HttpClient client = HttpClient.newHttpClient();
+    private final HttpClient client = HttpClient.newHttpClient();
 
     public KVTaskClient(String path) {
         this.url = URI.create(path);
