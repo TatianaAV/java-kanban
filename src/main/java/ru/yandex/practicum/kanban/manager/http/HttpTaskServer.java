@@ -164,7 +164,7 @@ public class HttpTaskServer {
                             return;
                         }
                     } else {
-                        sendError404(httpExchange, "Попробуйте еще раз добавить задачу, нет данных полей");
+                        sendError400(httpExchange, "Попробуйте еще раз добавить задачу, нет данных полей");
                         System.out.println("Попробуйте еще раз добавить задачу");
                         httpExchange.sendResponseHeaders(405, 0);
                     }
@@ -270,6 +270,12 @@ public class HttpTaskServer {
         h.getResponseBody().write(resp);
     }
 
+    private void sendError400 (HttpExchange h, String text) throws IOException {
+        byte[] resp = text.getBytes(UTF_8);
+        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        h.sendResponseHeaders(400, resp.length);
+        h.getResponseBody().write(resp);
+    }
     private void sendError404(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
