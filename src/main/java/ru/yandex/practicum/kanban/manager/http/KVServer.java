@@ -2,6 +2,7 @@ package ru.yandex.practicum.kanban.manager.http;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import ru.yandex.practicum.kanban.manager.http.sendMessage.Message;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,6 +18,8 @@ public class KVServer {
     public static final int PORT = 8078;
     private final String apiToken;
     private final HttpServer server;
+
+    private final Message message = new Message();
     private final Map<String, String> data = new HashMap<>();
 
     public KVServer() throws IOException {
@@ -32,23 +35,24 @@ public class KVServer {
             System.out.println("\n/load");
             if (!hasAuth(h)) {
                 System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
-                h.sendResponseHeaders(403, 0);
+                message.sendError403(h, "Запрос не авторизован, нужен параметр в query API_TOKEN " +
+                        "со значением апи-ключа");
                 return;
             }
             if ("GET".equals(h.getRequestMethod())) {
                 String key = h.getRequestURI().getPath().substring("/load/".length());
                 if (key.isEmpty()) {
                     System.out.println("Key для загрузки пустой. key указывается в пути: /load/{key}");
-                    h.sendResponseHeaders(400, 0);
+                    message.sendError400(h, "Key для загрузки пустой. key указывается в пути: /load/{key}");
                     return;
                 }
                 String response = data.get(key);
                 if (response.isEmpty()) {
                     System.out.println("Value для отправки пустой.");
-                    h.sendResponseHeaders(400, 0);
+                    message.sendError400(h, "Value для отправки пустой.");
                     return;
                 }
-                sendText(h, response);
+                message.sendText200(h, response);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -63,25 +67,27 @@ public class KVServer {
             System.out.println("\n/save");
             if (!hasAuth(h)) {
                 System.out.println("Запрос не авторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
-                h.sendResponseHeaders(403, 0);
+                message.sendError403(h, "Запрос не авторизован, нужен параметр в query API_TOKEN" +
+                        "со значением апи-ключа");
                 return;
             }
             if ("POST".equals(h.getRequestMethod())) {
                 String key = h.getRequestURI().getPath().substring("/save/".length());
                 if (key.isEmpty()) {
                     System.out.println("Key для сохранения пустой. key указывается в пути: /save/{key}");
-                    h.sendResponseHeaders(400, 0);
+                    message.sendError400(h, "Key для сохранения пустой. key указывается в пути:" +
+                            "/save/{key}");
                     return;
                 }
                 String value = readText(h);
                 if (value.isEmpty()) {
                     System.out.println("Value для сохранения пустой. value указывается в теле запроса");
-                    h.sendResponseHeaders(400, 0);
+                    message.sendError400(h, "Value для сохранения пустой. value указывается в теле запроса");
                     return;
                 }
                 data.put(key, value);
                 System.out.println("Значение для ключа " + key + " успешно обновлено!");
-                sendText(h, "");
+                message.sendText200(h, "");
             } else {
                 System.out.println("/save ждёт POST-запрос, а получил: " + h.getRequestMethod());
                 h.sendResponseHeaders(405, 0);
@@ -95,11 +101,11 @@ public class KVServer {
         try {
             System.out.println("\n/register");
             if ("GET".equals(h.getRequestMethod())) {
-                sendText(h, apiToken);
+                message.sendText200(h, apiToken);
             } else {
                 System.out.println("/register ждёт GET-запрос, а получил " + h.getRequestMethod());
-                h.sendResponseHeaders(405, 0);
-            }
+                message.sendError405(h, "");
+               }
         } finally {
             h.close();
         }

@@ -8,8 +8,8 @@ import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
+import ru.yandex.practicum.kanban.tasks.TypeTasks;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -31,20 +31,24 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         kvTaskClient.register();
     }
 
-    public void saveTasks() throws IOException {
+    public void saveTasks() {
         if (kvTaskClient == null) {
             System.out.println("Требуется регистрация");
             return;
         }
 
-        this.loadFromFile();
         kvTaskClient.put("/tasks", gson.toJson(getTasksMap().values()));
         kvTaskClient.put("/epics", gson.toJson(getEpicsMap().values()));
         kvTaskClient.put("/subtasks", gson.toJson(getSubTasksMap().values()));
         kvTaskClient.put("/history", gson.toJson(CSVFormatter.historyToString(historyManager)));
     }
 
-    public void loadTasks() throws IOException {
+    public void loadTasks() {
+        //tasksMap.clear(); для проверки выгрузки
+        //subTasksMap.clear();
+        //epicsMap.clear();
+        //priorityTask.clear();
+
         String json = kvTaskClient.load("/tasks");
         Type type = new TypeToken<ArrayList<Task>>() {
         }.getType();
@@ -59,7 +63,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }.getType();
         ArrayList<Epic> epicsList = gson.fromJson(json, type);
         for (Epic epic : epicsList) {
-            addEpicFromKVServer(epic);
+            addTaskFromKVServer(epic);
         }
         allTasks.putAll(getEpicsMap());
 
@@ -68,7 +72,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }.getType();
         ArrayList<SubTask> subtasksList = gson.fromJson(json, type);
         for (SubTask subtask : subtasksList) {
-            addSubtaskFromKVServer(subtask);
+            addTaskFromKVServer(subtask);
         }
         allTasks.putAll(getSubTasksMap());
 
@@ -80,54 +84,68 @@ public class HTTPTaskManager extends FileBackedTasksManager {
                 historyManager.addHistory(allTasks.get(parsePathId(s)));
             }
         }
-        save();
     }
 
-    public void addTaskFromKVServer(Task task) throws IOException {
-        super.updateTask(task);
-        saveTasks();
-    }
-
-    public void addEpicFromKVServer(Epic epic) throws IOException {
-        super.updateEpicStatus(epic);
-        saveTasks();
-    }
-
-    public void addSubtaskFromKVServer(SubTask subtask) throws IOException {
-        super.updateSubTask(subtask);
-        saveTasks();
-    }
-
-    @Override
-    public void addTask(Task task) {
-        super.addTask(task);
-        try {
-            saveTasks();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void addTaskFromKVServer(Task task) {
+        if (task != null) {
+            int id = task.getId();
+            generatedId = id;
+            TypeTasks type = task.getType();
+            switch (type) {
+                case TASK:
+                    priorityTask.add(task);
+                    tasksMap.put(id, task);
+                    break;
+                case EPIC:
+                    epicsMap.put(id, (Epic) task);
+                    break;
+                case SUBTASK:
+                    subTasksMap.put(id, (SubTask) task);
+                    priorityTask.add(task);
+            }
         }
     }
 
     @Override
-    public void addTask(Epic epic) {
-        super.addTask(epic);
-        try {
-            saveTasks();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void deleteAllTask() {
+        super.deleteAllTask();
+        allTasks.values().removeIf(task -> task.getType() == TypeTasks.TASK);
     }
 
     @Override
-    public void addTask(SubTask subtask) {
-        super.addTask(subtask);
-        try {
-            saveTasks();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void deleteAllSubTasks() {
+        super.deleteAllSubTasks();
+        allTasks.values().removeIf(task -> task.getType() == TypeTasks.SUBTASK);
     }
 
+    @Override
+    public void deleteAllEpic() {
+        super.deleteAllEpic();
+        allTasks.values().removeIf(task -> task.getType() == TypeTasks.EPIC);
+    }
+
+    @Override
+    public void deleteTask(Integer taskId) {
+        super.deleteTask(taskId);
+        allTasks.values().removeIf(task -> taskId == task.getId());
+    }
+
+    @Override
+    public void deleteSubTask(Integer subTaskId) {
+        super.deleteSubTask(subTaskId);
+        allTasks.values().removeIf(task -> subTaskId == task.getId());
+    }
+
+    @Override
+    public void deleteEpic(int epicId) {
+        super.deleteEpic(epicId);
+        ArrayList<SubTask> subTaskDelete = getSubTasksByEpic(epicId);
+        for (SubTask subTask : subTaskDelete) {
+            int idSubTask = subTask.getId();
+            allTasks.values().removeIf(task -> idSubTask == task.getId());
+        }
+        allTasks.values().removeIf(task -> epicId == task.getId());
+    }
 
     private int parsePathId(String idString) {
         try {

@@ -155,7 +155,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         //  FileBackedTasksManager tasksManager = new FileBackedTasksManager();
         Path path = Path.of(PATH);
         try {
-
             String csv = Files.readString(path); //читает файл
             if (!csv.isBlank()) {
 

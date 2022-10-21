@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
-       protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
+    protected final HashMap<Integer, Task> tasksMap = new HashMap<>();
     protected final HashMap<Integer, Epic> epicsMap = new HashMap<>();
     protected final HashMap<Integer, SubTask> subTasksMap = new HashMap<>();
     protected TreeSet<Task> priorityTask =
@@ -44,17 +44,17 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(SubTask subTask) {
         if (!epicsMap.containsKey(subTask.getEpicId())) {
             throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
-        } else{
-                Epic epic = epicsMap.get(subTask.getEpicId());
-                int id = generatedId();
-                subTask.setId(id);
-                subTask.setStatus(StatusTask.NEW);
-                validateTaskInTime(subTask);
-                subTasksMap.put(id, subTask);
-                getSubTaskIds(epic).add(id);
-                updateEpicStatus(epic);
-                updateEpic(epic.getId());
-            }
+        } else {
+            Epic epic = epicsMap.get(subTask.getEpicId());
+            int id = generatedId();
+            subTask.setId(id);
+            subTask.setStatus(StatusTask.NEW);
+            validateTaskInTime(subTask);
+            subTasksMap.put(id, subTask);
+            getSubTaskIds(epic).add(id);
+            updateEpicStatus(epic);
+            updateEpic(epic.getId());
+        }
     }
 
     @Override
@@ -69,7 +69,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {//задача из таблицы сохраняется в истории просмотра
         if (!tasksMap.containsKey(id)) {
-            throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
+            throw new ManagerSaveException("Задачи " + id
+                    + "не существует.");
         } else {
             Task task = tasksMap.get(id);
             historyManager.addHistory(task);
@@ -85,7 +86,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpicById(int id) {
         //эпик из таблицы по номеру сохраняется в истории просмотра
         if (!epicsMap.containsKey(id)) {
-             throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
+            throw new ManagerSaveException("Эпика " + id + "не существует");
         } else {
             Epic task = epicsMap.get(id);
             historyManager.addHistory(task);
@@ -98,7 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
     public SubTask getSubTaskById(int id) {
         //подзадача из таблицы сохраняется в истории просмотра
         if (!subTasksMap.containsKey(id)) {
-            throw new ManagerSaveException("Эпика не существует подзадача не может быть добавлена");
+            throw new ManagerSaveException("Подзадачи " + id + "не существует.");
         } else {
             SubTask task = subTasksMap.get(id);
             historyManager.addHistory(task);
@@ -181,7 +182,8 @@ public class InMemoryTaskManager implements TaskManager {
             Duration duration = subTask.getDuration();
             if (subTaskStartTime != null && subTaskStartTime.isBefore(startTimeEpic)) {
                 startTimeEpic = subTaskStartTime;
-            }           if (subTaskEndTime != null && subTaskEndTime.isAfter(endTimeEpic)) {
+            }
+            if (subTaskEndTime != null && subTaskEndTime.isAfter(endTimeEpic)) {
                 endTimeEpic = subTaskEndTime;
             }
             if (duration != null) {
@@ -277,11 +279,12 @@ public class InMemoryTaskManager implements TaskManager {
         return tasksMap;
     }
 
-@Override
+    @Override
     public Map<Integer, Epic> getEpicsMap() {
         return epicsMap;
     }
-@Override
+
+    @Override
     public Map<Integer, SubTask> getSubTasksMap() {
         return subTasksMap;
     }

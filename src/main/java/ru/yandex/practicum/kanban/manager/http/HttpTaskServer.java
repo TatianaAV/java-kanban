@@ -7,11 +7,13 @@ import ru.yandex.practicum.kanban.manager.Managers;
 import ru.yandex.practicum.kanban.manager.TaskManager;
 import ru.yandex.practicum.kanban.manager.exceptions.InvalidTimeException;
 import ru.yandex.practicum.kanban.manager.exceptions.ManagerSaveException;
+import ru.yandex.practicum.kanban.manager.http.sendMessage.Message;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
 
 import java.io.IOException;
+import java.lang.reflect.Member;
 import java.net.InetSocketAddress;
 import java.util.regex.Pattern;
 
@@ -20,10 +22,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class HttpTaskServer {
 
     public static final int PORT = 8080;
-    private HttpServer server;
-    private Gson gson;
-
-    private TaskManager taskManager;
+    private final HttpServer server;
+    private final Gson gson;
+    private final Message message = new Message();
+    private final TaskManager taskManager;
 
 
     public HttpTaskServer() throws IOException {
@@ -54,12 +56,12 @@ public class HttpTaskServer {
             final String path = httpExchange.getRequestURI().getPath();
             String requestMethod = httpExchange.getRequestMethod();
             String query = httpExchange.getRequestURI().getQuery();
-            String body = readText(httpExchange);
+            String body = message.readText(httpExchange);
             switch (requestMethod) {
                 case "GET":
                     if (Pattern.matches("^/tasks/task$", path) && query == null) {
                         final String response = gson.toJson(taskManager.getTasks());
-                        sendText(httpExchange, response);
+                        message.sendText200(httpExchange, response);
                         return;
                     }
                     if (Pattern.matches("^/tasks/task/$", path) && query != null) {
@@ -67,16 +69,15 @@ public class HttpTaskServer {
                         int id = parsePathId(idString);
                         if (id != -1) {
                             final String response = gson.toJson(taskManager.getTaskById(id));
-                            sendText(httpExchange, response);
+                            message.sendText200(httpExchange, response);
                             return;
                         } else {
-                            sendError404(httpExchange, "Нет задачи с идентификатором -" + id);
-                            httpExchange.sendResponseHeaders(404, 0);
+                            message.sendError404(httpExchange, "Нет задачи с идентификатором -" + id);
                         }
                     }
                     if (Pattern.matches("^/tasks/subtask$", path) && query == null) {
                         final String response = gson.toJson(taskManager.getSubTasks());
-                        sendText(httpExchange, response);
+                        message.sendText200(httpExchange, response);
                         return;
                     }
                     if (Pattern.matches("^/tasks/subtask/$", path) && query != null) {
@@ -84,10 +85,10 @@ public class HttpTaskServer {
                         int id = parsePathId(idString);
                         if (id != -1) {
                             final String response = gson.toJson(taskManager.getSubTaskById(id));
-                            sendText(httpExchange, response);
+                            message.sendText200(httpExchange, response);
                             return;
                         } else {
-                            sendError404(httpExchange, "Нет подзадачи с идентификатором -" + id);
+                            message.sendError404(httpExchange, "Нет подзадачи с идентификатором -" + id);
                         }
                     }
                     if (Pattern.matches("^/tasks/subtask/epic/$", path) && query != null) {
@@ -95,15 +96,15 @@ public class HttpTaskServer {
                         int id = parsePathId(idString);
                         if (id != -1) {
                             final String response = gson.toJson(taskManager.getSubTasksByEpic(id));
-                            sendText(httpExchange, response);
+                            message.sendText200(httpExchange, response);
                             return;
                         } else {
-                            sendError404(httpExchange, "Нет подзадач для эпика с идентификатором -" + id);
+                            message.sendError404(httpExchange, "Нет подзадач для эпика с идентификатором -" + id);
                         }
                     }
                     if (Pattern.matches("^/tasks/epic$", path) && query == null) {
                         final String response = gson.toJson(taskManager.getEpics());
-                        sendText(httpExchange, response);
+                        message.sendText200(httpExchange, response);
                         return;
                     }
                     if (Pattern.matches("^/tasks/epic/$", path) && query != null) {
@@ -111,20 +112,20 @@ public class HttpTaskServer {
                         int id = parsePathId(idString);
                         if (id != -1) {
                             final String response = gson.toJson(taskManager.getEpicById(id));
-                            sendText(httpExchange, response);
+                            message.sendText200(httpExchange, response);
                             return;
                         } else {
-                            sendError404(httpExchange, "Нет эпика с идентификатором -" + id);
+                            message.sendError404(httpExchange, "Нет эпика с идентификатором -" + id);
                         }
                     }
                     if (Pattern.matches("^/tasks/history$", path)) {
                         final String response = gson.toJson(taskManager.getHistoryManager());
-                        sendText(httpExchange, response);
+                        message.sendText200(httpExchange, response);
                         return;
                     }
                     if (Pattern.matches("^/tasks$", path)) {
                         final String response = gson.toJson(taskManager.getPrioritizedTasks());
-                        sendText(httpExchange, response);
+                        message.sendText200(httpExchange, response);
                         return;
                     }
                     break;
@@ -134,7 +135,7 @@ public class HttpTaskServer {
                             Task task = gson.fromJson(body, Task.class);
                             if (task.getId() != 0 && task.getStatus() != null) {
                                 taskManager.updateTask(task);
-                                sendText(httpExchange, "");
+                                message.sendText200(httpExchange, "");
                             } else {
                                 taskManager.addTask(task);
                                 httpExchange.sendResponseHeaders(201, 0);
@@ -145,7 +146,7 @@ public class HttpTaskServer {
                             Epic epic = gson.fromJson(body, Epic.class);
                             if (epic.getId() != 0 && epic.getStatus() != null) {
                                 taskManager.updateEpic(epic.getId());
-                                sendText(httpExchange, "");
+                                message.sendText200(httpExchange, "");
                             } else {
                                 taskManager.addTask(epic);
                                 httpExchange.sendResponseHeaders(201, 0);
@@ -156,7 +157,7 @@ public class HttpTaskServer {
                             SubTask subTask = gson.fromJson(body, SubTask.class);
                             if (subTask.getId() != 0 && subTask.getStatus() != null) {
                                 taskManager.updateSubTask(subTask);
-                                sendText(httpExchange, "");
+                                message.sendText200(httpExchange, "");
                             } else {
                                 taskManager.addTask(subTask);
                                 httpExchange.sendResponseHeaders(201, 0);
@@ -164,16 +165,16 @@ public class HttpTaskServer {
                             return;
                         }
                     } else {
-                        sendError400(httpExchange, "Попробуйте еще раз добавить задачу, нет данных полей");
+                        message.sendError400(httpExchange, "Попробуйте еще раз добавить задачу, нет данных полей");
                         System.out.println("Попробуйте еще раз добавить задачу");
-                        httpExchange.sendResponseHeaders(405, 0);
+                        message.sendError405(httpExchange,"");
                     }
                     break;
 
                 case "DELETE":
                     if (Pattern.matches("^/tasks/task$", path) && query == null) {
                         taskManager.deleteAllTask();
-                        sendText(httpExchange, "Удалены все задачи");
+                        message.sendText200(httpExchange, "Удалены все задачи");
                         return;
                     }
                     if (Pattern.matches("^/tasks/task/$", path) && query != null) {
@@ -181,16 +182,15 @@ public class HttpTaskServer {
                         int id = parsePathId(idString);
                         if (id != -1) {
                             taskManager.deleteTask(id);
-                            sendText(httpExchange, "Задача " + id + " удалена");
+                            message.sendText200(httpExchange, "Задача " + id + " удалена");
                         } else {
-                            sendError404(httpExchange, "Нет задачи с идентификатором -" + id);
-                            httpExchange.sendResponseHeaders(404, 0);
-                        }
+                            message.sendError404(httpExchange, "Нет задачи с идентификатором -" + id);
+                            }
                         return;
                     }
                     if (Pattern.matches("^/tasks/subtask$", path) && query == null) {
                         taskManager.deleteAllSubTasks();
-                        sendText(httpExchange, "Удалены все подзадачи");
+                        message.sendText200(httpExchange, "Удалены все подзадачи");
                         return;
                     }
                     if (Pattern.matches("^/tasks/subtask/$", path) && query != null) {
@@ -198,16 +198,16 @@ public class HttpTaskServer {
                         int id = parsePathId(idString);
                         if (id != -1) {
                             taskManager.deleteSubTask(id);
-                            sendText(httpExchange, "удален " + id + " подзадача");
+                            message.sendText200(httpExchange, "удален " + id + " подзадача");
                         } else {
-                            sendError404(httpExchange, "Нет подзадачи с идентификатором -" + id);
+                            message.sendError404(httpExchange, "Нет подзадачи с идентификатором -" + id);
                         }
                         return;
                     }
 
                     if (Pattern.matches("^/tasks/epic$", path) && query == null) {
                         taskManager.deleteAllEpic();
-                        sendText(httpExchange, "Удалены /все/ эпики и их подзадачи");
+                        message.sendText200(httpExchange, "Удалены /все/ эпики и их подзадачи");
                         return;
                     }
                     if (Pattern.matches("^/tasks/epic/$", path) && query != null) {
@@ -215,26 +215,26 @@ public class HttpTaskServer {
                         int id = parsePathId(idString);
                         if (id != -1) {
                             taskManager.deleteEpic(id);
-                            sendText(httpExchange, "Удален " + id + " эпик и его подзадачи");
+                            message.sendText200(httpExchange, "Удален " + id + " эпик и его подзадачи");
                         } else {
-                            sendError404(httpExchange, "Нет эпика с идентификатором -" + id);
+                            message.sendError404(httpExchange, "Нет эпика с идентификатором -" + id);
                         }
                         return;
                     }
                     break;
                 default: {
                     System.out.println("/ ждем GET-запрос, POST-запрос, DELETE-запрос, а получили - " + requestMethod);
-                    httpExchange.sendResponseHeaders(405, 0);
+                    message.sendError405(httpExchange,"");
                 }
             }
         } catch (ManagerSaveException exception) {
-            sendError412(httpExchange, exception.getMessage());
+            message.sendError412(httpExchange, exception.getMessage());
         } catch (InvalidTimeException exception) {
             System.out.println("Ошибка валидации времени");
-            sendError412(httpExchange, exception.getMessage());
+            message.sendError412(httpExchange, exception.getMessage());
         } catch (Exception exception) {
             System.out.println("Ошибка обработки запроса");
-            sendText(httpExchange, exception.getMessage());
+            message.sendError405(httpExchange, exception.getMessage());
         } finally {
             httpExchange.close();
         }
@@ -257,37 +257,6 @@ public class HttpTaskServer {
     public void stop() {
         server.stop(0);
         System.out.println("Остановили сервер на порту " + PORT);
-    }
-
-    private String readText(HttpExchange h) throws IOException {
-        return new String(h.getRequestBody().readAllBytes(), UTF_8);
-    }
-
-    private void sendText(HttpExchange h, String text) throws IOException {
-        byte[] resp = text.getBytes(UTF_8);
-        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(200, resp.length);
-        h.getResponseBody().write(resp);
-    }
-
-    private void sendError400 (HttpExchange h, String text) throws IOException {
-        byte[] resp = text.getBytes(UTF_8);
-        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(400, resp.length);
-        h.getResponseBody().write(resp);
-    }
-    private void sendError404(HttpExchange h, String text) throws IOException {
-        byte[] resp = text.getBytes(UTF_8);
-        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(404, resp.length);
-        h.getResponseBody().write(resp);
-    }
-
-    private void sendError412(HttpExchange h, String text) throws IOException {
-        byte[] resp = text.getBytes(UTF_8);
-        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(412, resp.length);
-        h.getResponseBody().write(resp);
     }
 }
 

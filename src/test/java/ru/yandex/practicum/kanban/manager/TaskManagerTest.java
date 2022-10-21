@@ -1,6 +1,8 @@
 package ru.yandex.practicum.kanban.manager;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.kanban.manager.exceptions.ManagerSaveException;
 import ru.yandex.practicum.kanban.tasks.Epic;
 import ru.yandex.practicum.kanban.tasks.SubTask;
 import ru.yandex.practicum.kanban.tasks.Task;
@@ -29,7 +31,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.addTask(epic);
         subTask = new SubTask(3, "Заголовок подзадачи", NEW, " Описание подзадачи", epic.getId());
         taskManager.addTask(subTask);
-           }
+    }
 
     @Test
     void addNewTaskStandard() {
@@ -95,12 +97,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getTaskByIdIsEmpty() {
         taskManager.deleteAllTask();
-        assertNull(taskManager.getTaskById(task.getId()), "Задача не null.");
-    }
-
-    @Test
-    void getTaskByIdIsNull() {
-        assertNull(taskManager.getTaskById(epic.getId()), "Задача не null.");
+        ManagerSaveException exception =
+                assertThrows(
+                        ManagerSaveException.class, () -> {
+                            taskManager.getTaskById(2);
+                        });
+        Assertions.assertNotNull(exception.getMessage());
+        Assertions.assertFalse(exception.getMessage().isBlank());
     }
 
     @Test
@@ -114,14 +117,24 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getEpicByIdIsEmpty() {
         taskManager.deleteAllEpic();
-
-        assertNull(taskManager.getEpicById(epic.getId()), "Задача не должна быть найдена.");
+        ManagerSaveException exception =
+                assertThrows(
+                        ManagerSaveException.class, () -> {
+                            taskManager.getTaskById(2);
+                        });
+        Assertions.assertNotNull(exception.getMessage());
+        Assertions.assertFalse(exception.getMessage().isBlank());
     }
 
     @Test
     void getEpicByIdIsNull() {
-
-        assertNull(taskManager.getEpicById(task.getId()), "Задача не должна быть найдена.");
+        ManagerSaveException exception =
+                assertThrows(
+                        ManagerSaveException.class, () -> {
+                            taskManager.getEpicById(task.getId());
+                        });
+        Assertions.assertNotNull(exception.getMessage());
+        Assertions.assertFalse(exception.getMessage().isBlank());
     }
 
     @Test
@@ -135,17 +148,26 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void getSubTaskByIdIsEmpty() {
         taskManager.deleteAllSubTasks();
-        final SubTask subTask1 = taskManager.getSubTaskById(subTask.getId());
-
-        assertNull(subTask1, "Задача не должна быть найдена.");
+        ManagerSaveException exception =
+                assertThrows(
+                        ManagerSaveException.class, () -> {
+                            taskManager.deleteAllSubTasks();
+                            taskManager.getSubTaskById(subTask.getId());
+                        });
+        Assertions.assertNotNull(exception.getMessage());
+        Assertions.assertFalse(exception.getMessage().isBlank());
     }
 
     @Test
     void getSubTaskByIdIsNull() {
-        taskManager.deleteAllSubTasks();
-        final SubTask subTask1 = taskManager.getSubTaskById(task.getId());
-
-        assertNull(subTask1, "Задача не должна быть найдена.");
+        ManagerSaveException exception =
+                assertThrows(
+                        ManagerSaveException.class, () -> {
+                            taskManager.deleteAllSubTasks();
+                            taskManager.getSubTaskById(task.getId());
+                        });
+        Assertions.assertNotNull(exception.getMessage());
+        Assertions.assertFalse(exception.getMessage().isBlank());
     }
 
     @Test
@@ -184,7 +206,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertEquals(subTask, subTaskId3, "Задачи не совпадают.");
         assertEquals(id4, subTaskId4, "Задачи не совпадают.");
-        assertEquals(epic.getStatus(),IN_PROGRESS, "Статус эпика не изменился");
+        assertEquals(epic.getStatus(), IN_PROGRESS, "Статус эпика не изменился");
 
         subTaskId3.setStatus(DONE);
         subTaskId4.setStatus(DONE);

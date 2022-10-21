@@ -34,6 +34,7 @@ public class Epic extends Task {
     public Epic(String title, String description) {
         super(title, description);
         this.type = TypeTasks.EPIC;
+        this.subTaskIds = new ArrayList<>();
     }
 
     @Override
@@ -47,6 +48,9 @@ public class Epic extends Task {
     }
 
     public ArrayList<Integer> getSubTaskIds() {
+        if (subTaskIds == null) {
+            return new ArrayList<>();
+        }
         return subTaskIds;
     }
 

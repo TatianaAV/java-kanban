@@ -438,7 +438,8 @@ class HttpTaskServerTest {
         Type taskType = new TypeToken<Epic>() {
         }.getType();
         Epic received = gson.fromJson(response.body(), taskType);
-
+epic.toString();
+received.toString();
         assertNotNull(received, "Задачи не возвращаются");
         assertEquals(epic, received, "Задачи не совпадают");
     }
