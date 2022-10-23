@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -24,7 +23,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return fileBackedTasksManager;
     }
 
-    public Map<Integer, Task> allTasks = new HashMap<>();
 
     protected void save() {
 
@@ -147,11 +145,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         save();
     }
 
-    public Map<Integer, Task> getAllTasks() {
-        return allTasks;
-    }
-
-    public void loadFromFile() {
+        public void loadFromFile() {
         //  FileBackedTasksManager tasksManager = new FileBackedTasksManager();
         Path path = Path.of(PATH);
         try {

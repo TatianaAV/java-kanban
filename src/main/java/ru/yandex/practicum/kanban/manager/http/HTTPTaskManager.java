@@ -12,6 +12,8 @@ import ru.yandex.practicum.kanban.tasks.TypeTasks;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class HTTPTaskManager extends FileBackedTasksManager {
@@ -21,6 +23,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
     protected KVTaskClient kvTaskClient;
 
     protected String path;
+    private Map<Integer, Task> allTasks = new HashMap<>();
 
     public HTTPTaskManager(String path) {
         this.path = path;
@@ -48,7 +51,7 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         //subTasksMap.clear();
         //epicsMap.clear();
         //priorityTask.clear();
-
+allTasks.clear();
         String json = kvTaskClient.load("/tasks");
         Type type = new TypeToken<ArrayList<Task>>() {
         }.getType();
@@ -86,10 +89,12 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }
     }
 
-    public void addTaskFromKVServer(Task task) {
+    private void addTaskFromKVServer(Task task) {
         if (task != null) {
             int id = task.getId();
-            generatedId = id;
+            if (generatedId <= id) {
+                generatedId = id;
+            }
             TypeTasks type = task.getType();
             switch (type) {
                 case TASK:
@@ -106,52 +111,15 @@ public class HTTPTaskManager extends FileBackedTasksManager {
         }
     }
 
-    @Override
-    public void deleteAllTask() {
-        super.deleteAllTask();
-        allTasks.values().removeIf(task -> task.getType() == TypeTasks.TASK);
-    }
-
-    @Override
-    public void deleteAllSubTasks() {
-        super.deleteAllSubTasks();
-        allTasks.values().removeIf(task -> task.getType() == TypeTasks.SUBTASK);
-    }
-
-    @Override
-    public void deleteAllEpic() {
-        super.deleteAllEpic();
-        allTasks.values().removeIf(task -> task.getType() == TypeTasks.EPIC);
-    }
-
-    @Override
-    public void deleteTask(Integer taskId) {
-        super.deleteTask(taskId);
-        allTasks.values().removeIf(task -> taskId == task.getId());
-    }
-
-    @Override
-    public void deleteSubTask(Integer subTaskId) {
-        super.deleteSubTask(subTaskId);
-        allTasks.values().removeIf(task -> subTaskId == task.getId());
-    }
-
-    @Override
-    public void deleteEpic(int epicId) {
-        super.deleteEpic(epicId);
-        ArrayList<SubTask> subTaskDelete = getSubTasksByEpic(epicId);
-        for (SubTask subTask : subTaskDelete) {
-            int idSubTask = subTask.getId();
-            allTasks.values().removeIf(task -> idSubTask == task.getId());
-        }
-        allTasks.values().removeIf(task -> epicId == task.getId());
-    }
-
     private int parsePathId(String idString) {
         try {
             return Integer.parseInt(idString);
         } catch (NumberFormatException e) {
             return -1;
         }
+    }
+
+    public Map<Integer, Task> getAllTasks() {
+   return allTasks;
     }
 }
