@@ -99,9 +99,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllTask();
         ManagerSaveException exception =
                 assertThrows(
-                        ManagerSaveException.class, () -> {
-                            taskManager.getTaskById(2);
-                        });
+                        ManagerSaveException.class, () -> taskManager.getTaskById(2));
         Assertions.assertNotNull(exception.getMessage());
         Assertions.assertFalse(exception.getMessage().isBlank());
     }
@@ -119,9 +117,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.deleteAllEpic();
         ManagerSaveException exception =
                 assertThrows(
-                        ManagerSaveException.class, () -> {
-                            taskManager.getTaskById(2);
-                        });
+                        ManagerSaveException.class, () -> taskManager.getTaskById(2));
         Assertions.assertNotNull(exception.getMessage());
         Assertions.assertFalse(exception.getMessage().isBlank());
     }
@@ -130,9 +126,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     void getEpicByIdIsNull() {
         ManagerSaveException exception =
                 assertThrows(
-                        ManagerSaveException.class, () -> {
-                            taskManager.getEpicById(task.getId());
-                        });
+                        ManagerSaveException.class, () -> taskManager.getEpicById(task.getId()));
         Assertions.assertNotNull(exception.getMessage());
         Assertions.assertFalse(exception.getMessage().isBlank());
     }
